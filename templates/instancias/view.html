@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Ver Instancia de Curso - SGA{% endblock %}
+
+{% block header %}Detalles de la Instancia de Curso{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        Información de la Instancia
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ instancia.codigo }} - {{ instancia.nombre }}</h5>
+        <p class="card-text"><strong>Año:</strong> {{ instancia.anio }}</p>
+        <p class="card-text"><strong>Periodo:</strong> {{ instancia.periodo }}</p>
+        <div class="d-flex justify-content-end">
+            <a href="{{ url_for('instancias.edit', id=instancia.id) }}" class="btn btn-warning me-2">Editar</a>
+            <form action="{{ url_for('instancias.delete', id=instancia.id) }}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de eliminar esta instancia?')">
+                    Eliminar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Secciones</span>
+        <a href="{{ url_for('secciones.create') }}?instancia_id={{ instancia.id }}" class="btn btn-sm btn-primary">
+            Añadir Sección
+        </a>
+    </div>
+    <div class="card-body">
+        {% if secciones %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seccion in secciones %}
+                    <tr>
+                        <td>Sección {{ seccion.numero }}</td>
+                        <td>
+                            <a href="{{ url_for('secciones.view', id=seccion.id) }}" class="btn btn-sm btn-info">Ver</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p>Esta instancia no tiene secciones.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('instancias.index') }}" class="btn btn-secondary">Volver a la lista</a>
+</div>
+{% endblock %}

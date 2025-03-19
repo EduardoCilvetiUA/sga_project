@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Notas de Sección - SGA{% endblock %}
+
+{% block header %}Notas de Sección{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        Información del Curso
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ seccion.codigo }} - {{ seccion.curso_nombre }}</h5>
+        <p class="card-text"><strong>Periodo:</strong> {{ seccion.anio }}-{{ seccion.periodo }}</p>
+        <p class="card-text"><strong>Sección:</strong> {{ seccion.numero }}</p>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Tópicos de Evaluación
+    </div>
+    <div class="card-body">
+        {% if topicos %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Tópico</th>
+                        <th>Porcentaje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for topico in topicos %}
+                    <tr>
+                        <td>{{ topico.nombre }}</td>
+                        <td>{{ topico.porcentaje }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p>Esta sección no tiene tópicos de evaluación definidos.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Alumnos y Notas Finales
+    </div>
+    <div class="card-body">
+        {% if alumnos %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Alumno</th>
+                        <th>Nota Final</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for alumno in alumnos %}
+                    <tr>
+                        <td>{{ alumno.nombre }}</td>
+                        <td>
+                            {% if notas_finales[alumno.id] %}
+                                {{ notas_finales[alumno.id] }}
+                            {% else %}
+                                No calculable
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('notas.student_grades', alumno_id=alumno.id, seccion_id=seccion.id) }}" class="btn btn-sm btn-info">
+                                Ver Notas
+                            </a>
+                            <a href="{{ url_for('notas.create') }}?seccion_id={{ seccion.id }}&alumno_id={{ alumno.id }}" class="btn btn-sm btn-primary">
+                                Añadir Nota
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p>Esta sección no tiene alumnos inscritos.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('secciones.view', id=seccion.id) }}" class="btn btn-secondary">Volver a la sección</a>
+</div>
+{% endblock %}

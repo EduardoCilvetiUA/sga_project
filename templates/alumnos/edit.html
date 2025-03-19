@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Alumno - SGA{% endblock %}
+
+{% block header %}Editar Alumno{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            <div class="form-group">
+                <label for="nombre" class="required">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ alumno.nombre }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="correo" class="required">Correo Electrónico</label>
+                <input type="email" class="form-control" id="correo" name="correo" value="{{ alumno.correo }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="fecha_ingreso" class="required">Fecha de Ingreso</label>
+                <input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso" 
+                       value="{{ alumno.fecha_ingreso.strftime('%Y-%m-%d') if alumno.fecha_ingreso else '' }}" required>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ url_for('alumnos.index') }}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Instancia de Curso - SGA{% endblock %}
+
+{% block header %}Crear Nueva Instancia de Curso{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            <div class="form-group">
+                <label for="curso_id" class="required">Curso</label>
+                <select class="form-select" id="curso_id" name="curso_id" required>
+                    <option value="" selected disabled>Seleccionar curso...</option>
+                    {% for curso in cursos %}
+                    <option value="{{ curso.id }}">{{ curso.codigo }} - {{ curso.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="anio" class="required">Año</label>
+                <input type="number" class="form-control" id="anio" name="anio" min="2000" max="2100" required>
+                <small class="form-text text-muted">Ejemplo: 2025</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="periodo" class="required">Periodo</label>
+                <select class="form-select" id="periodo" name="periodo" required>
+                    <option value="" selected disabled>Seleccionar periodo...</option>
+                    <option value="01">01 (Primer Semestre)</option>
+                    <option value="02">02 (Segundo Semestre)</option>
+                    <option value="03">03 (Verano)</option>
+                </select>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ url_for('instancias.index') }}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

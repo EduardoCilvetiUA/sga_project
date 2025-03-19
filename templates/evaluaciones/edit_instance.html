@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Instancia de Evaluación - SGA{% endblock %}
+
+{% block header %}Editar Instancia de Evaluación{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        Información del Curso
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ instancia.codigo }} - {{ instancia.curso_nombre }}</h5>
+        <p class="card-text"><strong>Periodo:</strong> {{ instancia.anio }}-{{ instancia.periodo }}</p>
+        <p class="card-text"><strong>Sección:</strong> {{ instancia.numero }}</p>
+        <p class="card-text"><strong>Tópico:</strong> {{ instancia.topico_nombre }}</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            <div class="form-group">
+                <label for="nombre" class="required">Nombre de la Instancia</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ instancia.nombre }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="peso" class="required">Peso</label>
+                <input type="number" class="form-control" id="peso" name="peso" min="0.1" step="0.1" value="{{ instancia.peso }}" required>
+                <small class="form-text text-muted">Peso relativo dentro del tópico.</small>
+            </div>
+            
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="opcional" name="opcional" 
+                     {% if instancia.opcional %}checked{% endif %}>
+                <label class="form-check-label" for="opcional">Opcional</label>
+                <small class="d-block text-muted">Si es opcional, no afecta el promedio si el alumno no la realiza.</small>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ url_for('evaluaciones.view_topic', id=instancia.topico_id) }}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

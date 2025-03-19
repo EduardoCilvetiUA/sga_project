@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Ver Alumno - SGA{% endblock %}
+
+{% block header %}Detalles del Alumno{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        Información del Alumno
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ alumno.nombre }}</h5>
+        <p class="card-text"><strong>Correo:</strong> {{ alumno.correo }}</p>
+        <p class="card-text"><strong>Fecha de Ingreso:</strong> {{ alumno.fecha_ingreso.strftime('%Y-%m-%d') if alumno.fecha_ingreso else '' }}</p>
+        <div class="d-flex justify-content-end">
+            <a href="{{ url_for('alumnos.edit', id=alumno.id) }}" class="btn btn-warning me-2">Editar</a>
+            <form action="{{ url_for('alumnos.delete', id=alumno.id) }}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de eliminar este alumno?')">
+                    Eliminar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Secciones Inscritas
+    </div>
+    <div class="card-body">
+        {% if secciones %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Curso</th>
+                        <th>Año</th>
+                        <th>Periodo</th>
+                        <th>Sección</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seccion in secciones %}
+                    <tr>
+                        <td>{{ seccion.codigo }} - {{ seccion.curso_nombre }}</td>
+                        <td>{{ seccion.anio }}</td>
+                        <td>{{ seccion.periodo }}</td>
+                        <td>{{ seccion.numero }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p>Este alumno no está inscrito en ninguna sección.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('alumnos.index') }}" class="btn btn-secondary">Volver a la lista</a>
+</div>
+{% endblock %}

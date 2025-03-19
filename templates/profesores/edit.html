@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Profesor - SGA{% endblock %}
+
+{% block header %}Editar Profesor{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            <div class="form-group">
+                <label for="nombre" class="required">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ profesor.nombre }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="correo" class="required">Correo Electrónico</label>
+                <input type="email" class="form-control" id="correo" name="correo" value="{{ profesor.correo }}" required>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ url_for('profesores.index') }}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

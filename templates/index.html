@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block header %}Sistema de Gestión Académica{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Cursos</h5>
+                <p class="card-text">Gestiona los cursos del sistema académico.</p>
+                <a href="{{ url_for('cursos.index') }}" class="btn btn-primary">Administrar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Profesores</h5>
+                <p class="card-text">Gestiona los profesores del sistema académico.</p>
+                <a href="{{ url_for('profesores.index') }}" class="btn btn-primary">Administrar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Alumnos</h5>
+                <p class="card-text">Gestiona los alumnos del sistema académico.</p>
+                <a href="{{ url_for('alumnos.index') }}" class="btn btn-primary">Administrar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Instancias de Cursos</h5>
+                <p class="card-text">Gestiona las instancias de cursos por año y periodo.</p>
+                <a href="{{ url_for('instancias.index') }}" class="btn btn-primary">Administrar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Secciones</h5>
+                <p class="card-text">Gestiona las secciones de las instancias de cursos.</p>
+                <a href="{{ url_for('secciones.index') }}" class="btn btn-primary">Administrar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Evaluaciones</h5>
+                <p class="card-text">Gestiona las evaluaciones para cada sección.</p>
+                <a href="{{ url_for('evaluaciones.index') }}" class="btn btn-primary">Administrar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Notas</h5>
+                <p class="card-text">Gestiona las notas de los alumnos en cada evaluación.</p>
+                <a href="{{ url_for('notas.index') }}" class="btn btn-primary">Administrar</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

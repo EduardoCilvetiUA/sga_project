@@ -1,0 +1,43 @@
+.table-actions {
+    width: 150px;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.btn-action {
+    margin-right: 5px;
+}
+
+.required:after {
+    content: " *";
+    color: red;
+}
+
+/* Estilos adicionales */
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #f7f7f7;
+    font-weight: 500;
+}
+
+.table thead th {
+    background-color: #f7f7f7;
+}
+
+.form-select, .form-control {
+    margin-bottom: 10px;
+}

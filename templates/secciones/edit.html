@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Sección - SGA{% endblock %}
+
+{% block header %}Editar Sección{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            <div class="form-group">
+                <label for="instancia_curso_id" class="required">Instancia de Curso</label>
+                <select class="form-select" id="instancia_curso_id" name="instancia_curso_id" required>
+                    <option value="" disabled>Seleccionar instancia...</option>
+                    {% for instancia in instancias %}
+                    <option value="{{ instancia.id }}" {% if instancia.id == seccion.instancia_curso_id %}selected{% endif %}>
+                        {{ instancia.codigo }} - {{ instancia.nombre }} ({{ instancia.anio }}-{{ instancia.periodo }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="numero" class="required">Número de Sección</label>
+                <input type="number" class="form-control" id="numero" name="numero" min="1" 
+                       value="{{ seccion.numero }}" required>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ url_for('secciones.index') }}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
