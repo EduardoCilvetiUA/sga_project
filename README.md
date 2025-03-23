@@ -48,6 +48,52 @@ Este proyecto implementa un sistema de gestión académica centrado en el regist
    http://localhost:5000
    ```
 
+## Ejecución con Docker
+
+Para ejecutar la aplicación utilizando Docker, siga los siguientes pasos:
+
+1. Asegúrese de tener Docker y Docker Compose instalados en su sistema.
+
+2. Construya los contenedores (primera vez o cuando se realicen cambios):
+   ```
+   docker-compose build --no-cache
+   ```
+
+3. Inicie los servicios:
+   ```
+   docker-compose up
+   ```
+   
+   Para ejecutar en segundo plano, use:
+   ```
+   docker-compose up -d
+   ```
+
+4. Acceda a la aplicación en su navegador:
+   ```
+   http://localhost:5000
+   ```
+
+5. Para detener los contenedores:
+   ```
+   docker-compose down
+   ```
+
+   Para detener y eliminar volúmenes (esto eliminará los datos persistentes):
+   ```
+   docker-compose down -v
+   ```
+
+6. Para ejecutar pruebas dentro del contenedor:
+   ```
+   docker exec -it sga2-web-1 pytest -v
+   ```
+   
+   Para ejecutar pruebas con cobertura:
+   ```
+   docker exec -it sga2-web-1 pytest --cov=. tests/
+   ```
+
 ## Estructura del proyecto
 
 - `app.py`: Punto de entrada de la aplicación
