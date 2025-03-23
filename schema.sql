@@ -121,3 +121,8 @@ INSERT INTO profesores (nombre, correo) VALUES
 INSERT INTO alumnos (nombre, correo, fecha_ingreso) VALUES 
 ('Pedro Gomez', 'pedro.gomez@universidad.cl', '2022-03-01'),
 ('Ana Martinez', 'ana.martinez@universidad.cl', '2023-03-01');
+
+
+GRANT ALL PRIVILEGES ON sga_db.* TO 'sga_user'@'%';
+FLUSH PRIVILEGES;
+

@@ -1,0 +1,12 @@
+[run]
+omit =
+    app.py
+    config.py
+    db.py
+    schema.sql
+    venv/*
+    */venv/*
+    */site-packages/*
+    tests/*
+    http_errors.py
+    */conftest.py

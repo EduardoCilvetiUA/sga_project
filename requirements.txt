@@ -1,2 +1,6 @@
 Flask==2.3.3
 mysql-connector-python==8.1.0
+python-dotenv
+pytest
+pytest-cov
+coverage
