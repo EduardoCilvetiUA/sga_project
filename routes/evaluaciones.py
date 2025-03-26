@@ -18,7 +18,7 @@ def create():
     if request.method == 'POST':
         seccion_id = request.form['seccion_id']
         nombre = request.form['nombre']
-        porcentaje = request.form['porcentaje']
+        valor = request.form['valor']
         
         error = None
         
@@ -26,26 +26,34 @@ def create():
             error = 'La sección es requerida.'
         elif not nombre:
             error = 'El nombre del tópico es requerido.'
-        elif not porcentaje:
-            error = 'El porcentaje es requerido.'
+        elif not valor:
+            error = 'El valor es requerido.'
         else:
-            # Check if total percentage exceeds 100%
-            total_porcentaje = Evaluacion.get_section_total_percentage(seccion_id)
-            
-            # Convert both to float to ensure compatibility
-            if total_porcentaje is not None:
-                total_porcentaje_float = float(total_porcentaje)
-            else:
-                total_porcentaje_float = 0
+            # Get section to check if it uses percentage
+            try:
+                seccion = Seccion.get_by_id(seccion_id)
+                usa_porcentaje = seccion['usa_porcentaje']
                 
-            porcentaje_float = float(porcentaje)
-                
-            if total_porcentaje_float + porcentaje_float > 100:
-                error = f'El porcentaje total excede el 100%. Actualmente: {total_porcentaje_float}%'
+                # Check if total percentage exceeds 100% only if using percentages
+                if usa_porcentaje:
+                    total_valor = Evaluacion.get_section_total_percentage(seccion_id)
+                    
+                    # Convert both to float to ensure compatibility
+                    if total_valor is not None:
+                        total_valor_float = float(total_valor)
+                    else:
+                        total_valor_float = 0
+                        
+                    valor_float = float(valor)
+                        
+                    if total_valor_float + valor_float > 100:
+                        error = f'El porcentaje total excede el 100%. Actualmente: {total_valor_float}%'
+            except Exception as e:
+                error = f'Error al verificar la configuración de la sección: {e}'
         
         if error is None:
             try:
-                Evaluacion.create_topic(seccion_id, nombre, porcentaje)
+                Evaluacion.create_topic(seccion_id, nombre, valor)
                 flash('Tópico de evaluación creado exitosamente!')
                 return redirect(url_for('evaluaciones.index'))
             except Exception as e:
@@ -61,34 +69,38 @@ def edit_topic(id):
     
     if request.method == 'POST':
         nombre = request.form['nombre']
-        porcentaje = request.form['porcentaje']
+        valor = request.form['valor']
         
         error = None
         
         if not nombre:
             error = 'El nombre del tópico es requerido.'
-        elif not porcentaje:
-            error = 'El porcentaje es requerido.'
+        elif not valor:
+            error = 'El valor es requerido.'
         else:
-            # Check if total percentage exceeds 100% (excluding current topic's percentage)
+            # Check if section uses percentages
             seccion_id = topico['seccion_id']
-            total_porcentaje = Evaluacion.get_section_total_percentage(seccion_id)
+            usa_porcentaje = topico['usa_porcentaje']
             
-            # Convert both to float to ensure compatibility
-            if total_porcentaje is not None:
-                # Subtract the current topic percentage (also as float)
-                total_porcentaje_float = float(total_porcentaje) - float(topico['porcentaje'])
-            else:
-                total_porcentaje_float = 0
+            if usa_porcentaje:
+                # Check if total percentage exceeds 100% (excluding current topic's percentage)
+                total_valor = Evaluacion.get_section_total_percentage(seccion_id)
                 
-            porcentaje_float = float(porcentaje)
-                
-            if total_porcentaje_float + porcentaje_float > 100:
-                error = f'El porcentaje total excede el 100%. Actualmente: {total_porcentaje_float}%'
+                # Convert both to float to ensure compatibility
+                if total_valor is not None:
+                    # Subtract the current topic valor (also as float)
+                    total_valor_float = float(total_valor) - float(topico['valor'])
+                else:
+                    total_valor_float = 0
+                    
+                valor_float = float(valor)
+                    
+                if total_valor_float + valor_float > 100:
+                    error = f'El porcentaje total excede el 100%. Actualmente: {total_valor_float}%'
         
         if error is None:
             try:
-                Evaluacion.update_topic(id, nombre, porcentaje)
+                Evaluacion.update_topic(id, nombre, valor)
                 flash('Tópico de evaluación actualizado exitosamente!')
                 return redirect(url_for('evaluaciones.view_topic', id=id))
             except Exception as e:
@@ -121,19 +133,19 @@ def add_instance(id):
     
     if request.method == 'POST':
         nombre = request.form['nombre']
-        peso = request.form['peso']
+        valor = request.form['valor']
         opcional = 'opcional' in request.form
         
         error = None
         
         if not nombre:
             error = 'El nombre de la instancia es requerido.'
-        elif not peso:
-            error = 'El peso es requerido.'
+        elif not valor:
+            error = 'El valor es requerido.'
         
         if error is None:
             try:
-                Evaluacion.create_instance(id, nombre, peso, opcional)
+                Evaluacion.create_instance(id, nombre, valor, opcional)
                 flash('Instancia de evaluación creada exitosamente!')
                 return redirect(url_for('evaluaciones.view_topic', id=id))
             except Exception as e:
@@ -149,19 +161,19 @@ def edit_instance(id):
     
     if request.method == 'POST':
         nombre = request.form['nombre']
-        peso = request.form['peso']
+        valor = request.form['valor']
         opcional = 'opcional' in request.form
         
         error = None
         
         if not nombre:
             error = 'El nombre de la instancia es requerido.'
-        elif not peso:
-            error = 'El peso es requerido.'
+        elif not valor:
+            error = 'El valor es requerido.'
         
         if error is None:
             try:
-                Evaluacion.update_instance(id, nombre, peso, opcional)
+                Evaluacion.update_instance(id, nombre, valor, opcional)
                 flash('Instancia de evaluación actualizada exitosamente!')
                 return redirect(url_for('evaluaciones.view_topic', id=instancia['topico_id']))
             except Exception as e:

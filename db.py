@@ -18,8 +18,8 @@ def get_db_connection():
             database=Config.MYSQL_DB
         )
         
-        # Set autocommit to True for easier transaction handling
-        connection.autocommit = True
+        # Set autocommit to False to handle transactions explicitly
+        connection.autocommit = False
         
         return connection
     except Error as e:
@@ -30,10 +30,15 @@ def execute_query(query, params=None, fetch=False, many=False):
     """Execute a SQL query with parameters."""
     connection = get_db_connection()
     if not connection:
-        return None
+        raise Exception("Could not connect to database")
         
     cursor = connection.cursor(dictionary=True)
+    result = None
+    
     try:
+        print(f"Executing query: {query}")
+        print(f"With params: {params}")
+        
         if params:
             if many:
                 cursor.executemany(query, params)
@@ -41,19 +46,32 @@ def execute_query(query, params=None, fetch=False, many=False):
                 cursor.execute(query, params)
         else:
             cursor.execute(query)
-            
+        
+        # For INSERT, UPDATE, DELETE: commit and return lastrowid if needed
+        if query.strip().upper().startswith(("INSERT", "UPDATE", "DELETE")):
+            connection.commit()
+            print(f"Transaction committed. Last row ID: {cursor.lastrowid}")
+            result = cursor.lastrowid
+        
+        # For SELECT: fetch results
         if fetch:
             result = cursor.fetchall()
-            return result
-        else:
-            connection.commit()
-            return cursor.lastrowid
+            print(f"Query returned {len(result)} rows")
+        
+        return result
+    
     except Error as e:
+        # Rollback on error
+        connection.rollback()
         print(f"Error executing query: {e}")
-        return None
+        print(f"Query: {query}")
+        print(f"Params: {params}")
+        raise
+    
     finally:
         cursor.close()
         connection.close()
+        print("Database connection closed")
 
 def init_db():
     """Initialize the database using schema.sql file"""

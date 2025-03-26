@@ -1,45 +1,61 @@
 {% extends 'base.html' %}
 
-{% block title %}Crear Tópico de Evaluación - SGA{% endblock %}
-
-{% block header %}Crear Nuevo Tópico de Evaluación{% endblock %}
+{% block header %}
+  <h1>{% block title %}Crear Tópico de Evaluación{% endblock %}</h1>
+{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-body">
-        <form method="post">
-            <div class="form-group">
-                <label for="seccion_id" class="required">Sección</label>
-                <select class="form-select" id="seccion_id" name="seccion_id" required>
-                    <option value="" {% if not seccion_id %}selected{% endif %} disabled>Seleccionar sección...</option>
-                    {% for seccion in secciones %}
-                    <option value="{{ seccion.id }}" {% if seccion.id|string == seccion_id|string %}selected{% endif %}>
-                        {{ seccion.codigo }} - {{ seccion.curso_nombre }} ({{ seccion.anio }}-{{ seccion.periodo }}, Sección {{ seccion.numero }})
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="nombre" class="required">Nombre del Tópico</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" required>
-                <small class="form-text text-muted">Ejemplo: Controles, Tareas, Examen Final, etc.</small>
-            </div>
-            
-            <div class="form-group">
-                <label for="porcentaje" class="required">Porcentaje</label>
-                <div class="input-group">
-                    <input type="number" class="form-control" id="porcentaje" name="porcentaje" min="1" max="100" step="0.01" required>
-                    <span class="input-group-text">%</span>
-                </div>
-                <small class="form-text text-muted">Porcentaje del tópico en la evaluación final (entre 1 y 100)</small>
-            </div>
-            
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ url_for('evaluaciones.index') }}" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-primary">Guardar</button>
-            </div>
-        </form>
+  <form method="post">
+    <div class="form-group">
+      <label for="seccion_id">Sección</label>
+      <select class="form-control" id="seccion_id" name="seccion_id" required>
+        <option value="">Seleccione una sección</option>
+        {% for seccion in secciones %}
+          <option value="{{ seccion['id'] }}" {% if seccion_id and seccion_id|int == seccion['id'] %}selected{% endif %}
+            data-usa-porcentaje="{{ seccion['usa_porcentaje'] }}">
+            {{ seccion['codigo'] }} - {{ seccion['curso_nombre'] }} ({{ seccion['anio'] }}-{{ seccion['periodo'] }}) - Sección {{ seccion['numero'] }}
+          </option>
+        {% endfor %}
+      </select>
     </div>
-</div>
+    
+    <div class="form-group">
+      <label for="nombre">Nombre del Tópico</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" required>
+    </div>
+    
+    <div class="form-group">
+      <label id="valorLabel" for="valor">Valor</label>
+      <input type="number" class="form-control" id="valor" name="valor" step="0.01" min="0" required>
+      <small id="valorHelp" class="form-text text-muted">
+        El valor define la importancia de este tópico en la nota final.
+      </small>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a href="{{ url_for('evaluaciones.index') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+
+  <script>
+    // Update the label based on the selected section's evaluation mode
+    document.getElementById('seccion_id').addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex];
+      const usaPorcentaje = selectedOption.getAttribute('data-usa-porcentaje');
+      const valorLabel = document.getElementById('valorLabel');
+      const valorHelp = document.getElementById('valorHelp');
+      
+      if (usaPorcentaje === 'True' || usaPorcentaje === '1') {
+        valorLabel.textContent = 'Porcentaje (%)';
+        valorHelp.textContent = 'El porcentaje define la importancia de este tópico en la nota final. La suma de los porcentajes no debe exceder el 100%.';
+        document.getElementById('valor').max = 100;
+      } else {
+        valorLabel.textContent = 'Peso';
+        valorHelp.textContent = 'El peso define la importancia relativa de este tópico en la nota final.';
+        document.getElementById('valor').removeAttribute('max');
+      }
+    });
+
+    // Trigger the change event to set the initial state
+    document.getElementById('seccion_id').dispatchEvent(new Event('change'));
+  </script>
 {% endblock %}

@@ -7,8 +7,8 @@ class Nota:
         query = """
             SELECT n.*, a.nombre as alumno_nombre, a.correo as alumno_correo,
                    ie.nombre as instancia_nombre, ie.opcional,
-                   te.nombre as topico_nombre, te.porcentaje,
-                   s.numero as seccion_numero,
+                   te.nombre as topico_nombre, te.valor as topico_valor,
+                   s.numero as seccion_numero, s.usa_porcentaje,
                    ic.anio, ic.periodo,
                    c.codigo, c.nombre as curso_nombre
             FROM notas n
@@ -28,9 +28,9 @@ class Nota:
         """Get a grade by ID"""
         query = """
             SELECT n.*, a.id as alumno_id, a.nombre as alumno_nombre, a.correo as alumno_correo,
-                   ie.id as instancia_id, ie.nombre as instancia_nombre, ie.opcional,
-                   te.id as topico_id, te.nombre as topico_nombre, te.porcentaje,
-                   s.id as seccion_id, s.numero as seccion_numero,
+                   ie.id as instancia_id, ie.nombre as instancia_nombre, ie.opcional, ie.valor,
+                   te.id as topico_id, te.nombre as topico_nombre, te.valor as topico_valor,
+                   s.id as seccion_id, s.numero as seccion_numero, s.usa_porcentaje,
                    ic.anio, ic.periodo,
                    c.codigo, c.nombre as curso_nombre
             FROM notas n
@@ -70,8 +70,8 @@ class Nota:
         """Get all grades for a section"""
         query = """
             SELECT n.*, a.nombre as alumno_nombre, a.correo as alumno_correo,
-                   ie.nombre as instancia_nombre, ie.opcional,
-                   te.nombre as topico_nombre, te.porcentaje
+                   ie.nombre as instancia_nombre, ie.opcional, ie.valor,
+                   te.nombre as topico_nombre, te.valor as topico_valor
             FROM notas n
             JOIN alumno_seccion als ON n.alumno_seccion_id = als.id
             JOIN alumnos a ON als.alumno_id = a.id
@@ -86,12 +86,14 @@ class Nota:
     def get_grades_by_student_section(alumno_id, seccion_id):
         """Get all grades for a student in a section"""
         query = """
-            SELECT n.*, ie.nombre as instancia_nombre, ie.opcional, ie.peso,
-                   te.nombre as topico_nombre, te.porcentaje
+            SELECT n.*, ie.nombre as instancia_nombre, ie.opcional, ie.valor,
+                   te.nombre as topico_nombre, te.valor as topico_valor,
+                   s.usa_porcentaje
             FROM notas n
             JOIN alumno_seccion als ON n.alumno_seccion_id = als.id
             JOIN instancias_evaluacion ie ON n.instancia_evaluacion_id = ie.id
             JOIN topicos_evaluacion te ON ie.topico_id = te.id
+            JOIN secciones s ON te.seccion_id = s.id
             WHERE als.alumno_id = %s AND te.seccion_id = %s
             ORDER BY te.nombre, ie.nombre
         """
@@ -134,19 +136,22 @@ class Nota:
         if not grades:
             return None
         
+        # Check if the section uses percentage or weight
+        usa_porcentaje = grades[0]['usa_porcentaje'] if grades else True
+        
         # Group grades by topic
         topics = {}
         for grade in grades:
             topico_nombre = grade['topico_nombre']
             if topico_nombre not in topics:
                 topics[topico_nombre] = {
-                    'porcentaje': grade['porcentaje'],
+                    'valor': grade['topico_valor'],
                     'instancias': []
                 }
             
             topics[topico_nombre]['instancias'].append({
                 'nombre': grade['instancia_nombre'],
-                'peso': grade['peso'],
+                'valor': grade['valor'],
                 'opcional': grade['opcional'],
                 'nota': grade['nota']
             })
@@ -154,23 +159,36 @@ class Nota:
         # Calculate weighted average for each topic
         topic_grades = {}
         for topico, data in topics.items():
-            total_peso = sum(inst['peso'] for inst in data['instancias'])
-            weighted_sum = sum(inst['nota'] * inst['peso'] for inst in data['instancias']) 
+            total_valor = sum(inst['valor'] for inst in data['instancias'])
+            weighted_sum = sum(inst['nota'] * inst['valor'] for inst in data['instancias']) 
             
-            if total_peso > 0:
-                topic_grades[topico] = weighted_sum / total_peso
+            if total_valor > 0:
+                topic_grades[topico] = weighted_sum / total_valor
             else:
                 topic_grades[topico] = 0
         
         # Calculate final weighted average
-        total_percentage = sum(data['porcentaje'] for data in topics.values())
-        
-        if total_percentage <= 0:
-            return None
-        
-        final_grade = 0
-        for topico, nota in topic_grades.items():
-            porcentaje = topics[topico]['porcentaje']
-            final_grade += nota * (porcentaje / total_percentage)
+        if usa_porcentaje:
+            # Using percentages (should sum to 100)
+            total_percentage = sum(data['valor'] for data in topics.values())
+            
+            if total_percentage <= 0:
+                return None
+            
+            final_grade = 0
+            for topico, nota in topic_grades.items():
+                valor = topics[topico]['valor']
+                final_grade += nota * (valor / total_percentage)
+        else:
+            # Using weights
+            total_weight = sum(data['valor'] for data in topics.values())
+            
+            if total_weight <= 0:
+                return None
+            
+            final_grade = 0
+            for topico, nota in topic_grades.items():
+                valor = topics[topico]['valor']
+                final_grade += nota * (valor / total_weight)
         
         return round(final_grade, 1)

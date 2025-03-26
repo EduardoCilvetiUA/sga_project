@@ -1,74 +1,95 @@
 {% extends 'base.html' %}
 
-{% block title %}Notas de Alumno - SGA{% endblock %}
+{% block title %}Notas de {{ alumno['nombre'] }} - SGA{% endblock %}
 
-{% block header %}Notas de Alumno{% endblock %}
+{% block header %}
+  <h1>Notas de {{ alumno['nombre'] }}</h1>
+{% endblock %}
 
 {% block content %}
-<div class="card mb-4">
+  <div class="mb-4">
+    <p><strong>Curso:</strong> {{ seccion['codigo'] }} - {{ seccion['curso_nombre'] }}</p>
+    <p><strong>Sección:</strong> {{ seccion['numero'] }}</p>
+    <p><strong>Año-Periodo:</strong> {{ seccion['anio'] }}-{{ seccion['periodo'] }}</p>
+    <p><strong>Sistema de evaluación:</strong> 
+      {% if seccion['usa_porcentaje'] %}
+        Por porcentajes
+      {% else %}
+        Por pesos relativos
+      {% endif %}
+    </p>
+  </div>
+
+  <div class="card mb-4">
     <div class="card-header">
-        Información del Alumno y Curso
+      <h2>Resumen de Notas</h2>
     </div>
     <div class="card-body">
-        <h5 class="card-title">{{ alumno.nombre }}</h5>
-        <p class="card-text"><strong>Correo:</strong> {{ alumno.correo }}</p>
-        <p class="card-text"><strong>Curso:</strong> {{ seccion.codigo }} - {{ seccion.curso_nombre }}</p>
-        <p class="card-text"><strong>Periodo:</strong> {{ seccion.anio }}-{{ seccion.periodo }}</p>
-        <p class="card-text"><strong>Sección:</strong> {{ seccion.numero }}</p>
+      <p><strong>Nota Final:</strong> {% if nota_final %}{{ nota_final }}{% else %}Sin notas suficientes{% endif %}</p>
     </div>
-</div>
+  </div>
 
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <span>Notas</span>
-        <a href="{{ url_for('notas.create') }}?seccion_id={{ seccion.id }}&alumno_id={{ alumno.id }}" class="btn btn-sm btn-primary">
-            Añadir Nota
-        </a>
+  <div class="card">
+    <div class="card-header">
+      <h2>Detalle de Notas</h2>
     </div>
     <div class="card-body">
-        {% if notas %}
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Tópico</th>
-                        <th>Instancia</th>
-                        <th>Nota</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for nota in notas %}
-                    <tr>
-                        <td>{{ nota.topico_nombre }} ({{ nota.porcentaje }}%)</td>
-                        <td>{{ nota.instancia_nombre }} {% if nota.opcional %}<span class="badge bg-info">Opcional</span>{% endif %}</td>
-                        <td>{{ nota.nota }}</td>
-                        <td>
-                            <a href="{{ url_for('notas.edit', id=nota.id) }}" class="btn btn-sm btn-warning">Editar</a>
-                            <form action="{{ url_for('notas.delete', id=nota.id) }}" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de eliminar esta nota?')">
-                                    Eliminar
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="card mt-4">
-            <div class="card-body">
-                <h5>Nota Final: {% if nota_final %}{{ nota_final }}{% else %}No calculable{% endif %}</h5>
-            </div>
-        </div>
-        {% else %}
-        <p>Este alumno no tiene notas registradas en esta sección.</p>
-        {% endif %}
+      {% if notas %}
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Tópico</th>
+              <th>Instancia</th>
+              <th>Nota</th>
+              <th>Opcional</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for nota in notas %}
+              <tr>
+                <td>{{ nota['topico_nombre'] }} ({{ nota['topico_valor'] }}{% if seccion['usa_porcentaje'] %}%{% endif %})</td>
+                <td>{{ nota['instancia_nombre'] }} ({{ nota['valor'] }})</td>
+                <td>{{ nota['nota'] }}</td>
+                <td>{% if nota['opcional'] %}Sí{% else %}No{% endif %}</td>
+                <td>
+                  <a href="{{ url_for('notas.edit', id=nota['id']) }}" class="btn btn-sm btn-warning">Editar</a>
+                  <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal{{ nota['id'] }}">Eliminar</button>
+                </td>
+              </tr>
+              
+              <!-- Delete Modal -->
+              <div class="modal fade" id="deleteModal{{ nota['id'] }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ nota['id'] }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="deleteModalLabel{{ nota['id'] }}">Confirmar Eliminación</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      ¿Está seguro de que desea eliminar esta nota?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                      <form method="post" action="{{ url_for('notas.delete', id=nota['id']) }}">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No hay notas registradas para este alumno en esta sección.</p>
+      {% endif %}
     </div>
-</div>
-
-<div class="mt-4">
-    <a href="{{ url_for('notas.index') }}" class="btn btn-secondary">Volver a la lista</a>
-</div>
+    <div class="card-footer">
+      <a href="{{ url_for('notas.create', seccion_id=seccion['id'], alumno_id=alumno['id']) }}" class="btn btn-primary">Agregar Nota</a>
+      <a href="{{ url_for('notas.section_grades', seccion_id=seccion['id']) }}" class="btn btn-secondary">Volver a la Sección</a>
+    </div>
+  </div>
 {% endblock %}

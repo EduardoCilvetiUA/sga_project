@@ -47,11 +47,12 @@ CREATE TABLE IF NOT EXISTS instancias_curso (
     CONSTRAINT UC_instancia UNIQUE (curso_id, anio, periodo)
 );
 
--- Sections
+-- Sections with usa_porcentaje field
 CREATE TABLE IF NOT EXISTS secciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
     instancia_curso_id INT NOT NULL,
     numero INT NOT NULL,
+    usa_porcentaje BOOLEAN NOT NULL DEFAULT TRUE COMMENT 'True: evaluación por porcentaje, False: evaluación por peso',
     FOREIGN KEY (instancia_curso_id) REFERENCES instancias_curso(id) ON DELETE CASCADE,
     CONSTRAINT UC_seccion UNIQUE (instancia_curso_id, numero)
 );
@@ -76,22 +77,22 @@ CREATE TABLE IF NOT EXISTS alumno_seccion (
     CONSTRAINT UC_alumno_seccion UNIQUE (alumno_id, seccion_id)
 );
 
--- Evaluation topics (controls, assignments, etc.)
+-- Evaluation topics with valor field
 CREATE TABLE IF NOT EXISTS topicos_evaluacion (
     id INT AUTO_INCREMENT PRIMARY KEY,
     seccion_id INT NOT NULL,
     nombre VARCHAR(50) NOT NULL,
-    porcentaje DECIMAL(5,2) NOT NULL,
+    valor DECIMAL(5,2) NOT NULL COMMENT 'Porcentaje o peso según configuración de la sección',
     FOREIGN KEY (seccion_id) REFERENCES secciones(id) ON DELETE CASCADE,
     CONSTRAINT UC_topico UNIQUE (seccion_id, nombre)
 );
 
--- Evaluation instances (control 1, control 2, etc.)
+-- Evaluation instances with valor field
 CREATE TABLE IF NOT EXISTS instancias_evaluacion (
     id INT AUTO_INCREMENT PRIMARY KEY,
     topico_id INT NOT NULL,
     nombre VARCHAR(50) NOT NULL,
-    peso DECIMAL(5,2) NOT NULL DEFAULT 1,
+    valor DECIMAL(5,2) NOT NULL COMMENT 'Porcentaje o peso dentro del tópico',
     opcional BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (topico_id) REFERENCES topicos_evaluacion(id) ON DELETE CASCADE,
     CONSTRAINT UC_instancia_evaluacion UNIQUE (topico_id, nombre)
@@ -122,7 +123,6 @@ INSERT INTO alumnos (nombre, correo, fecha_ingreso) VALUES
 ('Pedro Gomez', 'pedro.gomez@universidad.cl', '2022-03-01'),
 ('Ana Martinez', 'ana.martinez@universidad.cl', '2023-03-01');
 
-
+-- Grant privileges
 GRANT ALL PRIVILEGES ON sga_db.* TO 'sga_user'@'%';
 FLUSH PRIVILEGES;
-

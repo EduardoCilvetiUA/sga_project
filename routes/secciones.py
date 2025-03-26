@@ -19,6 +19,7 @@ def create():
     if request.method == 'POST':
         instancia_curso_id = request.form['instancia_curso_id']
         numero = request.form['numero']
+        usa_porcentaje = 'usa_porcentaje' in request.form
         
         error = None
         
@@ -29,7 +30,7 @@ def create():
         
         if error is None:
             try:
-                Seccion.create(instancia_curso_id, numero)
+                Seccion.create(instancia_curso_id, numero, usa_porcentaje)
                 flash('Sección creada exitosamente!')
                 return redirect(url_for('secciones.index'))
             except Exception as e:
@@ -47,6 +48,7 @@ def edit(id):
     if request.method == 'POST':
         instancia_curso_id = request.form['instancia_curso_id']
         numero = request.form['numero']
+        usa_porcentaje = 'usa_porcentaje' in request.form
         
         error = None
         
@@ -57,7 +59,7 @@ def edit(id):
         
         if error is None:
             try:
-                Seccion.update(id, instancia_curso_id, numero)
+                Seccion.update(id, instancia_curso_id, numero, usa_porcentaje)
                 flash('Sección actualizada exitosamente!')
                 return redirect(url_for('secciones.index'))
             except Exception as e:

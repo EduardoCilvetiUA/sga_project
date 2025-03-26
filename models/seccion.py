@@ -27,17 +27,41 @@ class Seccion:
         return result[0] if result else None
     
     @staticmethod
-    def create(instancia_curso_id, numero):
+    def create(instancia_curso_id, numero, usa_porcentaje=True):
         """Create a new section"""
-        query = "INSERT INTO secciones (instancia_curso_id, numero) VALUES (%s, %s)"
-        return execute_query(query, (instancia_curso_id, numero))
+        try:
+            # Convert parameters to appropriate data types
+            instancia_curso_id = int(instancia_curso_id)
+            numero = int(numero)
+            usa_porcentaje = bool(usa_porcentaje)
+            
+            print(f"Creating section with: {instancia_curso_id}, {numero}, {usa_porcentaje}")
+            
+            query = "INSERT INTO secciones (instancia_curso_id, numero, usa_porcentaje) VALUES (%s, %s, %s)"
+            result = execute_query(query, (instancia_curso_id, numero, usa_porcentaje))
+            
+            print(f"Section creation result: {result}")
+            return result
+        except Exception as e:
+            print(f"Error in Seccion.create: {str(e)}")
+            raise
     
     @staticmethod
-    def update(seccion_id, instancia_curso_id, numero):
+    def update(seccion_id, instancia_curso_id, numero, usa_porcentaje=True):
         """Update an existing section"""
-        query = "UPDATE secciones SET instancia_curso_id = %s, numero = %s WHERE id = %s"
-        execute_query(query, (instancia_curso_id, numero, seccion_id))
-        return seccion_id
+        try:
+            # Convert parameters to appropriate data types
+            seccion_id = int(seccion_id)
+            instancia_curso_id = int(instancia_curso_id)
+            numero = int(numero)
+            usa_porcentaje = bool(usa_porcentaje)
+            
+            query = "UPDATE secciones SET instancia_curso_id = %s, numero = %s, usa_porcentaje = %s WHERE id = %s"
+            execute_query(query, (instancia_curso_id, numero, usa_porcentaje, seccion_id))
+            return seccion_id
+        except Exception as e:
+            print(f"Error in Seccion.update: {str(e)}")
+            raise
     
     @staticmethod
     def delete(seccion_id):

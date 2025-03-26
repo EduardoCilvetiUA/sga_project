@@ -2,7 +2,9 @@
 
 {% block title %}Editar Sección - SGA{% endblock %}
 
-{% block header %}Editar Sección{% endblock %}
+{% block header %}
+  <h1>{% block title %}Editar Sección{% endblock %}</h1>
+{% endblock %}
 
 {% block content %}
 <div class="card">
@@ -24,6 +26,14 @@
                 <label for="numero" class="required">Número de Sección</label>
                 <input type="number" class="form-control" id="numero" name="numero" min="1" 
                        value="{{ seccion.numero }}" required>
+            </div>
+
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="usa_porcentaje" name="usa_porcentaje" 
+                    {% if seccion.usa_porcentaje %}checked{% endif %}>
+                <label class="form-check-label" for="usa_porcentaje">
+                    Usar porcentajes para evaluación (si se desmarca, se usará sistema de pesos)
+                </label>
             </div>
             
             <div class="d-flex justify-content-between mt-4">
