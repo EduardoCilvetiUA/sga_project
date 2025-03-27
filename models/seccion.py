@@ -1,4 +1,5 @@
 from db import execute_query
+from models.curso_aprobado import CursoAprobado
 
 class Seccion:
     @staticmethod
@@ -43,7 +44,7 @@ class Seccion:
             print(f"Section creation result: {result}")
             return result
         except Exception as e:
-            print(f"Error in Seccion.create: {str(e)}")
+            print(f"Error en Seccion.create: {str(e)}")
             raise
     
     @staticmethod
@@ -60,7 +61,7 @@ class Seccion:
             execute_query(query, (instancia_curso_id, numero, usa_porcentaje, seccion_id))
             return seccion_id
         except Exception as e:
-            print(f"Error in Seccion.update: {str(e)}")
+            print(f"Error en Seccion.update: {str(e)}")
             raise
     
     @staticmethod
@@ -107,6 +108,24 @@ class Seccion:
     @staticmethod
     def enroll_student(seccion_id, alumno_id):
         """Enroll a student in a section"""
+        # First, get the course_id for this section
+        query = """
+            SELECT ic.curso_id 
+            FROM secciones s
+            JOIN instancias_curso ic ON s.instancia_curso_id = ic.id
+            WHERE s.id = %s
+        """
+        result = execute_query(query, (seccion_id,), fetch=True)
+        if not result:
+            raise Exception("Seccion no encontrada")
+        
+        curso_id = result[0]['curso_id']
+        
+        # Check if student meets prerequisites
+        if not Seccion.check_prerequisites(curso_id, alumno_id):
+            raise Exception("El estudiante no cumple con todos los prerrequisitos para este curso")
+        
+        # If prerequisites are met, enroll the student
         query = "INSERT INTO alumno_seccion (alumno_id, seccion_id) VALUES (%s, %s)"
         return execute_query(query, (alumno_id, seccion_id))
     
@@ -141,3 +160,41 @@ class Seccion:
             ORDER BY a.nombre
         """
         return execute_query(query, (seccion_id,), fetch=True)
+    
+    @staticmethod
+    def check_prerequisites(curso_id, alumno_id):
+        """Check if a student meets all prerequisites for a course"""
+        # Get all prerequisites for this course
+        query = """
+            SELECT prerequisito_id 
+            FROM prerequisitos
+            WHERE curso_id = %s
+        """
+        prerequisites = execute_query(query, (curso_id,), fetch=True)
+        
+        # If there are no prerequisites, the student can take the course
+        if not prerequisites:
+            return True
+        
+        # Check each prerequisite
+        for prereq in prerequisites:
+            prereq_id = prereq['prerequisito_id']
+            
+            # Check if the student has passed this prerequisite
+            if not CursoAprobado.is_curso_aprobado(alumno_id, prereq_id):
+                return False
+                
+        # If we've checked all prerequisites and found no issues, return True
+        return True
+    
+    @staticmethod
+    def get_course_id(seccion_id):
+        """Get the course_id for a section"""
+        query = """
+            SELECT ic.curso_id 
+            FROM secciones s
+            JOIN instancias_curso ic ON s.instancia_curso_id = ic.id
+            WHERE s.id = %s
+        """
+        result = execute_query(query, (seccion_id,), fetch=True)
+        return result[0]['curso_id'] if result else None

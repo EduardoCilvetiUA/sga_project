@@ -109,6 +109,21 @@ CREATE TABLE IF NOT EXISTS notas (
     CONSTRAINT UC_nota UNIQUE (alumno_seccion_id, instancia_evaluacion_id)
 );
 
+-- Completed courses tracking table
+CREATE TABLE IF NOT EXISTS cursos_aprobados (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    alumno_id INT NOT NULL,
+    curso_id INT NOT NULL,
+    seccion_id INT NOT NULL,
+    nota_final DECIMAL(3,1) NOT NULL,
+    aprobado BOOLEAN NOT NULL,
+    fecha_aprobacion DATE NOT NULL,
+    FOREIGN KEY (alumno_id) REFERENCES alumnos(id) ON DELETE CASCADE,
+    FOREIGN KEY (curso_id) REFERENCES cursos(id) ON DELETE CASCADE,
+    FOREIGN KEY (seccion_id) REFERENCES secciones(id) ON DELETE CASCADE,
+    CONSTRAINT UC_curso_aprobado UNIQUE (alumno_id, curso_id)
+);
+
 -- Add some sample data
 INSERT INTO cursos (codigo, nombre) VALUES 
 ('ICC5130', 'Diseño de Software Verificable'),
