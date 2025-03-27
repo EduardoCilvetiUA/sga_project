@@ -8,6 +8,8 @@ from models.evaluacion import Evaluacion
 from models.nota import Nota
 from db import execute_query, get_db_connection
 from datetime import date
+import random
+import string
 
 class TestIntegracion:
     """Pruebas de integración para el Sistema de Gestión Académica"""
@@ -29,14 +31,18 @@ class TestIntegracion:
         connection = get_db_connection()
         cursor = connection.cursor()
         try:
+            # Primero eliminar registros específicos que podrían causar conflictos
             cursor.execute("DELETE FROM notas")
             cursor.execute("DELETE FROM instancias_evaluacion")
             cursor.execute("DELETE FROM topicos_evaluacion")
-            cursor.execute("DELETE FROM alumno_seccion")
-            cursor.execute("DELETE FROM profesor_seccion")
-            cursor.execute("DELETE FROM secciones")
-            cursor.execute("DELETE FROM instancias_curso")
-            cursor.execute("DELETE FROM prerequisitos")
+            cursor.execute("DELETE FROM alumno_seccion WHERE 1=1")
+            cursor.execute("DELETE FROM profesor_seccion WHERE 1=1")
+            cursor.execute("DELETE FROM secciones WHERE 1=1")
+            cursor.execute("DELETE FROM instancias_curso WHERE 1=1")
+            cursor.execute("DELETE FROM prerequisitos WHERE 1=1")
+            cursor.execute("DELETE FROM profesores WHERE correo LIKE 'prof.integracion%'")
+            cursor.execute("DELETE FROM alumnos WHERE correo LIKE 'alumno.integracion%'")
+            cursor.execute("DELETE FROM cursos WHERE codigo='INT100'")
             connection.commit()
         except Exception as e:
             print(f"Error al limpiar tablas: {e}")
@@ -46,19 +52,24 @@ class TestIntegracion:
     
     def test_01_crear_entidades_basicas(self):
         """Crear curso, profesor y alumno"""
+        # Generar correos únicos para evitar duplicados
+        random_suffix = ''.join(random.choices(string.ascii_lowercase + string.digits, k=6))
+        
         # Crear curso
         TestIntegracion.curso_id = Curso.create("INT100", "Curso de Integración")
         assert TestIntegracion.curso_id is not None
         
-        # Crear profesor
-        TestIntegracion.profesor_id = Profesor.create("Profesor Integración", "prof.integracion@universidad.cl")
+        # Crear profesor con correo único
+        profesor_correo = f"prof.integracion.{random_suffix}@universidad.cl"
+        TestIntegracion.profesor_id = Profesor.create("Profesor Integración", profesor_correo)
         assert TestIntegracion.profesor_id is not None
         
-        # Crear alumno
+        # Crear alumno con correo único
+        alumno_correo = f"alumno.integracion.{random_suffix}@universidad.cl"
         fecha_ingreso = date(2024, 3, 1)
-        TestIntegracion.alumno_id = Alumno.create("Alumno Integración", "alumno.integracion@universidad.cl", fecha_ingreso)
+        TestIntegracion.alumno_id = Alumno.create("Alumno Integración", alumno_correo, fecha_ingreso)
         assert TestIntegracion.alumno_id is not None
-    
+        
     def test_02_crear_instancia_curso(self):
         """Crear instancia de curso"""
         # Crear instancia de curso
