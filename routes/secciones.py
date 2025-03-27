@@ -1,8 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.seccion import Seccion
 from models.instancia import Instancia
-from models.profesor import Profesor
-from models.alumno import Alumno
 
 bp = Blueprint('secciones', __name__, url_prefix='/secciones')
 

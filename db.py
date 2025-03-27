@@ -30,7 +30,7 @@ def execute_query(query, params=None, fetch=False, many=False):
     """Execute a SQL query with parameters."""
     connection = get_db_connection()
     if not connection:
-        raise Exception("Could not connect to database")
+        raise Exception("No se pudo conectar a la base de datos")
         
     cursor = connection.cursor(dictionary=True)
     result = None

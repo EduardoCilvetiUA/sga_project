@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.evaluacion import Evaluacion
 from models.seccion import Seccion
-from decimal import Decimal
 
 bp = Blueprint('evaluaciones', __name__, url_prefix='/evaluaciones')
 
