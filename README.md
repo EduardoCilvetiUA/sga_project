@@ -38,12 +38,30 @@ Este proyecto implementa un sistema de gestión académica centrado en el regist
    - Cree una base de datos llamada `sga_db` o modifique el nombre en `config.py`
    - Actualice las credenciales de la base de datos en `config.py` si es necesario
 
-4. Ejecute la aplicación:
+4. Configure las variables de entorno:
+   - Cree un archivo `.env` en la raíz del proyecto con las siguientes variables:
+   ```
+   # Variables para Flask
+   FLASK_APP=
+   FLASK_ENV=
+   FLASK_PORT=
+
+   # Variables para la base de datos
+   MYSQL_HOST=  # Use 'db' si utiliza Docker, 'localhost' para desarrollo local
+   MYSQL_USER=
+   MYSQL_PASSWORD=
+   MYSQL_DB=
+   MYSQL_ROOT_PASSWORD=
+   MYSQL_PORT=
+   ```
+   - Complete cada variable con el valor correspondiente según su entorno local
+
+5. Ejecute la aplicación:
    ```
    python app.py
    ```
 
-5. Acceda a la aplicación en su navegador:
+6. Acceda a la aplicación en su navegador:
    ```
    http://localhost:5000
    ```
@@ -54,12 +72,14 @@ Para ejecutar la aplicación utilizando Docker, siga los siguientes pasos:
 
 1. Asegúrese de tener Docker y Docker Compose instalados en su sistema.
 
-2. Construya los contenedores (primera vez o cuando se realicen cambios):
+2. Verifique que el archivo `.env` esté configurado correctamente, con `MYSQL_HOST=db` para el entorno Docker.
+
+3. Construya los contenedores (primera vez o cuando se realicen cambios):
    ```
    docker-compose build --no-cache
    ```
 
-3. Inicie los servicios:
+4. Inicie los servicios:
    ```
    docker-compose up
    ```
@@ -69,12 +89,12 @@ Para ejecutar la aplicación utilizando Docker, siga los siguientes pasos:
    docker-compose up -d
    ```
 
-4. Acceda a la aplicación en su navegador:
+5. Acceda a la aplicación en su navegador:
    ```
    http://localhost:5000
    ```
 
-5. Para detener los contenedores:
+6. Para detener los contenedores:
    ```
    docker-compose down
    ```
@@ -84,7 +104,7 @@ Para ejecutar la aplicación utilizando Docker, siga los siguientes pasos:
    docker-compose down -v
    ```
 
-6. Para ejecutar pruebas dentro del contenedor:
+7. Para ejecutar pruebas dentro del contenedor:
    ```
    docker exec -it sga2-web-1 pytest -v
    ```

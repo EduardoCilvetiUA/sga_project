@@ -2,7 +2,7 @@ services:
   web:
     build: .
     ports:
-      - "5000:5000"
+      - "${FLASK_PORT}:${FLASK_PORT}"
     env_file:
       - ./.env
     depends_on:
@@ -10,12 +10,12 @@ services:
     networks:
       - app-network
     restart: always
-    command: python app.py
+    command: python ${FLASK_APP}
 
   db:
     image: mysql:8.0
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
     env_file:
       - ./.env  # Cargar explícitamente desde .env
     volumes:
