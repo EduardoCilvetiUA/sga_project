@@ -32,6 +32,15 @@
       </small>
     </div>
     
+    <div class="form-check mb-3">
+      <input type="checkbox" class="form-check-input" id="usa_porcentaje" name="usa_porcentaje" checked>
+      <label class="form-check-label" for="usa_porcentaje">Usar porcentaje para las instancias de evaluación</label>
+      <small class="form-text text-muted">
+        Si está marcado, las instancias de evaluación dentro de este tópico se evaluarán por porcentaje. 
+        Si no está marcado, se evaluarán por peso relativo.
+      </small>
+    </div>
+    
     <button type="submit" class="btn btn-primary">Guardar</button>
     <a href="{{ url_for('evaluaciones.index') }}" class="btn btn-secondary">Cancelar</a>
   </form>

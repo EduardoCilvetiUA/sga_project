@@ -77,12 +77,13 @@ CREATE TABLE IF NOT EXISTS alumno_seccion (
     CONSTRAINT UC_alumno_seccion UNIQUE (alumno_id, seccion_id)
 );
 
--- Evaluation topics with valor field
+-- Evaluation topics with valor field and usa_porcentaje field
 CREATE TABLE IF NOT EXISTS topicos_evaluacion (
     id INT AUTO_INCREMENT PRIMARY KEY,
     seccion_id INT NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     valor DECIMAL(5,2) NOT NULL COMMENT 'Porcentaje o peso según configuración de la sección',
+    usa_porcentaje BOOLEAN NOT NULL DEFAULT TRUE COMMENT 'True: evaluación por porcentaje, False: evaluación por peso para las instancias',
     FOREIGN KEY (seccion_id) REFERENCES secciones(id) ON DELETE CASCADE,
     CONSTRAINT UC_topico UNIQUE (seccion_id, nombre)
 );
@@ -92,7 +93,7 @@ CREATE TABLE IF NOT EXISTS instancias_evaluacion (
     id INT AUTO_INCREMENT PRIMARY KEY,
     topico_id INT NOT NULL,
     nombre VARCHAR(50) NOT NULL,
-    valor DECIMAL(5,2) NOT NULL COMMENT 'Porcentaje o peso dentro del tópico',
+    valor DECIMAL(5,2) NOT NULL COMMENT 'Porcentaje o peso dentro del tópico según configuración del tópico',
     opcional BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (topico_id) REFERENCES topicos_evaluacion(id) ON DELETE CASCADE,
     CONSTRAINT UC_instancia_evaluacion UNIQUE (topico_id, nombre)

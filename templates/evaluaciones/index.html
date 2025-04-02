@@ -19,7 +19,8 @@
           <th>Sección</th>
           <th>Tópico</th>
           <th>Valor</th>
-          <th>Sistema</th>
+          <th>Sistema Sección</th>
+          <th>Sistema Instancias</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -30,7 +31,14 @@
             <td>{{ topico['anio'] }}-{{ topico['periodo'] }}</td>
             <td>{{ topico['numero'] }}</td>
             <td>{{ topico['nombre'] }}</td>
-            <td>{{ topico['valor'] }}{% if topico['usa_porcentaje'] %}%{% endif %}</td>
+            <td>{{ topico['valor'] }}{% if topico['seccion_usa_porcentaje'] %}%{% endif %}</td>
+            <td>
+              {% if topico['seccion_usa_porcentaje'] %}
+                Porcentajes
+              {% else %}
+                Pesos
+              {% endif %}
+            </td>
             <td>
               {% if topico['usa_porcentaje'] %}
                 Porcentajes

@@ -15,20 +15,30 @@
     
     <div class="form-group">
       <label for="valor">
-        {% if topico['usa_porcentaje'] %}
+        {% if topico['seccion_usa_porcentaje'] %}
           Porcentaje (%)
         {% else %}
           Peso
         {% endif %}
       </label>
       <input type="number" class="form-control" id="valor" name="valor" step="0.01" min="0" 
-        {% if topico['usa_porcentaje'] %}max="100"{% endif %} value="{{ topico['valor'] }}" required>
+        {% if topico['seccion_usa_porcentaje'] %}max="100"{% endif %} value="{{ topico['valor'] }}" required>
       <small class="form-text text-muted">
-        {% if topico['usa_porcentaje'] %}
+        {% if topico['seccion_usa_porcentaje'] %}
           El porcentaje define la importancia de este tópico en la nota final. La suma de los porcentajes no debe exceder el 100%.
         {% else %}
           El peso define la importancia relativa de este tópico en la nota final.
         {% endif %}
+      </small>
+    </div>
+    
+    <div class="form-check mb-3">
+      <input type="checkbox" class="form-check-input" id="usa_porcentaje" name="usa_porcentaje" 
+        {% if topico['usa_porcentaje'] %}checked{% endif %}>
+      <label class="form-check-label" for="usa_porcentaje">Usar porcentaje para las instancias de evaluación</label>
+      <small class="form-text text-muted">
+        Si está marcado, las instancias de evaluación dentro de este tópico se evaluarán por porcentaje. 
+        Si no está marcado, se evaluarán por peso relativo.
       </small>
     </div>
     

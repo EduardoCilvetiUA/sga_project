@@ -9,6 +9,13 @@
     <p><strong>Tópico:</strong> {{ topico['nombre'] }}</p>
     <p><strong>Curso:</strong> {{ topico['codigo'] }} - {{ topico['curso_nombre'] }}</p>
     <p><strong>Sección:</strong> {{ topico['numero'] }}</p>
+    <p><strong>Sistema de evaluación de instancias:</strong> 
+      {% if topico['usa_porcentaje'] %}
+        Por porcentajes
+      {% else %}
+        Por pesos relativos
+      {% endif %}
+    </p>
   </div>
 
   <form method="post">
@@ -18,10 +25,21 @@
     </div>
     
     <div class="form-group">
-      <label for="valor">Valor</label>
-      <input type="number" class="form-control" id="valor" name="valor" step="0.01" min="0" required>
+      <label for="valor">
+        {% if topico['usa_porcentaje'] %}
+          Porcentaje (%)
+        {% else %}
+          Peso
+        {% endif %}
+      </label>
+      <input type="number" class="form-control" id="valor" name="valor" step="0.01" min="0" 
+        {% if topico['usa_porcentaje'] %}max="100"{% endif %} required>
       <small class="form-text text-muted">
-        El valor define la importancia de esta instancia dentro del tópico.
+        {% if topico['usa_porcentaje'] %}
+          El porcentaje define la importancia de esta instancia dentro del tópico. La suma de porcentajes no debe exceder el 100%.
+        {% else %}
+          El peso define la importancia relativa de esta instancia dentro del tópico.
+        {% endif %}
       </small>
     </div>
     

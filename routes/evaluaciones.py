@@ -18,6 +18,7 @@ def create():
         seccion_id = request.form['seccion_id']
         nombre = request.form['nombre']
         valor = request.form['valor']
+        usa_porcentaje = 'usa_porcentaje' in request.form
         
         error = None
         
@@ -31,10 +32,10 @@ def create():
             # Get section to check if it uses percentage
             try:
                 seccion = Seccion.get_by_id(seccion_id)
-                usa_porcentaje = seccion['usa_porcentaje']
+                seccion_usa_porcentaje = seccion['usa_porcentaje']
                 
-                # Check if total percentage exceeds 100% only if using percentages
-                if usa_porcentaje:
+                # Check if total percentage exceeds 100% only if section uses percentages
+                if seccion_usa_porcentaje:
                     total_valor = Evaluacion.get_section_total_percentage(seccion_id)
                     
                     # Convert both to float to ensure compatibility
@@ -52,7 +53,7 @@ def create():
         
         if error is None:
             try:
-                Evaluacion.create_topic(seccion_id, nombre, valor)
+                Evaluacion.create_topic(seccion_id, nombre, valor, usa_porcentaje)
                 flash('Tópico de evaluación creado exitosamente!')
                 return redirect(url_for('evaluaciones.index'))
             except Exception as e:
@@ -69,6 +70,7 @@ def edit_topic(id):
     if request.method == 'POST':
         nombre = request.form['nombre']
         valor = request.form['valor']
+        usa_porcentaje = 'usa_porcentaje' in request.form
         
         error = None
         
@@ -79,9 +81,9 @@ def edit_topic(id):
         else:
             # Check if section uses percentages
             seccion_id = topico['seccion_id']
-            usa_porcentaje = topico['usa_porcentaje']
+            seccion_usa_porcentaje = topico['seccion_usa_porcentaje']
             
-            if usa_porcentaje:
+            if seccion_usa_porcentaje:
                 # Check if total percentage exceeds 100% (excluding current topic's percentage)
                 total_valor = Evaluacion.get_section_total_percentage(seccion_id)
                 
@@ -99,7 +101,7 @@ def edit_topic(id):
         
         if error is None:
             try:
-                Evaluacion.update_topic(id, nombre, valor)
+                Evaluacion.update_topic(id, nombre, valor, usa_porcentaje)
                 flash('Tópico de evaluación actualizado exitosamente!')
                 return redirect(url_for('evaluaciones.view_topic', id=id))
             except Exception as e:
@@ -141,6 +143,24 @@ def add_instance(id):
             error = 'El nombre de la instancia es requerido.'
         elif not valor:
             error = 'El valor es requerido.'
+        else:
+            # Check if topic uses percentages
+            usa_porcentaje = topico['usa_porcentaje']
+            
+            if usa_porcentaje:
+                # Check if total percentage exceeds 100%
+                total_valor = Evaluacion.get_topic_total_percentage(id)
+                
+                # Convert both to float to ensure compatibility
+                if total_valor is not None:
+                    total_valor_float = float(total_valor)
+                else:
+                    total_valor_float = 0
+                    
+                valor_float = float(valor)
+                    
+                if total_valor_float + valor_float > 100:
+                    error = f'El porcentaje total excede el 100%. Actualmente: {total_valor_float}%'
         
         if error is None:
             try:
@@ -169,6 +189,26 @@ def edit_instance(id):
             error = 'El nombre de la instancia es requerido.'
         elif not valor:
             error = 'El valor es requerido.'
+        else:
+            # Check if topic uses percentages
+            topico_id = instancia['topico_id']
+            usa_porcentaje = instancia['usa_porcentaje']
+            
+            if usa_porcentaje:
+                # Check if total percentage exceeds 100% (excluding current instance's percentage)
+                total_valor = Evaluacion.get_topic_total_percentage(topico_id)
+                
+                # Convert both to float to ensure compatibility
+                if total_valor is not None:
+                    # Subtract the current instance valor (also as float)
+                    total_valor_float = float(total_valor) - float(instancia['valor'])
+                else:
+                    total_valor_float = 0
+                    
+                valor_float = float(valor)
+                    
+                if total_valor_float + valor_float > 100:
+                    error = f'El porcentaje total excede el 100%. Actualmente: {total_valor_float}%'
         
         if error is None:
             try:
