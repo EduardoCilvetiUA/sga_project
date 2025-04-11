@@ -1,6 +1,7 @@
 from db import execute_query
 from datetime import date
 
+
 class CursoAprobado:
     @staticmethod
     def get_all_by_alumno(alumno_id):
@@ -13,7 +14,7 @@ class CursoAprobado:
             ORDER BY ca.fecha_aprobacion DESC
         """
         return execute_query(query, (alumno_id,), fetch=True)
-    
+
     @staticmethod
     def get_by_id(curso_aprobado_id):
         """Get a specific approved course record"""
@@ -25,7 +26,7 @@ class CursoAprobado:
         """
         result = execute_query(query, (curso_aprobado_id,), fetch=True)
         return result[0] if result else None
-    
+
     @staticmethod
     def is_curso_aprobado(alumno_id, curso_id):
         """Check if a student has passed a specific course"""
@@ -36,7 +37,7 @@ class CursoAprobado:
         """
         result = execute_query(query, (alumno_id, curso_id), fetch=True)
         return bool(result)
-    
+
     @staticmethod
     def register_curso_aprobado(alumno_id, curso_id, seccion_id, nota_final, aprobado):
         """Register a course as completed for a student"""
@@ -46,7 +47,7 @@ class CursoAprobado:
             WHERE alumno_id = %s AND curso_id = %s
         """
         existing = execute_query(query, (alumno_id, curso_id), fetch=True)
-        
+
         if existing:
             # Update existing record
             query = """
@@ -54,8 +55,11 @@ class CursoAprobado:
                 SET seccion_id = %s, nota_final = %s, aprobado = %s, fecha_aprobacion = %s
                 WHERE id = %s
             """
-            execute_query(query, (seccion_id, nota_final, aprobado, date.today(), existing[0]['id']))
-            return existing[0]['id']
+            execute_query(
+                query,
+                (seccion_id, nota_final, aprobado, date.today(), existing[0]["id"]),
+            )
+            return existing[0]["id"]
         else:
             # Create new record
             query = """
@@ -63,8 +67,11 @@ class CursoAprobado:
                 (alumno_id, curso_id, seccion_id, nota_final, aprobado, fecha_aprobacion)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """
-            return execute_query(query, (alumno_id, curso_id, seccion_id, nota_final, aprobado, date.today()))
-    
+            return execute_query(
+                query,
+                (alumno_id, curso_id, seccion_id, nota_final, aprobado, date.today()),
+            )
+
     @staticmethod
     def delete(curso_aprobado_id):
         """Delete an approved course record"""
@@ -84,20 +91,22 @@ class CursoAprobado:
         curso_result = execute_query(curso_id_query, (seccion_id,), fetch=True)
         if not curso_result:
             raise Exception("Seccion no encontrada")
-            
-        curso_id = curso_result[0]['curso_id']
-        
+
+        curso_id = curso_result[0]["curso_id"]
+
         # Get the student's grade in this section
         alumno_seccion_query = """
             SELECT id FROM alumno_seccion
             WHERE alumno_id = %s AND seccion_id = %s
         """
-        alumno_seccion = execute_query(alumno_seccion_query, (alumno_id, seccion_id), fetch=True)
+        alumno_seccion = execute_query(
+            alumno_seccion_query, (alumno_id, seccion_id), fetch=True
+        )
         if not alumno_seccion:
             raise Exception("Alumno no encontrado en la sección")
-            
-        alumno_seccion_id = alumno_seccion[0]['id']
-        
+
+        alumno_seccion_id = alumno_seccion[0]["id"]
+
         # Calculate final grade (this is a simplified calculation)
         # A complete implementation would need to account for the grading scheme of the section
         final_grade_query = """
@@ -107,12 +116,14 @@ class CursoAprobado:
             JOIN topicos_evaluacion te ON ie.topico_id = te.id
             WHERE n.alumno_seccion_id = %s
         """
-        grade_result = execute_query(final_grade_query, (alumno_seccion_id,), fetch=True)
-        nota_final = grade_result[0]['nota_final'] if grade_result else 0
-        
+        grade_result = execute_query(
+            final_grade_query, (alumno_seccion_id,), fetch=True
+        )
+        nota_final = grade_result[0]["nota_final"] if grade_result else 0
+
         # In Chile, the passing grade is usually 4.0 out of 7.0
         aprobado = nota_final >= 4.0
-        
+
         # Register the completed course
         return CursoAprobado.register_curso_aprobado(
             alumno_id, curso_id, seccion_id, nota_final, aprobado

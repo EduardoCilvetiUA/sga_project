@@ -1,101 +1,113 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.curso import Curso
 
-bp = Blueprint('cursos', __name__, url_prefix='/cursos')
+bp = Blueprint("cursos", __name__, url_prefix="/cursos")
 
-@bp.route('/')
+
+@bp.route("/")
 def index():
     cursos = Curso.get_all()
-    return render_template('cursos/index.html', cursos=cursos)
+    return render_template("cursos/index.html", cursos=cursos)
 
-@bp.route('/create', methods=('GET', 'POST'))
+
+@bp.route("/create", methods=("GET", "POST"))
 def create():
-    if request.method == 'POST':
-        codigo = request.form['codigo']
-        nombre = request.form['nombre']
-        
+    if request.method == "POST":
+        codigo = request.form["codigo"]
+        nombre = request.form["nombre"]
+
         error = None
-        
+
         if not codigo:
-            error = 'El código es requerido.'
+            error = "El código es requerido."
         elif not nombre:
-            error = 'El nombre es requerido.'
-        
+            error = "El nombre es requerido."
+
         if error is None:
             try:
                 Curso.create(codigo, nombre)
-                flash('Curso creado exitosamente!')
-                return redirect(url_for('cursos.index'))
+                flash("Curso creado exitosamente!")
+                return redirect(url_for("cursos.index"))
             except Exception as e:
-                error = f'Error al crear el curso: {e}'
-        
-        flash(error)
-    
-    return render_template('cursos/create.html')
+                error = f"Error al crear el curso: {e}"
 
-@bp.route('/<int:id>/edit', methods=('GET', 'POST'))
+        flash(error)
+
+    return render_template("cursos/create.html")
+
+
+@bp.route("/<int:id>/edit", methods=("GET", "POST"))
 def edit(id):
     curso = Curso.get_by_id(id)
-    
-    if request.method == 'POST':
-        codigo = request.form['codigo']
-        nombre = request.form['nombre']
-        
+
+    if request.method == "POST":
+        codigo = request.form["codigo"]
+        nombre = request.form["nombre"]
+
         error = None
-        
+
         if not codigo:
-            error = 'El código es requerido.'
+            error = "El código es requerido."
         elif not nombre:
-            error = 'El nombre es requerido.'
-        
+            error = "El nombre es requerido."
+
         if error is None:
             try:
                 Curso.update(id, codigo, nombre)
-                flash('Curso actualizado exitosamente!')
-                return redirect(url_for('cursos.index'))
+                flash("Curso actualizado exitosamente!")
+                return redirect(url_for("cursos.index"))
             except Exception as e:
-                error = f'Error al actualizar el curso: {e}'
-        
-        flash(error)
-    
-    return render_template('cursos/edit.html', curso=curso)
+                error = f"Error al actualizar el curso: {e}"
 
-@bp.route('/<int:id>/delete', methods=('POST',))
+        flash(error)
+
+    return render_template("cursos/edit.html", curso=curso)
+
+
+@bp.route("/<int:id>/delete", methods=("POST",))
 def delete(id):
     try:
         Curso.delete(id)
-        flash('Curso eliminado exitosamente!')
+        flash("Curso eliminado exitosamente!")
     except Exception as e:
-        flash(f'Error al eliminar el curso: {e}')
-    
-    return redirect(url_for('cursos.index'))
+        flash(f"Error al eliminar el curso: {e}")
 
-@bp.route('/<int:id>/view')
+    return redirect(url_for("cursos.index"))
+
+
+@bp.route("/<int:id>/view")
 def view(id):
     curso = Curso.get_by_id(id)
     prerequisitos = Curso.get_prerequisites(id)
-    cursos_disponibles = [c for c in Curso.get_all() if c['id'] != id]
-    
-    return render_template('cursos/view.html', curso=curso, prerequisitos=prerequisitos, cursos_disponibles=cursos_disponibles)
+    cursos_disponibles = [c for c in Curso.get_all() if c["id"] != id]
 
-@bp.route('/<int:id>/add_prerequisite', methods=('POST',))
+    return render_template(
+        "cursos/view.html",
+        curso=curso,
+        prerequisitos=prerequisitos,
+        cursos_disponibles=cursos_disponibles,
+    )
+
+
+@bp.route("/<int:id>/add_prerequisite", methods=("POST",))
 def add_prerequisite(id):
-    prerequisito_id = request.form['prerequisito_id']
-    
+    prerequisito_id = request.form["prerequisito_id"]
+
     try:
         Curso.add_prerequisite(id, prerequisito_id)
-        flash('Prerequisito añadido exitosamente!')
+        flash("Prerequisito añadido exitosamente!")
     except Exception as e:
-        flash(f'Error al añadir el prerequisito: {e}')
-    
-    return redirect(url_for('cursos.view', id=id))
+        flash(f"Error al añadir el prerequisito: {e}")
 
-@bp.route('/<int:id>/remove_prerequisite/<int:prerequisito_id>', methods=('POST',))
+    return redirect(url_for("cursos.view", id=id))
+
+
+@bp.route("/<int:id>/remove_prerequisite/<int:prerequisito_id>", methods=("POST",))
 def remove_prerequisite(id, prerequisito_id):
     try:
         Curso.remove_prerequisite(id, prerequisito_id)
-        flash('Prerequisito eliminado exitosamente!')
+        flash("Prerequisito eliminado exitosamente!")
     except Exception as e:
-        flash(f'Error al eliminar el prerequisito: {e}')
-    
-    return redirect(url_for('cursos.view', id=id))
+        flash(f"Error al eliminar el prerequisito: {e}")
+
+    return redirect(url_for("cursos.view", id=id))
