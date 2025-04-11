@@ -28,9 +28,7 @@ def create():
             instancias = Nota.get_pending_evaluations(alumno_id, seccion_id)
 
     if request.method == "POST":
-        # Check if we're just changing the selection or actually submitting the form
         if "seccion_id" in request.form and "alumno_id" not in request.form:
-            # Just changing the section selection, redirect to same page with section_id
             seccion_id = request.form["seccion_id"]
             return redirect(url_for("notas.create", seccion_id=seccion_id))
 
@@ -39,7 +37,6 @@ def create():
             and "alumno_id" in request.form
             and "instancia_id" not in request.form
         ):
-            # Just changing the student selection, redirect with section_id and alumno_id
             seccion_id = request.form["seccion_id"]
             alumno_id = request.form["alumno_id"]
             return redirect(
@@ -52,7 +49,6 @@ def create():
             and "instancia_id" in request.form
             and "nota" in request.form
         ):
-            # Full form submission with all data
             seccion_id = request.form["seccion_id"]
             alumno_id = request.form["alumno_id"]
             instancia_id = request.form["instancia_id"]
@@ -71,7 +67,6 @@ def create():
 
             if error is None:
                 try:
-                    # Get alumno_seccion_id
                     alumno_seccion_id = Nota.get_student_section_id(
                         alumno_id, seccion_id
                     )
@@ -139,7 +134,6 @@ def student_grades(alumno_id, seccion_id):
     seccion = Seccion.get_by_id(seccion_id)
     notas = Nota.get_grades_by_student_section(alumno_id, seccion_id)
     nota_final = Nota.calculate_final_grade(alumno_id, seccion_id)
-
     return render_template(
         "notas/student_grades.html",
         alumno=alumno,
@@ -154,8 +148,6 @@ def section_grades(seccion_id):
     seccion = Seccion.get_by_id(seccion_id)
     alumnos = Seccion.get_students(seccion_id)
     topicos = Evaluacion.get_topics_by_section(seccion_id)
-
-    # Calculate final grades for all students
     notas_finales = {}
     for alumno in alumnos:
         nota_final = Nota.calculate_final_grade(alumno["id"], seccion_id)
