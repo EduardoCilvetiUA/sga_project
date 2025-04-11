@@ -1,51 +1,57 @@
 {% extends 'base.html' %}
-
 {% block header %}
-  <h1>{% block title %}Crear Tópico de Evaluación{% endblock %}</h1>
+    <h1>
+        {% block title %}Crear Tópico de Evaluación{% endblock %}
+    </h1>
 {% endblock %}
-
 {% block content %}
-  <form method="post">
-    <div class="form-group">
-      <label for="seccion_id">Sección</label>
-      <select class="form-control" id="seccion_id" name="seccion_id" required>
-        <option value="">Seleccione una sección</option>
-        {% for seccion in secciones %}
-          <option value="{{ seccion['id'] }}" {% if seccion_id and seccion_id|int == seccion['id'] %}selected{% endif %}
-            data-usa-porcentaje="{{ seccion['usa_porcentaje'] }}">
-            {{ seccion['codigo'] }} - {{ seccion['curso_nombre'] }} ({{ seccion['anio'] }}-{{ seccion['periodo'] }}) - Sección {{ seccion['numero'] }}
-          </option>
-        {% endfor %}
-      </select>
-    </div>
-    
-    <div class="form-group">
-      <label for="nombre">Nombre del Tópico</label>
-      <input type="text" class="form-control" id="nombre" name="nombre" required>
-    </div>
-    
-    <div class="form-group">
-      <label id="valorLabel" for="valor">Valor</label>
-      <input type="number" class="form-control" id="valor" name="valor" step="0.01" min="0" required>
-      <small id="valorHelp" class="form-text text-muted">
-        El valor define la importancia de este tópico en la nota final.
-      </small>
-    </div>
-    
-    <div class="form-check mb-3">
-      <input type="checkbox" class="form-check-input" id="usa_porcentaje" name="usa_porcentaje" checked>
-      <label class="form-check-label" for="usa_porcentaje">Usar porcentaje para las instancias de evaluación</label>
-      <small class="form-text text-muted">
-        Si está marcado, las instancias de evaluación dentro de este tópico se evaluarán por porcentaje. 
-        Si no está marcado, se evaluarán por peso relativo.
-      </small>
-    </div>
-    
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a href="{{ url_for('evaluaciones.index') }}" class="btn btn-secondary">Cancelar</a>
-  </form>
-
-  <script>
+    <form method="post">
+        <div class="form-group">
+            <label for="seccion_id">Sección</label>
+            <select class="form-control" id="seccion_id" name="seccion_id" required>
+                <option value="">Seleccione una sección</option>
+                {% for seccion in secciones %}
+                    <option value="{{ seccion['id'] }}"
+                            {% if seccion_id and seccion_id|int == seccion['id'] %}selected{% endif %}
+                            data-usa-porcentaje="{{ seccion['usa_porcentaje'] }}">
+                        {{ seccion['codigo'] }} - {{ seccion['curso_nombre'] }} ({{ seccion['anio'] }}-{{ seccion['periodo'] }}) - Sección {{ seccion['numero'] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="nombre">Nombre del Tópico</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+            <label id="valorLabel" for="valor">Valor</label>
+            <input type="number"
+                   class="form-control"
+                   id="valor"
+                   name="valor"
+                   step="0.01"
+                   min="0"
+                   required>
+            <small id="valorHelp" class="form-text text-muted">
+                El valor define la importancia de este tópico en la nota final.
+            </small>
+        </div>
+        <div class="form-check mb-3">
+            <input type="checkbox"
+                   class="form-check-input"
+                   id="usa_porcentaje"
+                   name="usa_porcentaje"
+                   checked>
+            <label class="form-check-label" for="usa_porcentaje">Usar porcentaje para las instancias de evaluación</label>
+            <small class="form-text text-muted">
+                Si está marcado, las instancias de evaluación dentro de este tópico se evaluarán por porcentaje.
+                Si no está marcado, se evaluarán por peso relativo.
+            </small>
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{{ url_for("evaluaciones.index") }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+    <script>
     // Update the label based on the selected section's evaluation mode
     document.getElementById('seccion_id').addEventListener('change', function() {
       const selectedOption = this.options[this.selectedIndex];
@@ -66,5 +72,5 @@
 
     // Trigger the change event to set the initial state
     document.getElementById('seccion_id').dispatchEvent(new Event('change'));
-  </script>
+    </script>
 {% endblock %}

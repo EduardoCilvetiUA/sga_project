@@ -1,75 +1,87 @@
 {% extends 'base.html' %}
-
 {% block title %}Ver Tópico de Evaluación - SGA{% endblock %}
-
 {% block header %}Detalles del Tópico de Evaluación{% endblock %}
-
 {% block content %}
-<div class="card mb-4">
-    <div class="card-header">
-        Información del Tópico
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">{{ topico.nombre }} ({{ topico.porcentaje }}%)</h5>
-        <p class="card-text"><strong>Curso:</strong> {{ topico.codigo }} - {{ topico.curso_nombre }}</p>
-        <p class="card-text"><strong>Periodo:</strong> {{ topico.anio }}-{{ topico.periodo }}</p>
-        <p class="card-text"><strong>Sección:</strong> {{ topico.numero }}</p>
-        <div class="d-flex justify-content-end">
-            <a href="{{ url_for('evaluaciones.edit_topic', id=topico.id) }}" class="btn btn-warning me-2">Editar</a>
-            <form action="{{ url_for('evaluaciones.delete_topic', id=topico.id) }}" method="post" class="d-inline">
-                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de eliminar este tópico?')">
-                    Eliminar
-                </button>
-            </form>
+    <div class="card mb-4">
+        <div class="card-header">Información del Tópico</div>
+        <div class="card-body">
+            <h5 class="card-title">{{ topico.nombre }} ({{ topico.porcentaje }}%)</h5>
+            <p class="card-text">
+                <strong>Curso:</strong> {{ topico.codigo }} - {{ topico.curso_nombre }}
+            </p>
+            <p class="card-text">
+                <strong>Periodo:</strong> {{ topico.anio }}-{{ topico.periodo }}
+            </p>
+            <p class="card-text">
+                <strong>Sección:</strong> {{ topico.numero }}
+            </p>
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('evaluaciones.edit_topic', id=topico.id) }}"
+                   class="btn btn-warning me-2">Editar</a>
+                <form action="{{ url_for('evaluaciones.delete_topic', id=topico.id) }}"
+                      method="post"
+                      class="d-inline">
+                    <button type="submit"
+                            class="btn btn-danger"
+                            onclick="return confirm('¿Está seguro de eliminar este tópico?')">Eliminar</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <span>Instancias de Evaluación</span>
-        <a href="{{ url_for('evaluaciones.add_instance', id=topico.id) }}" class="btn btn-sm btn-primary">
-            Añadir Instancia
-        </a>
-    </div>
-    <div class="card-body">
-        {% if instancias %}
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Peso</th>
-                        <th>Opcional</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for instancia in instancias %}
-                    <tr>
-                        <td>{{ instancia.nombre }}</td>
-                        <td>{{ instancia.peso }}</td>
-                        <td>{% if instancia.opcional %}Sí{% else %}No{% endif %}</td>
-                        <td>
-                            <a href="{{ url_for('evaluaciones.edit_instance', id=instancia.id) }}" class="btn btn-sm btn-warning">Editar</a>
-                            <form action="{{ url_for('evaluaciones.delete_instance', id=instancia.id) }}" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de eliminar esta instancia?')">
-                                    Eliminar
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Instancias de Evaluación</span>
+            <a href="{{ url_for('evaluaciones.add_instance', id=topico.id) }}"
+               class="btn btn-sm btn-primary">Añadir Instancia</a>
         </div>
-        {% else %}
-        <p>Este tópico no tiene instancias de evaluación.</p>
-        {% endif %}
+        <div class="card-body">
+            {% if instancias %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Peso</th>
+                                <th>Opcional</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for instancia in instancias %}
+                                <tr>
+                                    <td>{{ instancia.nombre }}</td>
+                                    <td>{{ instancia.peso }}</td>
+                                    <td>
+                                        {% if instancia.opcional %}
+                                            Sí
+                                        {% else %}
+                                            No
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('evaluaciones.edit_instance', id=instancia.id) }}"
+                                           class="btn btn-sm btn-warning">Editar</a>
+                                        <form action="{{ url_for('evaluaciones.delete_instance', id=instancia.id) }}"
+                                              method="post"
+                                              class="d-inline">
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('¿Está seguro de eliminar esta instancia?')">
+                                                Eliminar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>Este tópico no tiene instancias de evaluación.</p>
+            {% endif %}
+        </div>
     </div>
-</div>
-
-<div class="mt-4">
-    <a href="{{ url_for('evaluaciones.index') }}" class="btn btn-secondary">Volver a la lista</a>
-</div>
+    <div class="mt-4">
+        <a href="{{ url_for("evaluaciones.index") }}" class="btn btn-secondary">Volver a la lista</a>
+    </div>
 {% endblock %}

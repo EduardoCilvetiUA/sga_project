@@ -1,43 +1,50 @@
 {% extends 'base.html' %}
-
 {% block title %}Crear Sección - SGA{% endblock %}
-
 {% block header %}Crear Nueva Sección{% endblock %}
-
 {% block content %}
-<div class="card">
-    <div class="card-body">
-        <form method="post">
-            <div class="form-group">
-                <label for="instancia_curso_id" class="required">Instancia de Curso</label>
-                <select class="form-select" id="instancia_curso_id" name="instancia_curso_id" required>
-                    <option value="" {% if not instancia_id %}selected{% endif %} disabled>Seleccionar instancia...</option>
-                    {% for instancia in instancias %}
-                    <option value="{{ instancia.id }}" {% if instancia.id|string == instancia_id|string %}selected{% endif %}>
-                        {{ instancia.codigo }} - {{ instancia.nombre }} ({{ instancia.anio }}-{{ instancia.periodo }})
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="numero" class="required">Número de Sección</label>
-                <input type="number" class="form-control" id="numero" name="numero" min="1" required>
-                <small class="form-text text-muted">Ejemplo: 1, 2, 3, etc.</small>
-            </div>
-
-            <div class="form-check mb-3">
-                <input type="checkbox" class="form-check-input" id="usa_porcentaje" name="usa_porcentaje" checked>
-                <label class="form-check-label" for="usa_porcentaje">
-                    Usar porcentajes para evaluación (si se desmarca, se usará sistema de pesos)
-                </label>
-            </div>
-            
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ url_for('secciones.index') }}" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-primary">Guardar</button>
-            </div>
-        </form>
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                <div class="form-group">
+                    <label for="instancia_curso_id" class="required">Instancia de Curso</label>
+                    <select class="form-select"
+                            id="instancia_curso_id"
+                            name="instancia_curso_id"
+                            required>
+                        <option value="" {% if not instancia_id %}selected{% endif %} disabled>Seleccionar instancia...</option>
+                        {% for instancia in instancias %}
+                            <option value="{{ instancia.id }}"
+                                    {% if instancia.id|string == instancia_id|string %}selected{% endif %}>
+                                {{ instancia.codigo }} - {{ instancia.nombre }} ({{ instancia.anio }}-{{ instancia.periodo }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="numero" class="required">Número de Sección</label>
+                    <input type="number"
+                           class="form-control"
+                           id="numero"
+                           name="numero"
+                           min="1"
+                           required>
+                    <small class="form-text text-muted">Ejemplo: 1, 2, 3, etc.</small>
+                </div>
+                <div class="form-check mb-3">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           id="usa_porcentaje"
+                           name="usa_porcentaje"
+                           checked>
+                    <label class="form-check-label" for="usa_porcentaje">
+                        Usar porcentajes para evaluación (si se desmarca, se usará sistema de pesos)
+                    </label>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ url_for("secciones.index") }}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 {% endblock %}

@@ -1,70 +1,64 @@
 {% extends 'base.html' %}
-
 {% block title %}Inscribir Alumno - SGA{% endblock %}
-
 {% block header %}Inscribir Alumno en Sección{% endblock %}
-
 {% block content %}
-<div class="card mb-4">
-    <div class="card-header">
-        Detalles de la Sección
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">{{ seccion.codigo }} - {{ seccion.curso_nombre }}</h5>
-        <p class="card-text"><strong>Año:</strong> {{ seccion.anio }}</p>
-        <p class="card-text"><strong>Periodo:</strong> {{ seccion.periodo }}</p>
-        <p class="card-text"><strong>Sección:</strong> {{ seccion.numero }}</p>
-    </div>
-</div>
-
-<div class="card mb-4">
-    <div class="card-header">
-        Alumnos Actualmente Inscritos
-    </div>
-    <div class="card-body">
-        {% if alumnos_inscritos %}
-        <ul class="list-group mb-3">
-            {% for alumno in alumnos_inscritos %}
-            <li class="list-group-item">
-                {{ alumno.nombre }} ({{ alumno.correo }})
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>Esta sección no tiene alumnos inscritos.</p>
-        {% endif %}
-    </div>
-</div>
-
-<div class="card">
-    <div class="card-header">
-        Inscribir Nuevo Alumno
-    </div>
-    <div class="card-body">
-        {% if alumnos_disponibles %}
-        <form method="post">
-            <div class="form-group">
-                <label for="alumno_id" class="required">Alumno</label>
-                <select class="form-select" id="alumno_id" name="alumno_id" required>
-                    <option value="" selected disabled>Seleccionar alumno...</option>
-                    {% for alumno in alumnos_disponibles %}
-                    <option value="{{ alumno.id }}">{{ alumno.nombre }} ({{ alumno.correo }})</option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ url_for('secciones.view', id=seccion.id) }}" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-primary">Inscribir</button>
-            </div>
-        </form>
-        {% else %}
-        <p>No hay alumnos disponibles para inscribir.</p>
-        <div class="mt-3">
-            <a href="{{ url_for('alumnos.create') }}" class="btn btn-primary">Crear Nuevo Alumno</a>
-            <a href="{{ url_for('secciones.view', id=seccion.id) }}" class="btn btn-secondary ms-2">Volver</a>
+    <div class="card mb-4">
+        <div class="card-header">Detalles de la Sección</div>
+        <div class="card-body">
+            <h5 class="card-title">{{ seccion.codigo }} - {{ seccion.curso_nombre }}</h5>
+            <p class="card-text">
+                <strong>Año:</strong> {{ seccion.anio }}
+            </p>
+            <p class="card-text">
+                <strong>Periodo:</strong> {{ seccion.periodo }}
+            </p>
+            <p class="card-text">
+                <strong>Sección:</strong> {{ seccion.numero }}
+            </p>
         </div>
-        {% endif %}
     </div>
-</div>
+    <div class="card mb-4">
+        <div class="card-header">Alumnos Actualmente Inscritos</div>
+        <div class="card-body">
+            {% if alumnos_inscritos %}
+                <ul class="list-group mb-3">
+                    {% for alumno in alumnos_inscritos %}
+                        <li class="list-group-item">{{ alumno.nombre }} ({{ alumno.correo }})</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Esta sección no tiene alumnos inscritos.</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">Inscribir Nuevo Alumno</div>
+        <div class="card-body">
+            {% if alumnos_disponibles %}
+                <form method="post">
+                    <div class="form-group">
+                        <label for="alumno_id" class="required">Alumno</label>
+                        <select class="form-select" id="alumno_id" name="alumno_id" required>
+                            <option value="" selected disabled>Seleccionar alumno...</option>
+                            {% for alumno in alumnos_disponibles %}
+                                <option value="{{ alumno.id }}">{{ alumno.nombre }} ({{ alumno.correo }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('secciones.view', id=seccion.id) }}"
+                           class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Inscribir</button>
+                    </div>
+                </form>
+            {% else %}
+                <p>No hay alumnos disponibles para inscribir.</p>
+                <div class="mt-3">
+                    <a href="{{ url_for("alumnos.create") }}" class="btn btn-primary">Crear Nuevo Alumno</a>
+                    <a href="{{ url_for('secciones.view', id=seccion.id) }}"
+                       class="btn btn-secondary ms-2">Volver</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

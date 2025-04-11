@@ -1,46 +1,47 @@
 {% extends 'base.html' %}
-
 {% block title %}Editar Instancia de Curso - SGA{% endblock %}
-
 {% block header %}Editar Instancia de Curso{% endblock %}
-
 {% block content %}
-<div class="card">
-    <div class="card-body">
-        <form method="post">
-            <div class="form-group">
-                <label for="curso_id" class="required">Curso</label>
-                <select class="form-select" id="curso_id" name="curso_id" required>
-                    <option value="" disabled>Seleccionar curso...</option>
-                    {% for curso in cursos %}
-                    <option value="{{ curso.id }}" {% if curso.id == instancia.curso_id %}selected{% endif %}>
-                        {{ curso.codigo }} - {{ curso.nombre }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="anio" class="required">Año</label>
-                <input type="number" class="form-control" id="anio" name="anio" min="2000" max="2100" 
-                       value="{{ instancia.anio }}" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="periodo" class="required">Periodo</label>
-                <select class="form-select" id="periodo" name="periodo" required>
-                    <option value="" disabled>Seleccionar periodo...</option>
-                    <option value="01" {% if instancia.periodo == '01' %}selected{% endif %}>01 (Primer Semestre)</option>
-                    <option value="02" {% if instancia.periodo == '02' %}selected{% endif %}>02 (Segundo Semestre)</option>
-                    <option value="03" {% if instancia.periodo == '03' %}selected{% endif %}>03 (Verano)</option>
-                </select>
-            </div>
-            
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ url_for('instancias.index') }}" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-primary">Actualizar</button>
-            </div>
-        </form>
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                <div class="form-group">
+                    <label for="curso_id" class="required">Curso</label>
+                    <select class="form-select" id="curso_id" name="curso_id" required>
+                        <option value="" disabled>Seleccionar curso...</option>
+                        {% for curso in cursos %}
+                            <option value="{{ curso.id }}"
+                                    {% if curso.id == instancia.curso_id %}selected{% endif %}>
+                                {{ curso.codigo }} - {{ curso.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="anio" class="required">Año</label>
+                    <input type="number"
+                           class="form-control"
+                           id="anio"
+                           name="anio"
+                           min="2000"
+                           max="2100"
+                           value="{{ instancia.anio }}"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="periodo" class="required">Periodo</label>
+                    <select class="form-select" id="periodo" name="periodo" required>
+                        <option value="" disabled>Seleccionar periodo...</option>
+                        <option value="01" {% if instancia.periodo == '01' %}selected{% endif %}>01 (Primer Semestre)</option>
+                        <option value="02" {% if instancia.periodo == '02' %}selected{% endif %}>02 (Segundo Semestre)</option>
+                        <option value="03" {% if instancia.periodo == '03' %}selected{% endif %}>03 (Verano)</option>
+                    </select>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ url_for("instancias.index") }}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 {% endblock %}

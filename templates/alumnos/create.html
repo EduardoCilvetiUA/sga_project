@@ -1,36 +1,34 @@
 {% extends 'base.html' %}
-
 {% block title %}Crear Alumno - SGA{% endblock %}
-
 {% block header %}Crear Nuevo Alumno{% endblock %}
-
 {% block content %}
-<div class="card">
-    <div class="card-body">
-        <form method="post">
-            <div class="form-group">
-                <label for="nombre" class="required">Nombre</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" required>
-                <small class="form-text text-muted">Nombre completo del alumno</small>
-            </div>
-            
-            <div class="form-group">
-                <label for="correo" class="required">Correo Electrónico</label>
-                <input type="email" class="form-control" id="correo" name="correo" required>
-                <small class="form-text text-muted">Ejemplo: nombre.apellido@universidad.cl</small>
-            </div>
-            
-            <div class="form-group">
-                <label for="fecha_ingreso" class="required">Fecha de Ingreso</label>
-                <input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso" required>
-                <small class="form-text text-muted">Fecha de ingreso a la universidad</small>
-            </div>
-            
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ url_for('alumnos.index') }}" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-primary">Guardar</button>
-            </div>
-        </form>
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                <div class="form-group">
+                    <label for="nombre" class="required">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    <small class="form-text text-muted">Nombre completo del alumno</small>
+                </div>
+                <div class="form-group">
+                    <label for="correo" class="required">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="correo" name="correo" required>
+                    <small class="form-text text-muted">Ejemplo: nombre.apellido@universidad.cl</small>
+                </div>
+                <div class="form-group">
+                    <label for="fecha_ingreso" class="required">Fecha de Ingreso</label>
+                    <input type="date"
+                           class="form-control"
+                           id="fecha_ingreso"
+                           name="fecha_ingreso"
+                           required>
+                    <small class="form-text text-muted">Fecha de ingreso a la universidad</small>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ url_for("alumnos.index") }}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 {% endblock %}

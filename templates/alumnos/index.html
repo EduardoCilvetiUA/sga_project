@@ -1,53 +1,55 @@
 {% extends 'base.html' %}
-
 {% block title %}Alumnos - SGA{% endblock %}
-
 {% block header %}Alumnos{% endblock %}
-
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <p>Lista de todos los alumnos registrados en el sistema.</p>
-    <a href="{{ url_for('alumnos.create') }}" class="btn btn-primary">
-        <i class="bi bi-plus"></i> Nuevo Alumno
-    </a>
-</div>
-
-<div class="table-responsive">
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Fecha de Ingreso</th>
-                <th class="table-actions">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for alumno in alumnos %}
-            <tr>
-                <td>{{ alumno.nombre }}</td>
-                <td>{{ alumno.correo }}</td>
-                <td>{{ alumno.fecha_ingreso.strftime('%Y-%m-%d') if alumno.fecha_ingreso else '' }}</td>
-                <td>
-                    <a href="{{ url_for('alumnos.view', id=alumno.id) }}" class="btn btn-sm btn-info btn-action">
-                        <i class="bi bi-eye"></i> Ver
-                    </a>
-                    <a href="{{ url_for('alumnos.edit', id=alumno.id) }}" class="btn btn-sm btn-warning btn-action">
-                        <i class="bi bi-pencil"></i> Editar
-                    </a>
-                    <form action="{{ url_for('alumnos.delete', id=alumno.id) }}" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-sm btn-danger btn-action" onclick="return confirm('¿Está seguro de eliminar este alumno?')">
-                            <i class="bi bi-trash"></i> Eliminar
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="4" class="text-center">No hay alumnos registrados.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <p>Lista de todos los alumnos registrados en el sistema.</p>
+        <a href="{{ url_for("alumnos.create") }}" class="btn btn-primary">
+            <i class="bi bi-plus"></i> Nuevo Alumno
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Fecha de Ingreso</th>
+                    <th class="table-actions">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alumno in alumnos %}
+                    <tr>
+                        <td>{{ alumno.nombre }}</td>
+                        <td>{{ alumno.correo }}</td>
+                        <td>{{ alumno.fecha_ingreso.strftime("%Y-%m-%d") if alumno.fecha_ingreso else '' }}</td>
+                        <td>
+                            <a href="{{ url_for('alumnos.view', id=alumno.id) }}"
+                               class="btn btn-sm btn-info btn-action">
+                                <i class="bi bi-eye"></i> Ver
+                            </a>
+                            <a href="{{ url_for('alumnos.edit', id=alumno.id) }}"
+                               class="btn btn-sm btn-warning btn-action">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <form action="{{ url_for('alumnos.delete', id=alumno.id) }}"
+                                  method="post"
+                                  class="d-inline">
+                                <button type="submit"
+                                        class="btn btn-sm btn-danger btn-action"
+                                        onclick="return confirm('¿Está seguro de eliminar este alumno?')">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center">No hay alumnos registrados.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

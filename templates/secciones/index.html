@@ -1,55 +1,57 @@
 {% extends 'base.html' %}
-
 {% block title %}Secciones - SGA{% endblock %}
-
 {% block header %}Secciones{% endblock %}
-
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <p>Lista de todas las secciones disponibles en el sistema.</p>
-    <a href="{{ url_for('secciones.create') }}" class="btn btn-primary">
-        <i class="bi bi-plus"></i> Nueva Sección
-    </a>
-</div>
-
-<div class="table-responsive">
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Curso</th>
-                <th>Año</th>
-                <th>Periodo</th>
-                <th>Sección</th>
-                <th class="table-actions">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for seccion in secciones %}
-            <tr>
-                <td>{{ seccion.codigo }} - {{ seccion.curso_nombre }}</td>
-                <td>{{ seccion.anio }}</td>
-                <td>{{ seccion.periodo }}</td>
-                <td>{{ seccion.numero }}</td>
-                <td>
-                    <a href="{{ url_for('secciones.view', id=seccion.id) }}" class="btn btn-sm btn-info btn-action">
-                        <i class="bi bi-eye"></i> Ver
-                    </a>
-                    <a href="{{ url_for('secciones.edit', id=seccion.id) }}" class="btn btn-sm btn-warning btn-action">
-                        <i class="bi bi-pencil"></i> Editar
-                    </a>
-                    <form action="{{ url_for('secciones.delete', id=seccion.id) }}" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-sm btn-danger btn-action" onclick="return confirm('¿Está seguro de eliminar esta sección?')">
-                            <i class="bi bi-trash"></i> Eliminar
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="5" class="text-center">No hay secciones registradas.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <p>Lista de todas las secciones disponibles en el sistema.</p>
+        <a href="{{ url_for("secciones.create") }}" class="btn btn-primary">
+            <i class="bi bi-plus"></i> Nueva Sección
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Curso</th>
+                    <th>Año</th>
+                    <th>Periodo</th>
+                    <th>Sección</th>
+                    <th class="table-actions">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for seccion in secciones %}
+                    <tr>
+                        <td>{{ seccion.codigo }} - {{ seccion.curso_nombre }}</td>
+                        <td>{{ seccion.anio }}</td>
+                        <td>{{ seccion.periodo }}</td>
+                        <td>{{ seccion.numero }}</td>
+                        <td>
+                            <a href="{{ url_for('secciones.view', id=seccion.id) }}"
+                               class="btn btn-sm btn-info btn-action">
+                                <i class="bi bi-eye"></i> Ver
+                            </a>
+                            <a href="{{ url_for('secciones.edit', id=seccion.id) }}"
+                               class="btn btn-sm btn-warning btn-action">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <form action="{{ url_for('secciones.delete', id=seccion.id) }}"
+                                  method="post"
+                                  class="d-inline">
+                                <button type="submit"
+                                        class="btn btn-sm btn-danger btn-action"
+                                        onclick="return confirm('¿Está seguro de eliminar esta sección?')">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">No hay secciones registradas.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

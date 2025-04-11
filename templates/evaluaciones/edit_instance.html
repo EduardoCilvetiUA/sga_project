@@ -1,57 +1,75 @@
 {% extends 'base.html' %}
-
 {% block header %}
-  <h1>{% block title %}Editar Instancia de Evaluación{% endblock %}</h1>
+    <h1>
+        {% block title %}Editar Instancia de Evaluación{% endblock %}
+    </h1>
 {% endblock %}
-
 {% block content %}
-  <div class="mb-4">
-    <p><strong>Tópico:</strong> {{ instancia['topico_nombre'] }}</p>
-    <p><strong>Curso:</strong> {{ instancia['codigo'] }} - {{ instancia['curso_nombre'] }}</p>
-    <p><strong>Sección:</strong> {{ instancia['numero'] }}</p>
-    <p><strong>Sistema de evaluación de instancias:</strong> 
-      {% if instancia['usa_porcentaje'] %}
-        Por porcentajes
-      {% else %}
-        Por pesos relativos
-      {% endif %}
-    </p>
-  </div>
-
-  <form method="post">
-    <div class="form-group">
-      <label for="nombre">Nombre de la Instancia</label>
-      <input type="text" class="form-control" id="nombre" name="nombre" value="{{ instancia['nombre'] }}" required>
+    <div class="mb-4">
+        <p>
+            <strong>Tópico:</strong> {{ instancia['topico_nombre'] }}
+        </p>
+        <p>
+            <strong>Curso:</strong> {{ instancia['codigo'] }} - {{ instancia['curso_nombre'] }}
+        </p>
+        <p>
+            <strong>Sección:</strong> {{ instancia['numero'] }}
+        </p>
+        <p>
+            <strong>Sistema de evaluación de instancias:</strong>
+            {% if instancia['usa_porcentaje'] %}
+                Por porcentajes
+            {% else %}
+                Por pesos relativos
+            {% endif %}
+        </p>
     </div>
-    
-    <div class="form-group">
-      <label for="valor">
-        {% if instancia['usa_porcentaje'] %}
-          Porcentaje (%)
-        {% else %}
-          Peso
-        {% endif %}
-      </label>
-      <input type="number" class="form-control" id="valor" name="valor" step="0.01" min="0" 
-        {% if instancia['usa_porcentaje'] %}max="100"{% endif %} value="{{ instancia['valor'] }}" required>
-      <small class="form-text text-muted">
-        {% if instancia['usa_porcentaje'] %}
-          El porcentaje define la importancia de esta instancia dentro del tópico. La suma de porcentajes no debe exceder el 100%.
-        {% else %}
-          El peso define la importancia relativa de esta instancia dentro del tópico.
-        {% endif %}
-      </small>
-    </div>
-    
-    <div class="form-check mb-3">
-      <input type="checkbox" class="form-check-input" id="opcional" name="opcional" {% if instancia['opcional'] %}checked{% endif %}>
-      <label class="form-check-label" for="opcional">Opcional</label>
-      <small class="form-text text-muted">
-        Las evaluaciones opcionales pueden compensarse con otras evaluaciones.
-      </small>
-    </div>
-    
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a href="{{ url_for('evaluaciones.view_topic', id=instancia['topico_id']) }}" class="btn btn-secondary">Cancelar</a>
-  </form>
+    <form method="post">
+        <div class="form-group">
+            <label for="nombre">Nombre de la Instancia</label>
+            <input type="text"
+                   class="form-control"
+                   id="nombre"
+                   name="nombre"
+                   value="{{ instancia['nombre'] }}"
+                   required>
+        </div>
+        <div class="form-group">
+            <label for="valor">
+                {% if instancia['usa_porcentaje'] %}
+                    Porcentaje (%)
+                {% else %}
+                    Peso
+                {% endif %}
+            </label>
+            <input type="number"
+                   class="form-control"
+                   id="valor"
+                   name="valor"
+                   step="0.01"
+                   min="0"
+                   {% if instancia['usa_porcentaje'] %}max="100"{% endif %}
+                   value="{{ instancia['valor'] }}"
+                   required>
+            <small class="form-text text-muted">
+                {% if instancia['usa_porcentaje'] %}
+                    El porcentaje define la importancia de esta instancia dentro del tópico. La suma de porcentajes no debe exceder el 100%.
+                {% else %}
+                    El peso define la importancia relativa de esta instancia dentro del tópico.
+                {% endif %}
+            </small>
+        </div>
+        <div class="form-check mb-3">
+            <input type="checkbox"
+                   class="form-check-input"
+                   id="opcional"
+                   name="opcional"
+                   {% if instancia['opcional'] %}checked{% endif %}>
+            <label class="form-check-label" for="opcional">Opcional</label>
+            <small class="form-text text-muted">Las evaluaciones opcionales pueden compensarse con otras evaluaciones.</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{{ url_for('evaluaciones.view_topic', id=instancia['topico_id']) }}"
+           class="btn btn-secondary">Cancelar</a>
+    </form>
 {% endblock %}

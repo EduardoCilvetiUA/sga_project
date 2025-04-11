@@ -1,60 +1,64 @@
 {% extends 'base.html' %}
-
 {% block title %}Tópicos de Evaluación - SGA{% endblock %}
-
 {% block header %}
-  <div class="d-flex justify-content-between align-items-center">
-    <h1>Tópicos de Evaluación</h1>
-    <a class="btn btn-primary" href="{{ url_for('evaluaciones.create') }}">Crear Nuevo Tópico</a>
-  </div>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Tópicos de Evaluación</h1>
+        <a class="btn btn-primary" href="{{ url_for("evaluaciones.create") }}">Crear Nuevo Tópico</a>
+    </div>
 {% endblock %}
-
 {% block content %}
-  {% if topicos %}
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Curso</th>
-          <th>Año-Periodo</th>
-          <th>Sección</th>
-          <th>Tópico</th>
-          <th>Valor</th>
-          <th>Sistema Sección</th>
-          <th>Sistema Instancias</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for topico in topicos %}
-          <tr>
-            <td>{{ topico['codigo'] }} - {{ topico['curso_nombre'] }}</td>
-            <td>{{ topico['anio'] }}-{{ topico['periodo'] }}</td>
-            <td>{{ topico['numero'] }}</td>
-            <td>{{ topico['nombre'] }}</td>
-            <td>{{ topico['valor'] }}{% if topico['seccion_usa_porcentaje'] %}%{% endif %}</td>
-            <td>
-              {% if topico['seccion_usa_porcentaje'] %}
-                Porcentajes
-              {% else %}
-                Pesos
-              {% endif %}
-            </td>
-            <td>
-              {% if topico['usa_porcentaje'] %}
-                Porcentajes
-              {% else %}
-                Pesos
-              {% endif %}
-            </td>
-            <td>
-              <a href="{{ url_for('evaluaciones.view_topic', id=topico['id']) }}" class="btn btn-sm btn-info">Ver</a>
-              <a href="{{ url_for('evaluaciones.edit_topic', id=topico['id']) }}" class="btn btn-sm btn-warning">Editar</a>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p>No hay tópicos de evaluación registrados.</p>
-  {% endif %}
+    {% if topicos %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Curso</th>
+                    <th>Año-Periodo</th>
+                    <th>Sección</th>
+                    <th>Tópico</th>
+                    <th>Valor</th>
+                    <th>Sistema Sección</th>
+                    <th>Sistema Instancias</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for topico in topicos %}
+                    <tr>
+                        <td>{{ topico['codigo'] }} - {{ topico['curso_nombre'] }}</td>
+                        <td>{{ topico['anio'] }}-{{ topico['periodo'] }}</td>
+                        <td>{{ topico['numero'] }}</td>
+                        <td>{{ topico['nombre'] }}</td>
+                        <td>
+                            {{ topico['valor'] }}
+                            {% if topico['seccion_usa_porcentaje'] %}
+                                %
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if topico['seccion_usa_porcentaje'] %}
+                                Porcentajes
+                            {% else %}
+                                Pesos
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if topico['usa_porcentaje'] %}
+                                Porcentajes
+                            {% else %}
+                                Pesos
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('evaluaciones.view_topic', id=topico['id']) }}"
+                               class="btn btn-sm btn-info">Ver</a>
+                            <a href="{{ url_for('evaluaciones.edit_topic', id=topico['id']) }}"
+                               class="btn btn-sm btn-warning">Editar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay tópicos de evaluación registrados.</p>
+    {% endif %}
 {% endblock %}

@@ -1,96 +1,106 @@
 {% extends 'base.html' %}
-
 {% block title %}Notas de la Sección - SGA{% endblock %}
-
-{% block header %}
-  <h1>Notas de la Sección</h1>
-{% endblock %}
-
+{% block header %}<h1>Notas de la Sección</h1>{% endblock %}
 {% block content %}
-  <div class="mb-4">
-    <p><strong>Curso:</strong> {{ seccion['codigo'] }} - {{ seccion['curso_nombre'] }}</p>
-    <p><strong>Sección:</strong> {{ seccion['numero'] }}</p>
-    <p><strong>Año-Periodo:</strong> {{ seccion['anio'] }}-{{ seccion['periodo'] }}</p>
-    <p><strong>Sistema de evaluación:</strong> 
-      {% if seccion['usa_porcentaje'] %}
-        Por porcentajes
-      {% else %}
-        Por pesos relativos
-      {% endif %}
-    </p>
-  </div>
-
-  <div class="card mb-4">
-    <div class="card-header">
-      <h2>Tópicos de Evaluación</h2>
+    <div class="mb-4">
+        <p>
+            <strong>Curso:</strong> {{ seccion['codigo'] }} - {{ seccion['curso_nombre'] }}
+        </p>
+        <p>
+            <strong>Sección:</strong> {{ seccion['numero'] }}
+        </p>
+        <p>
+            <strong>Año-Periodo:</strong> {{ seccion['anio'] }}-{{ seccion['periodo'] }}
+        </p>
+        <p>
+            <strong>Sistema de evaluación:</strong>
+            {% if seccion['usa_porcentaje'] %}
+                Por porcentajes
+            {% else %}
+                Por pesos relativos
+            {% endif %}
+        </p>
     </div>
-    <div class="card-body">
-      {% if topicos %}
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Valor</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for topico in topicos %}
-              <tr>
-                <td>{{ topico['nombre'] }}</td>
-                <td>{{ topico['valor'] }}{% if seccion['usa_porcentaje'] %}%{% endif %}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      {% else %}
-        <p>No hay tópicos de evaluación definidos para esta sección.</p>
-      {% endif %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>Tópicos de Evaluación</h2>
+        </div>
+        <div class="card-body">
+            {% if topicos %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for topico in topicos %}
+                            <tr>
+                                <td>{{ topico['nombre'] }}</td>
+                                <td>
+                                    {{ topico['valor'] }}
+                                    {% if seccion['usa_porcentaje'] %}
+                                        %
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No hay tópicos de evaluación definidos para esta sección.</p>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <a href="{{ url_for('evaluaciones.create', seccion_id=seccion['id']) }}"
+               class="btn btn-primary">Agregar Tópico</a>
+        </div>
     </div>
-    <div class="card-footer">
-      <a href="{{ url_for('evaluaciones.create', seccion_id=seccion['id']) }}" class="btn btn-primary">Agregar Tópico</a>
+    <div class="card">
+        <div class="card-header">
+            <h2>Notas por Alumno</h2>
+        </div>
+        <div class="card-body">
+            {% if alumnos %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Nota Final</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for alumno in alumnos %}
+                            <tr>
+                                <td>{{ alumno['nombre'] }}</td>
+                                <td>
+                                    {% if alumno['id'] in notas_finales and notas_finales[alumno['id']] %}
+                                        {{ notas_finales[alumno['id']] }}
+                                    {% else %}
+                                        Sin notas suficientes
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('notas.student_grades', alumno_id=alumno['id'], seccion_id=seccion['id']) }}"
+                                       class="btn btn-sm btn-info">Ver Detalle</a>
+                                    <a href="{{ url_for('notas.create', seccion_id=seccion['id'], alumno_id=alumno['id']) }}"
+                                       class="btn btn-sm btn-primary">Agregar Nota</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No hay alumnos inscritos en esta sección.</p>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <a href="{{ url_for('secciones.view', id=seccion['id']) }}"
+               class="btn btn-secondary">Volver a la Sección</a>
+            <a href="{{ url_for('secciones.enroll_student', id=seccion['id']) }}"
+               class="btn btn-success">Inscribir Alumnos</a>
+        </div>
     </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header">
-      <h2>Notas por Alumno</h2>
-    </div>
-    <div class="card-body">
-      {% if alumnos %}
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Alumno</th>
-              <th>Nota Final</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for alumno in alumnos %}
-              <tr>
-                <td>{{ alumno['nombre'] }}</td>
-                <td>
-                  {% if alumno['id'] in notas_finales and notas_finales[alumno['id']] %}
-                    {{ notas_finales[alumno['id']] }}
-                  {% else %}
-                    Sin notas suficientes
-                  {% endif %}
-                </td>
-                <td>
-                  <a href="{{ url_for('notas.student_grades', alumno_id=alumno['id'], seccion_id=seccion['id']) }}" class="btn btn-sm btn-info">Ver Detalle</a>
-                  <a href="{{ url_for('notas.create', seccion_id=seccion['id'], alumno_id=alumno['id']) }}" class="btn btn-sm btn-primary">Agregar Nota</a>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      {% else %}
-        <p>No hay alumnos inscritos en esta sección.</p>
-      {% endif %}
-    </div>
-    <div class="card-footer">
-      <a href="{{ url_for('secciones.view', id=seccion['id']) }}" class="btn btn-secondary">Volver a la Sección</a>
-      <a href="{{ url_for('secciones.enroll_student', id=seccion['id']) }}" class="btn btn-success">Inscribir Alumnos</a>
-    </div>
-  </div>
 {% endblock %}

@@ -1,76 +1,86 @@
 {% extends 'base.html' %}
-
 {% block title %}Registrar Nota - SGA{% endblock %}
-
 {% block header %}Registrar Nueva Nota{% endblock %}
-
 {% block content %}
-<div class="card">
-    <div class="card-body">
-        <form method="post" id="seccionForm">
-            <div class="form-group">
-                <label for="seccion_id" class="required">Sección</label>
-                <select class="form-select" id="seccion_id" name="seccion_id" required 
-                        onchange="this.form.submit();">
-                    <option value="" {% if not seccion_id %}selected{% endif %} disabled>Seleccionar sección...</option>
-                    {% for seccion in secciones %}
-                    <option value="{{ seccion.id }}" {% if seccion.id|string == seccion_id|string %}selected{% endif %}>
-                        {{ seccion.codigo }} - {{ seccion.curso_nombre }} ({{ seccion.anio }}-{{ seccion.periodo }}, Sección {{ seccion.numero }})
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-        </form>
-            
-        {% if seccion_id %}
-        <form method="post" id="alumnoForm">
-            <input type="hidden" name="seccion_id" value="{{ seccion_id }}">
-            <div class="form-group mt-3">
-                <label for="alumno_id" class="required">Alumno</label>
-                <select class="form-select" id="alumno_id" name="alumno_id" required
-                        onchange="this.form.submit();">
-                    <option value="" {% if not alumno_id %}selected{% endif %} disabled>Seleccionar alumno...</option>
-                    {% for alumno in alumnos %}
-                    <option value="{{ alumno.id }}" {% if alumno.id|string == alumno_id|string %}selected{% endif %}>
-                        {{ alumno.nombre }} ({{ alumno.correo }})
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-        </form>
-        {% endif %}
-            
-        {% if alumno_id and seccion_id %}
-        <form method="post" id="notaForm">
-            <input type="hidden" name="seccion_id" value="{{ seccion_id }}">
-            <input type="hidden" name="alumno_id" value="{{ alumno_id }}">
-            
-            <div class="form-group mt-3">
-                <label for="instancia_id" class="required">Instancia de Evaluación</label>
-                <select class="form-select" id="instancia_id" name="instancia_id" required>
-                    <option value="" selected disabled>Seleccionar instancia...</option>
-                    {% for instancia in instancias %}
-                    <option value="{{ instancia.id }}">
-                        {{ instancia.topico_nombre }} - {{ instancia.nombre }} {% if instancia.opcional %}(Opcional){% endif %}
-                    </option>
-                    {% else %}
-                    <option value="" disabled>No hay instancias pendientes para este alumno</option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="form-group mt-3">
-                <label for="nota" class="required">Nota</label>
-                <input type="number" class="form-control" id="nota" name="nota" min="1.0" max="7.0" step="0.1" required>
-                <small class="form-text text-muted">Escala de 1.0 a 7.0</small>
-            </div>
-        
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ url_for('notas.index') }}" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-primary" {% if not instancias %}disabled{% endif %}>Guardar</button>
-            </div>
-        </form>
-        {% endif %}
+    <div class="card">
+        <div class="card-body">
+            <form method="post" id="seccionForm">
+                <div class="form-group">
+                    <label for="seccion_id" class="required">Sección</label>
+                    <select class="form-select"
+                            id="seccion_id"
+                            name="seccion_id"
+                            required
+                            onchange="this.form.submit();">
+                        <option value="" {% if not seccion_id %}selected{% endif %} disabled>Seleccionar sección...</option>
+                        {% for seccion in secciones %}
+                            <option value="{{ seccion.id }}"
+                                    {% if seccion.id|string == seccion_id|string %}selected{% endif %}>
+                                {{ seccion.codigo }} - {{ seccion.curso_nombre }} ({{ seccion.anio }}-{{ seccion.periodo }}, Sección {{ seccion.numero }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+            {% if seccion_id %}
+                <form method="post" id="alumnoForm">
+                    <input type="hidden" name="seccion_id" value="{{ seccion_id }}">
+                    <div class="form-group mt-3">
+                        <label for="alumno_id" class="required">Alumno</label>
+                        <select class="form-select"
+                                id="alumno_id"
+                                name="alumno_id"
+                                required
+                                onchange="this.form.submit();">
+                            <option value="" {% if not alumno_id %}selected{% endif %} disabled>Seleccionar alumno...</option>
+                            {% for alumno in alumnos %}
+                                <option value="{{ alumno.id }}"
+                                        {% if alumno.id|string == alumno_id|string %}selected{% endif %}>
+                                    {{ alumno.nombre }} ({{ alumno.correo }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            {% endif %}
+            {% if alumno_id and seccion_id %}
+                <form method="post" id="notaForm">
+                    <input type="hidden" name="seccion_id" value="{{ seccion_id }}">
+                    <input type="hidden" name="alumno_id" value="{{ alumno_id }}">
+                    <div class="form-group mt-3">
+                        <label for="instancia_id" class="required">Instancia de Evaluación</label>
+                        <select class="form-select" id="instancia_id" name="instancia_id" required>
+                            <option value="" selected disabled>Seleccionar instancia...</option>
+                            {% for instancia in instancias %}
+                                <option value="{{ instancia.id }}">
+                                    {{ instancia.topico_nombre }} - {{ instancia.nombre }}
+                                    {% if instancia.opcional %}(Opcional){% endif %}
+                                </option>
+                            {% else %}
+                                <option value="" disabled>No hay instancias pendientes para este alumno</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="nota" class="required">Nota</label>
+                        <input type="number"
+                               class="form-control"
+                               id="nota"
+                               name="nota"
+                               min="1.0"
+                               max="7.0"
+                               step="0.1"
+                               required>
+                        <small class="form-text text-muted">Escala de 1.0 a 7.0</small>
+                    </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for("notas.index") }}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit"
+                                class="btn btn-primary"
+                                {% if not instancias %}disabled{% endif %}>Guardar</button>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
     </div>
-</div>
 {% endblock %}

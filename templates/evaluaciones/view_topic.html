@@ -1,99 +1,132 @@
 {% extends 'base.html' %}
-
 {% block title %}Detalle del Tópico de Evaluación - SGA{% endblock %}
-
-{% block header %}
-  <h1>Detalle del Tópico de Evaluación</h1>
-{% endblock %}
-
+{% block header %}<h1>Detalle del Tópico de Evaluación</h1>{% endblock %}
 {% block content %}
-  <div class="card mb-4">
-    <div class="card-header">
-      <h2>Información del Tópico</h2>
-    </div>
-    <div class="card-body">
-      <p><strong>Curso:</strong> {{ topico['codigo'] }} - {{ topico['curso_nombre'] }}</p>
-      <p><strong>Año:</strong> {{ topico['anio'] }}</p>
-      <p><strong>Periodo:</strong> {{ topico['periodo'] }}</p>
-      <p><strong>Sección:</strong> {{ topico['numero'] }}</p>
-      <p><strong>Nombre del Tópico:</strong> {{ topico['nombre'] }}</p>
-      <p><strong>
-        {% if topico['seccion_usa_porcentaje'] %}
-          Porcentaje:
-        {% else %}
-          Peso:
-        {% endif %}
-      </strong> {{ topico['valor'] }}{% if topico['seccion_usa_porcentaje'] %}%{% endif %}</p>
-      <p><strong>Sistema de evaluación de la sección:</strong> 
-        {% if topico['seccion_usa_porcentaje'] %}
-          Por porcentajes
-        {% else %}
-          Por pesos relativos
-        {% endif %}
-      </p>
-      <p><strong>Sistema de evaluación de las instancias:</strong> 
-        {% if topico['usa_porcentaje'] %}
-          Por porcentajes
-        {% else %}
-          Por pesos relativos
-        {% endif %}
-      </p>
-    </div>
-    <div class="card-footer">
-      <a href="{{ url_for('evaluaciones.edit_topic', id=topico['id']) }}" class="btn btn-warning">Editar</a>
-      <!-- Cambiado a formulario directo para eliminar tópico -->
-      <form action="{{ url_for('evaluaciones.delete_topic', id=topico['id']) }}" method="post" class="d-inline">
-        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar el tópico de evaluación? Esta acción eliminará también todas las instancias de evaluación asociadas.')">
-          Eliminar
-        </button>
-      </form>
-      <a href="{{ url_for('evaluaciones.add_instance', id=topico['id']) }}" class="btn btn-primary">Agregar Instancia</a>
-      <a href="{{ url_for('evaluaciones.index') }}" class="btn btn-secondary">Volver</a>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header">
-      <h2>Instancias de Evaluación</h2>
-    </div>
-    <div class="card-body">
-      {% if instancias %}
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>
-                {% if topico['usa_porcentaje'] %}
-                  Porcentaje
-                {% else %}
-                  Peso
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>Información del Tópico</h2>
+        </div>
+        <div class="card-body">
+            <p>
+                <strong>Curso:</strong> {{ topico['codigo'] }} - {{ topico['curso_nombre'] }}
+            </p>
+            <p>
+                <strong>Año:</strong> {{ topico['anio'] }}
+            </p>
+            <p>
+                <strong>Periodo:</strong> {{ topico['periodo'] }}
+            </p>
+            <p>
+                <strong>Sección:</strong> {{ topico['numero'] }}
+            </p>
+            <p>
+                <strong>Nombre del Tópico:</strong> {{ topico['nombre'] }}
+            </p>
+            <p>
+                <strong>
+                    {% if topico['seccion_usa_porcentaje'] %}
+                        Porcentaje:
+                    {% else %}
+                        Peso:
+                    {% endif %}
+                </strong> {{ topico['valor'] }}
+                {% if topico['seccion_usa_porcentaje'] %}
+                    %
                 {% endif %}
-              </th>
-              <th>Opcional</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for instancia in instancias %}
-              <tr>
-                <td>{{ instancia['nombre'] }}</td>
-                <td>{{ instancia['valor'] }}{% if topico['usa_porcentaje'] %}%{% endif %}</td>
-                <td>{% if instancia['opcional'] %}Sí{% else %}No{% endif %}</td>
-                <td>
-                  <a href="{{ url_for('evaluaciones.edit_instance', id=instancia['id']) }}" class="btn btn-sm btn-warning">Editar</a>
-                  <form action="{{ url_for('evaluaciones.delete_instance', id=instancia['id']) }}" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar esta instancia de evaluación?')">
-                      Eliminar
-                    </button>
-                  </form>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      {% else %}
-        <p>No hay instancias de evaluación registradas para este tópico.</p>
-      {% endif %}
+            </p>
+            <p>
+                <strong>Sistema de evaluación de la sección:</strong>
+                {% if topico['seccion_usa_porcentaje'] %}
+                    Por porcentajes
+                {% else %}
+                    Por pesos relativos
+                {% endif %}
+            </p>
+            <p>
+                <strong>Sistema de evaluación de las instancias:</strong>
+                {% if topico['usa_porcentaje'] %}
+                    Por porcentajes
+                {% else %}
+                    Por pesos relativos
+                {% endif %}
+            </p>
+        </div>
+        <div class="card-footer">
+            <a href="{{ url_for('evaluaciones.edit_topic', id=topico['id']) }}"
+               class="btn btn-warning">Editar</a>
+            <!-- Cambiado a formulario directo para eliminar tópico -->
+            <form action="{{ url_for('evaluaciones.delete_topic', id=topico['id']) }}"
+                  method="post"
+                  class="d-inline">
+                <button type="submit"
+                        class="btn btn-danger"
+                        onclick="return confirm('¿Está seguro de que desea eliminar el tópico de evaluación? Esta acción eliminará también todas las instancias de evaluación asociadas.')">
+                    Eliminar
+                </button>
+            </form>
+            <a href="{{ url_for('evaluaciones.add_instance', id=topico['id']) }}"
+               class="btn btn-primary">Agregar Instancia</a>
+            <a href="{{ url_for("evaluaciones.index") }}" class="btn btn-secondary">Volver</a>
+        </div>
     </div>
-  </div>
+    <div class="card">
+        <div class="card-header">
+            <h2>Instancias de Evaluación</h2>
+        </div>
+        <div class="card-body">
+            {% if instancias %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>
+                                {% if topico['usa_porcentaje'] %}
+                                    Porcentaje
+                                {% else %}
+                                    Peso
+                                {% endif %}
+                            </th>
+                            <th>Opcional</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for instancia in instancias %}
+                            <tr>
+                                <td>{{ instancia['nombre'] }}</td>
+                                <td>
+                                    {{ instancia['valor'] }}
+                                    {% if topico['usa_porcentaje'] %}
+                                        %
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if instancia['opcional'] %}
+                                        Sí
+                                    {% else %}
+                                        No
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('evaluaciones.edit_instance', id=instancia['id']) }}"
+                                       class="btn btn-sm btn-warning">Editar</a>
+                                    <form action="{{ url_for('evaluaciones.delete_instance', id=instancia['id']) }}"
+                                          method="post"
+                                          class="d-inline">
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger"
+                                                onclick="return confirm('¿Está seguro de que desea eliminar esta instancia de evaluación?')">
+                                            Eliminar
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No hay instancias de evaluación registradas para este tópico.</p>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
