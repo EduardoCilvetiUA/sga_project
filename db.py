@@ -4,9 +4,7 @@ from config import Config
 import os
 
 def get_db_connection():
-    """Create a connection to the MySQL database."""
     try:
-        # Imprimir valores para depuración
         print(f"Connecting to MySQL at: {Config.MYSQL_HOST}")
         print(f"Using user: {Config.MYSQL_USER}")
         print(f"Using database: {Config.MYSQL_DB}")
@@ -18,7 +16,6 @@ def get_db_connection():
             database=Config.MYSQL_DB
         )
         
-        # Set autocommit to False to handle transactions explicitly
         connection.autocommit = False
         
         return connection
@@ -27,7 +24,6 @@ def get_db_connection():
         return None
 
 def execute_query(query, params=None, fetch=False, many=False):
-    """Execute a SQL query with parameters."""
     connection = get_db_connection()
     if not connection:
         raise Exception("No se pudo conectar a la base de datos")
@@ -47,13 +43,11 @@ def execute_query(query, params=None, fetch=False, many=False):
         else:
             cursor.execute(query)
         
-        # For INSERT, UPDATE, DELETE: commit and return lastrowid if needed
         if query.strip().upper().startswith(("INSERT", "UPDATE", "DELETE")):
             connection.commit()
             print(f"Transaction committed. Last row ID: {cursor.lastrowid}")
             result = cursor.lastrowid
         
-        # For SELECT: fetch results
         if fetch:
             result = cursor.fetchall()
             print(f"Query returned {len(result)} rows")
@@ -61,7 +55,6 @@ def execute_query(query, params=None, fetch=False, many=False):
         return result
     
     except Error as e:
-        # Rollback on error
         connection.rollback()
         print(f"Error executing query: {e}")
         print(f"Query: {query}")
@@ -74,13 +67,10 @@ def execute_query(query, params=None, fetch=False, many=False):
         print("Database connection closed")
 
 def init_db():
-    """Initialize the database using schema.sql file"""
-    # Imprimir entorno para depuración
     print("Database initialization started")
     print(f"MYSQL_HOST from ENV: {os.environ.get('MYSQL_HOST')}")
     print(f"MYSQL_HOST from Config: {Config.MYSQL_HOST}")
     
-    # Esperar un poco para asegurar que MySQL esté listo
     import time
     time.sleep(10)
     
@@ -93,7 +83,6 @@ def init_db():
         
         cursor = connection.cursor()
         
-        # Create database if it doesn't exist
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS {Config.MYSQL_DB}")
         cursor.execute(f"USE {Config.MYSQL_DB}")
         
@@ -114,9 +103,7 @@ def init_db():
             connection.close()
     except Error as e:
         print(f"Error connecting to MySQL for initialization: {e}")
-        # Si falla, espera más tiempo e intenta de nuevo
         time.sleep(20)
-        # Reintenta la conexión
         try:
             connection = mysql.connector.connect(
                 host=Config.MYSQL_HOST,
@@ -124,6 +111,5 @@ def init_db():
                 password=Config.MYSQL_PASSWORD
             )
             print("Connection successful on retry")
-            # Resto del código de inicialización
         except Error as e2:
             print(f"Error on second attempt: {e2}")

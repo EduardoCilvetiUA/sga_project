@@ -29,16 +29,13 @@ def create():
         elif not valor:
             error = 'El valor es requerido.'
         else:
-            # Get section to check if it uses percentage
             try:
                 seccion = Seccion.get_by_id(seccion_id)
                 seccion_usa_porcentaje = seccion['usa_porcentaje']
                 
-                # Check if total percentage exceeds 100% only if section uses percentages
                 if seccion_usa_porcentaje:
                     total_valor = Evaluacion.get_section_total_percentage(seccion_id)
                     
-                    # Convert both to float to ensure compatibility
                     if total_valor is not None:
                         total_valor_float = float(total_valor)
                     else:
@@ -79,17 +76,13 @@ def edit_topic(id):
         elif not valor:
             error = 'El valor es requerido.'
         else:
-            # Check if section uses percentages
             seccion_id = topico['seccion_id']
             seccion_usa_porcentaje = topico['seccion_usa_porcentaje']
             
             if seccion_usa_porcentaje:
-                # Check if total percentage exceeds 100% (excluding current topic's percentage)
                 total_valor = Evaluacion.get_section_total_percentage(seccion_id)
                 
-                # Convert both to float to ensure compatibility
                 if total_valor is not None:
-                    # Subtract the current topic valor (also as float)
                     total_valor_float = float(total_valor) - float(topico['valor'])
                 else:
                     total_valor_float = 0
@@ -144,14 +137,11 @@ def add_instance(id):
         elif not valor:
             error = 'El valor es requerido.'
         else:
-            # Check if topic uses percentages
             usa_porcentaje = topico['usa_porcentaje']
             
             if usa_porcentaje:
-                # Check if total percentage exceeds 100%
                 total_valor = Evaluacion.get_topic_total_percentage(id)
                 
-                # Convert both to float to ensure compatibility
                 if total_valor is not None:
                     total_valor_float = float(total_valor)
                 else:
@@ -190,17 +180,13 @@ def edit_instance(id):
         elif not valor:
             error = 'El valor es requerido.'
         else:
-            # Check if topic uses percentages
             topico_id = instancia['topico_id']
             usa_porcentaje = instancia['usa_porcentaje']
             
             if usa_porcentaje:
-                # Check if total percentage exceeds 100% (excluding current instance's percentage)
                 total_valor = Evaluacion.get_topic_total_percentage(topico_id)
                 
-                # Convert both to float to ensure compatibility
                 if total_valor is not None:
-                    # Subtract the current instance valor (also as float)
                     total_valor_float = float(total_valor) - float(instancia['valor'])
                 else:
                     total_valor_float = 0
