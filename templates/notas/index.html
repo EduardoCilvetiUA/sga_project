@@ -40,8 +40,8 @@
                     <a href="{{ url_for('notas.edit', id=nota.id) }}" class="btn btn-sm btn-warning btn-action">
                         <i class="bi bi-pencil"></i> Editar
                     </a>
-                    <form action="{{ url_for('notas.delete', id=nota.id) }}" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-sm btn-danger btn-action" onclick="return confirm('¿Está seguro de eliminar esta nota?')">
+                    <form action="{{ url_for('notas.delete', id=nota.id) }}" method="post" class="d-inline form-eliminar">
+                        <button type="button" class="btn btn-sm btn-danger btn-action delete-nota" data-id="{{ nota.id }}">
                             <i class="bi bi-trash"></i> Eliminar
                         </button>
                     </form>
@@ -55,4 +55,9 @@
         </tbody>
     </table>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        delete_pop_up(".delete-nota[data-id]", "¿Está seguro de eliminar esta nota?");
+    });
+</script>
 {% endblock %}

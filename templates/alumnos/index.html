@@ -35,9 +35,9 @@
                     <a href="{{ url_for('alumnos.edit', id=alumno.id) }}" class="btn btn-sm btn-warning btn-action">
                         <i class="bi bi-pencil"></i> Editar
                     </a>
-                    <form action="{{ url_for('alumnos.delete', id=alumno.id) }}" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-sm btn-danger btn-action" onclick="return confirm('¿Está seguro de eliminar este alumno?')">
-                            <i class="bi bi-trash"></i> Eliminar
+                    <form action="{{ url_for('alumnos.delete', id=alumno.id) }}" method="post" class="d-inline form-eliminar">
+                        <button type="button" class="btn btn-sm btn-danger btn-action" data-id="{{ alumno.id }}">
+                            Eliminar
                         </button>
                     </form>
                 </td>
@@ -50,4 +50,10 @@
         </tbody>
     </table>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        delete_pop_up(".btn-danger[data-id]", "¿Está seguro de que desea eliminar este alumno?");
+    });
+</script>
 {% endblock %}

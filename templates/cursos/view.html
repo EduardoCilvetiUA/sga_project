@@ -14,7 +14,7 @@
         <div class="d-flex justify-content-end">
             <a href="{{ url_for('cursos.edit', id=curso.id) }}" class="btn btn-warning me-2">Editar</a>
             <form action="{{ url_for('cursos.delete', id=curso.id) }}" method="post" class="d-inline">
-                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de eliminar este curso?')">
+                <button type="button" class="btn btn-sm btn-danger btn-action delete-curso" data-id="{{ curso.id }}">
                     Eliminar
                 </button>
             </form>
@@ -33,7 +33,7 @@
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 {{ prerequisito.codigo }} - {{ prerequisito.nombre }}
                 <form action="{{ url_for('cursos.remove_prerequisite', id=curso.id, prerequisito_id=prerequisito.id) }}" method="post">
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de eliminar este prerequisito?')">
+                    <button type="button" class="btn btn-sm btn-danger btn-action delete-prerequisito" data-id="{{ prerequisito.id }}">
                         Eliminar
                     </button>
                 </form>
@@ -63,4 +63,10 @@
 <div class="mt-4">
     <a href="{{ url_for('cursos.index') }}" class="btn btn-secondary">Volver a la lista</a>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    delete_pop_up(".delete-curso", "¿Está seguro de que desea eliminar este curso?");
+    delete_pop_up(".delete-prerequisito[data-id]", "¿Está seguro de eliminar este prerequisito?");
+});
+</script>
 {% endblock %}

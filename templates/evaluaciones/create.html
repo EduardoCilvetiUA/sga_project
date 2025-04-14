@@ -46,7 +46,6 @@
   </form>
 
   <script>
-    // Update the label based on the selected section's evaluation mode
     document.getElementById('seccion_id').addEventListener('change', function() {
       const selectedOption = this.options[this.selectedIndex];
       const usaPorcentaje = selectedOption.getAttribute('data-usa-porcentaje');
@@ -63,8 +62,6 @@
         document.getElementById('valor').removeAttribute('max');
       }
     });
-
-    // Trigger the change event to set the initial state
     document.getElementById('seccion_id').dispatchEvent(new Event('change'));
   </script>
 {% endblock %}

@@ -41,9 +41,8 @@
     </div>
     <div class="card-footer">
       <a href="{{ url_for('evaluaciones.edit_topic', id=topico['id']) }}" class="btn btn-warning">Editar</a>
-      <!-- Cambiado a formulario directo para eliminar tópico -->
-      <form action="{{ url_for('evaluaciones.delete_topic', id=topico['id']) }}" method="post" class="d-inline">
-        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar el tópico de evaluación? Esta acción eliminará también todas las instancias de evaluación asociadas.')">
+      <form action="{{ url_for('evaluaciones.delete_topic', id=topico['id']) }}" class="d-inline form-eliminar">
+        <button type="button" class="btn btn-sm btn-danger btn-action delete-evaluation-topic" data-id="{{ topico['id'] }}">
           Eliminar
         </button>
       </form>
@@ -81,8 +80,8 @@
                 <td>{% if instancia['opcional'] %}Sí{% else %}No{% endif %}</td>
                 <td>
                   <a href="{{ url_for('evaluaciones.edit_instance', id=instancia['id']) }}" class="btn btn-sm btn-warning">Editar</a>
-                  <form action="{{ url_for('evaluaciones.delete_instance', id=instancia['id']) }}" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar esta instancia de evaluación?')">
+                  <form action="{{ url_for('evaluaciones.delete_instance', id=instancia['id']) }}" class="d-inline form-eliminar">
+                    <button type="button" class="btn btn-sm btn-danger btn-action delete-evaluation-instance" data-id="{{ instancia['id'] }}">
                       Eliminar
                     </button>
                   </form>
@@ -96,4 +95,10 @@
       {% endif %}
     </div>
   </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    delete_pop_up(".delete-evaluation-topic", "¿Está seguro de que desea eliminar el tópico de evaluación? Esta acción eliminará también todas las instancias de evaluación asociadas.");
+    delete_pop_up(".delete-evaluation-instance[data-id]", "¿Está seguro de que desea eliminar esta instancia de evaluación?");
+});
+</script>
 {% endblock %}
