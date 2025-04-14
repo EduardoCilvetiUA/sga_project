@@ -1,48 +1,57 @@
 {% extends 'base.html' %}
 
-{% block title %}Añadir Instancia de Evaluación - SGA{% endblock %}
-
-{% block header %}Añadir Instancia de Evaluación{% endblock %}
+{% block header %}
+  <h1>{% block title %}Agregar Instancia de Evaluación{% endblock %}</h1>
+{% endblock %}
 
 {% block content %}
-<div class="card mb-4">
-    <div class="card-header">
-        Información del Tópico
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">{{ topico.nombre }} ({{ topico.porcentaje }}%)</h5>
-        <p class="card-text"><strong>Curso:</strong> {{ topico.codigo }} - {{ topico.curso_nombre }}</p>
-        <p class="card-text"><strong>Periodo:</strong> {{ topico.anio }}-{{ topico.periodo }}</p>
-        <p class="card-text"><strong>Sección:</strong> {{ topico.numero }}</p>
-    </div>
-</div>
+  <div class="mb-4">
+    <p><strong>Tópico:</strong> {{ topico['nombre'] }}</p>
+    <p><strong>Curso:</strong> {{ topico['codigo'] }} - {{ topico['curso_nombre'] }}</p>
+    <p><strong>Sección:</strong> {{ topico['numero'] }}</p>
+    <p><strong>Sistema de evaluación de instancias:</strong> 
+      {% if topico['usa_porcentaje'] %}
+        Por porcentajes
+      {% else %}
+        Por pesos relativos
+      {% endif %}
+    </p>
+  </div>
 
-<div class="card">
-    <div class="card-body">
-        <form method="post">
-            <div class="form-group">
-                <label for="nombre" class="required">Nombre de la Instancia</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" required>
-                <small class="form-text text-muted">Ejemplo: Control 1, Tarea 2, etc.</small>
-            </div>
-            
-            <div class="form-group">
-                <label for="peso" class="required">Peso</label>
-                <input type="number" class="form-control" id="peso" name="peso" min="0.1" step="0.1" value="1" required>
-                <small class="form-text text-muted">Peso relativo dentro del tópico. Por defecto es 1.</small>
-            </div>
-            
-            <div class="form-check mb-3">
-                <input type="checkbox" class="form-check-input" id="opcional" name="opcional">
-                <label class="form-check-label" for="opcional">Opcional</label>
-                <small class="d-block text-muted">Si es opcional, no afecta el promedio si el alumno no la realiza.</small>
-            </div>
-            
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ url_for('evaluaciones.view_topic', id=topico.id) }}" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-primary">Guardar</button>
-            </div>
-        </form>
+  <form method="post">
+    <div class="form-group">
+      <label for="nombre">Nombre de la Instancia</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" required>
     </div>
-</div>
+    
+    <div class="form-group">
+      <label for="valor">
+        {% if topico['usa_porcentaje'] %}
+          Porcentaje (%)
+        {% else %}
+          Peso
+        {% endif %}
+      </label>
+      <input type="number" class="form-control" id="valor" name="valor" step="0.01" min="0" 
+        {% if topico['usa_porcentaje'] %}max="100"{% endif %} required>
+      <small class="form-text text-muted">
+        {% if topico['usa_porcentaje'] %}
+          El porcentaje define la importancia de esta instancia dentro del tópico. La suma de porcentajes no debe exceder el 100%.
+        {% else %}
+          El peso define la importancia relativa de esta instancia dentro del tópico.
+        {% endif %}
+      </small>
+    </div>
+    
+    <div class="form-check mb-3">
+      <input type="checkbox" class="form-check-input" id="opcional" name="opcional">
+      <label class="form-check-label" for="opcional">Opcional</label>
+      <small class="form-text text-muted">
+        Las evaluaciones opcionales pueden compensarse con otras evaluaciones.
+      </small>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a href="{{ url_for('evaluaciones.view_topic', id=topico['id']) }}" class="btn btn-secondary">Cancelar</a>
+  </form>
 {% endblock %}

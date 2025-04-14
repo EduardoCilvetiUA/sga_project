@@ -5,7 +5,6 @@ from routes import cursos, profesores, alumnos, instancias, secciones, evaluacio
 app = Flask(__name__)
 app.config.from_object('config.Config')
 
-# Register blueprints
 app.register_blueprint(cursos.bp)
 app.register_blueprint(profesores.bp)
 app.register_blueprint(alumnos.bp)
@@ -18,7 +17,6 @@ app.register_blueprint(notas.bp)
 def index():
     return render_template('index.html')
 
-# Initialize database
 with app.app_context():
     init_db()
 

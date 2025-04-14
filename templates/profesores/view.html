@@ -14,8 +14,8 @@
         <p class="card-text"><strong>Correo:</strong> {{ profesor.correo }}</p>
         <div class="d-flex justify-content-end">
             <a href="{{ url_for('profesores.edit', id=profesor.id) }}" class="btn btn-warning me-2">Editar</a>
-            <form action="{{ url_for('profesores.delete', id=profesor.id) }}" method="post" class="d-inline">
-                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de eliminar este profesor?')">
+            <form action="{{ url_for('profesores.delete', id=profesor.id) }}" method="post" class="d-inline form-eliminar">
+                <button type="button" class="btn btn-sm btn-danger btn-action" data-id="{{ profesor.id }}">
                     Eliminar
                 </button>
             </form>
@@ -60,4 +60,9 @@
 <div class="mt-4">
     <a href="{{ url_for('profesores.index') }}" class="btn btn-secondary">Volver a la lista</a>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        delete_pop_up(".btn-danger[data-id]", "¿Está seguro de eliminar este profesor?");
+    });
+</script>
 {% endblock %}

@@ -1,31 +1,38 @@
 {% extends 'base.html' %}
 
-{% block title %}Ver Sección - SGA{% endblock %}
+{% block title %}Detalles de la Sección - SGA{% endblock %}
 
-{% block header %}Detalles de la Sección{% endblock %}
+{% block header %}
+  <h1>Detalles de la Sección</h1>
+{% endblock %}
 
 {% block content %}
-<div class="card mb-4">
+  <div class="card mb-4">
     <div class="card-header">
-        Información de la Sección
+      <h2>Información de la Sección</h2>
     </div>
     <div class="card-body">
-        <h5 class="card-title">{{ seccion.codigo }} - {{ seccion.curso_nombre }}</h5>
-        <p class="card-text"><strong>Año:</strong> {{ seccion.anio }}</p>
-        <p class="card-text"><strong>Periodo:</strong> {{ seccion.periodo }}</p>
-        <p class="card-text"><strong>Sección:</strong> {{ seccion.numero }}</p>
-        <div class="d-flex justify-content-end">
-            <a href="{{ url_for('secciones.edit', id=seccion.id) }}" class="btn btn-warning me-2">Editar</a>
-            <form action="{{ url_for('secciones.delete', id=seccion.id) }}" method="post" class="d-inline">
-                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de eliminar esta sección?')">
-                    Eliminar
-                </button>
-            </form>
-        </div>
+      <p><strong>Curso:</strong> {{ seccion['codigo'] }} - {{ seccion['curso_nombre'] }}</p>
+      <p><strong>Año:</strong> {{ seccion['anio'] }}</p>
+      <p><strong>Periodo:</strong> {{ seccion['periodo'] }}</p>
+      <p><strong>Número de Sección:</strong> {{ seccion['numero'] }}</p>
+      <p><strong>Sistema de Evaluación:</strong> 
+        {% if seccion['usa_porcentaje'] %}
+          Por porcentajes (0-100%)
+        {% else %}
+          Por pesos relativos
+        {% endif %}
+      </p>
     </div>
-</div>
+    <div class="card-footer">
+      <a href="{{ url_for('secciones.edit', id=seccion['id']) }}" class="btn btn-warning">Editar</a>
+      <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Eliminar</button>
+      <a href="{{ url_for('evaluaciones.create', seccion_id=seccion['id']) }}" class="btn btn-info">Agregar Tópico de Evaluación</a>
+      <a href="{{ url_for('notas.section_grades', seccion_id=seccion['id']) }}" class="btn btn-success">Ver Notas</a>
+    </div>
+  </div>
 
-<div class="card mb-4">
+  <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <span>Profesores</span>
         <a href="{{ url_for('secciones.assign_professor', id=seccion.id) }}" class="btn btn-sm btn-primary">
@@ -38,8 +45,8 @@
             {% for profesor in profesores %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 {{ profesor.nombre }} ({{ profesor.correo }})
-                <form action="{{ url_for('secciones.remove_professor', id=seccion.id, profesor_id=profesor.id) }}" method="post">
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de quitar este profesor?')">
+                <form action="{{ url_for('secciones.remove_professor', id=seccion.id, profesor_id=profesor.id) }}" method="post" class="d-inline form-eliminar">
+                    <button type="button" class="btn btn-sm btn-danger btn-action delete-professor" data-id="{{ profesor.id }}">
                         Quitar
                     </button>
                 </form>
@@ -76,8 +83,8 @@
                         <td>{{ alumno.nombre }}</td>
                         <td>{{ alumno.correo }}</td>
                         <td>
-                            <form action="{{ url_for('secciones.unenroll_student', id=seccion.id, alumno_id=alumno.id) }}" method="post">
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de quitar este alumno?')">
+                            <form action="{{ url_for('secciones.unenroll_student', id=seccion.id, alumno_id=alumno.id) }}" method="post" class="d-inline form-eliminar">
+                                <button type="button" class="btn btn-sm btn-danger btn-action delete-student" data-id="{{ alumno.id }}">
                                     Quitar
                                 </button>
                             </form>
@@ -108,4 +115,10 @@
 <div class="mt-4">
     <a href="{{ url_for('secciones.index') }}" class="btn btn-secondary">Volver a la lista</a>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    delete_pop_up(".delete-professor[data-id]", "¿Está seguro de quitar este profesor?");
+    delete_pop_up(".delete-student[data-id]", "¿Está seguro de quitar este alumno?");
+});
+</script>
 {% endblock %}

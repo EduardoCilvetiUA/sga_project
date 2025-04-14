@@ -15,8 +15,8 @@
         <p class="card-text"><strong>Fecha de Ingreso:</strong> {{ alumno.fecha_ingreso.strftime('%Y-%m-%d') if alumno.fecha_ingreso else '' }}</p>
         <div class="d-flex justify-content-end">
             <a href="{{ url_for('alumnos.edit', id=alumno.id) }}" class="btn btn-warning me-2">Editar</a>
-            <form action="{{ url_for('alumnos.delete', id=alumno.id) }}" method="post" class="d-inline">
-                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de eliminar este alumno?')">
+            <form action="{{ url_for('alumnos.delete', id=alumno.id) }}" method="post" class="d-inline form-eliminar">
+                <button type="button" class="btn btn-sm btn-danger btn-action" data-id="{{ alumno.id }}">
                     Eliminar
                 </button>
             </form>
@@ -61,4 +61,10 @@
 <div class="mt-4">
     <a href="{{ url_for('alumnos.index') }}" class="btn btn-secondary">Volver a la lista</a>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        delete_pop_up(".btn-danger[data-id]", "¿Está seguro de que desea eliminar este alumno?");
+    });
+</script>
 {% endblock %}
+
