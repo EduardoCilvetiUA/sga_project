@@ -53,21 +53,26 @@ class Curso:
         prerequisites = Curso.get_prerequisites(curso_id)
         if not prerequisites:
             return True, []
+            
+        missing_prerequisites = Curso._find_missing_prerequisites(alumno_id, prerequisites)
+        return len(missing_prerequisites) == 0, missing_prerequisites
 
+    @staticmethod
+    def _find_missing_prerequisites(alumno_id, prerequisites):
         missing_prerequisites = []
-
-        for each_prerequisite in prerequisites:
-            prereq_id = each_prerequisite["id"]
+        
+        for prerequisite in prerequisites:
+            prereq_id = prerequisite["id"]
             if not CursoAprobado.is_curso_aprobado(alumno_id, prereq_id):
                 missing_prerequisites.append(
                     {
                         "id": prereq_id,
-                        "codigo": each_prerequisite["codigo"],
-                        "nombre": each_prerequisite["nombre"],
+                        "codigo": prerequisite["codigo"],
+                        "nombre": prerequisite["nombre"],
                     }
                 )
-
-        return len(missing_prerequisites) == 0, missing_prerequisites
+                
+        return missing_prerequisites
 
     @staticmethod
     def get_students_eligible_for_course(curso_id):
