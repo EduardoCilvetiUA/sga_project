@@ -127,3 +127,38 @@ INSERT INTO alumnos (nombre, correo, fecha_ingreso) VALUES
 
 GRANT ALL PRIVILEGES ON sga_db.* TO 'sga_user'@'%';
 FLUSH PRIVILEGES;
+ALTER TABLE cursos 
+ADD COLUMN creditos INT NOT NULL DEFAULT 2,
+ADD COLUMN cerrado BOOLEAN NOT NULL DEFAULT FALSE;
+
+-- Crear tabla para salas de clases
+CREATE TABLE IF NOT EXISTS salas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    capacidad INT NOT NULL CHECK (capacidad > 0),
+    CONSTRAINT UC_sala_nombre UNIQUE (nombre)
+);
+
+-- Crear tabla para horarios
+CREATE TABLE IF NOT EXISTS horarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    seccion_id INT NOT NULL,
+    sala_id INT NOT NULL,
+    dia ENUM('Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes') NOT NULL,
+    hora_inicio TIME NOT NULL,
+    hora_fin TIME NOT NULL,
+    FOREIGN KEY (seccion_id) REFERENCES secciones(id) ON DELETE CASCADE,
+    FOREIGN KEY (sala_id) REFERENCES salas(id) ON DELETE RESTRICT,
+    CONSTRAINT CK_horario_horas CHECK (
+        hora_inicio >= '09:00:00' AND 
+        hora_fin <= '18:00:00' AND 
+        hora_inicio < hora_fin AND
+        NOT (hora_inicio < '14:00:00' AND hora_fin > '13:00:00')
+    ),
+    CONSTRAINT UC_horario UNIQUE (sala_id, dia, hora_inicio)
+);
+
+-- Índices para optimizar consultas
+CREATE INDEX idx_horario_seccion ON horarios(seccion_id);
+CREATE INDEX idx_horario_sala ON horarios(sala_id);
+CREATE INDEX idx_horario_tiempo ON horarios(dia, hora_inicio, hora_fin);

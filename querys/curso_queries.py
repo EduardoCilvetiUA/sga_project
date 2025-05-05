@@ -1,7 +1,22 @@
-get_all_courses = "SELECT * FROM cursos ORDER BY codigo"
-get_course_by_id = "SELECT * FROM cursos WHERE id = %s"
-create_course = "INSERT INTO cursos (codigo, nombre) VALUES (%s, %s)"
-update_course = "UPDATE cursos SET codigo = %s, nombre = %s WHERE id = %s"
+get_all_courses = """
+SELECT id, codigo, nombre, creditos, cerrado
+FROM cursos
+ORDER BY codigo
+"""
+get_course_by_id = """
+SELECT id, codigo, nombre, creditos, cerrado
+FROM cursos
+WHERE id = %s
+"""
+create_course = """
+INSERT INTO cursos (codigo, nombre, creditos, cerrado)
+VALUES (%s, %s, %s, %s)
+"""
+update_course = """
+UPDATE cursos
+SET codigo = %s, nombre = %s, creditos = %s
+WHERE id = %s
+"""
 delete_course = "DELETE FROM cursos WHERE id = %s"
 get_course_prerequisites = """
     SELECT c.* FROM cursos c
@@ -28,4 +43,21 @@ get_course_eligible_students = """
         )
     )
     ORDER BY a.nombre
+"""
+close_course = """
+UPDATE cursos
+SET cerrado = TRUE
+WHERE id = %s
+"""
+
+reopen_course = """
+UPDATE cursos
+SET cerrado = FALSE
+WHERE id = %s
+"""
+
+is_course_closed = """
+SELECT cerrado
+FROM cursos
+WHERE id = %s
 """

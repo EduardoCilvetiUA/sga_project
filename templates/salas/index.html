@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block header %}Salas de Clases{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Listado de Salas</h2>
+    <a href="{{ url_for('salas.create') }}" class="btn btn-primary">Nueva Sala</a>
+</div>
+
+{% if salas %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Capacidad</th>
+                <th class="table-actions">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sala in salas %}
+            <tr>
+                <td>{{ sala.nombre }}</td>
+                <td>{{ sala.capacidad }}</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a href="{{ url_for('salas.view', id=sala.id) }}" class="btn btn-sm btn-info btn-action">Ver</a>
+                        <a href="{{ url_for('salas.edit', id=sala.id) }}" class="btn btn-sm btn-warning btn-action">Editar</a>
+                        <form action="{{ url_for('salas.delete', id=sala.id) }}" method="post" class="d-inline">
+                            <button type="button" class="btn btn-sm btn-danger btn-action delete-button">Eliminar</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+    No hay salas registradas.
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        delete_pop_up('.delete-button', '¿Estás seguro que deseas eliminar esta sala?');
+    });
+</script>
+{% endblock %}

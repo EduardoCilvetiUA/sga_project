@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block header %}Generar Horarios{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        Parámetros para generación de horarios
+    </div>
+    <div class="card-body">
+        <form method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="anio" class="required">Año:</label>
+                        <input type="number" class="form-control" name="anio" id="anio" min="2000" max="2100" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="periodo" class="required">Período:</label>
+                        <input type="text" class="form-control" name="periodo" id="periodo" maxlength="2" required>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-info mt-3">
+                <p><strong>Nota:</strong> El algoritmo asignará horarios a las secciones sin horario asignado, considerando:</p>
+                <ul>
+                    <li>La disponibilidad de salas según su capacidad.</li>
+                    <li>Evitar conflictos de profesores y alumnos.</li>
+                    <li>Los créditos de cada curso.</li>
+                    <li>Horarios permitidos: Lunes a Viernes, 9:00 a 18:00 (excepto 13:00-14:00).</li>
+                </ul>
+            </div>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Generar Horarios</button>
+                <a href="{{ url_for('horarios.index') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

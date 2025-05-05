@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block header %}Gestión de Horarios{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Generar Horarios</h5>
+                <p class="card-text">Asignar automáticamente horarios a secciones sin conflictos.</p>
+                <a href="{{ url_for('horarios.generar') }}" class="btn btn-primary">Generar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Ver Horarios</h5>
+                <p class="card-text">Visualizar horarios existentes para un semestre específico.</p>
+                <form action="{{ url_for('horarios.view') }}" method="get">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="anio" class="required">Año:</label>
+                                <input type="number" class="form-control" name="anio" id="anio" min="2000" max="2100" required>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="periodo" class="required">Período:</label>
+                                <input type="text" class="form-control" name="periodo" id="periodo" maxlength="2" required>
+                            </div>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="form-group mb-0">
+                                <button type="submit" class="btn btn-primary">Ver</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Exportar a Excel</h5>
+                <p class="card-text">Exportar horarios a un archivo Excel para un semestre específico.</p>
+                <form action="{{ url_for('horarios.exportar') }}" method="post">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="anio_export" class="required">Año:</label>
+                                <input type="number" class="form-control" name="anio" id="anio_export" min="2000" max="2100" required>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="periodo_export" class="required">Período:</label>
+                                <input type="text" class="form-control" name="periodo" id="periodo_export" maxlength="2" required>
+                            </div>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="form-group mb-0">
+                                <button type="submit" class="btn btn-primary">Exportar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -111,3 +111,23 @@ def remove_prerequisite(id, prerequisito_id):
         flash(f"Error al eliminar el prerequisito: {e}")
 
     return redirect(url_for("cursos.view", id=id))
+
+@bp.route("/<int:id>/close", methods=("POST",))
+def close(id):
+    try:
+        Curso.close(id)
+        flash("Curso cerrado exitosamente. No se podrán realizar cambios.")
+    except Exception as e:
+        flash(f"Error al cerrar el curso: {e}")
+
+    return redirect(url_for("cursos.view", id=id))
+
+@bp.route("/<int:id>/reopen", methods=("POST",))
+def reopen(id):
+    try:
+        Curso.reopen(id)
+        flash("Curso reabierto exitosamente. Se podrán realizar cambios.")
+    except Exception as e:
+        flash(f"Error al reabrir el curso: {e}")
+
+    return redirect(url_for("cursos.view", id=id))
