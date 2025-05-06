@@ -42,8 +42,8 @@
                     {% for horario in horarios %}
                     <tr>
                         <td>{{ horario.dia }}</td>
-                        <td>{{ horario.hora_inicio.strftime('%H:%M') }}</td>
-                        <td>{{ horario.hora_fin.strftime('%H:%M') }}</td>
+                        <td>{{ horario.hora_inicio }}</td>
+                        <td>{{ horario.hora_fin }}</td>
                         <td>{{ horario.curso_codigo }} - {{ horario.curso_nombre }}</td>
                         <td>{{ horario.seccion_numero }}</td>
                     </tr>

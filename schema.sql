@@ -112,19 +112,6 @@ CREATE TABLE IF NOT EXISTS cursos_aprobados (
     CONSTRAINT UC_curso_aprobado UNIQUE (alumno_id, curso_id)
 );
 
-INSERT INTO cursos (codigo, nombre) VALUES 
-('ICC5130', 'Diseño de Software Verificable'),
-('ICC5119', 'Ingeniería de Software'),
-('ICC5124', 'Diseño Avanzado de Base de Datos');
-
-INSERT INTO profesores (nombre, correo) VALUES 
-('Juan Perez', 'juan.perez@universidad.cl'),
-('Maria Rodriguez', 'maria.rodriguez@universidad.cl');
-
-INSERT INTO alumnos (nombre, correo, fecha_ingreso) VALUES 
-('Pedro Gomez', 'pedro.gomez@universidad.cl', '2022-03-01'),
-('Ana Martinez', 'ana.martinez@universidad.cl', '2023-03-01');
-
 GRANT ALL PRIVILEGES ON sga_db.* TO 'sga_user'@'%';
 FLUSH PRIVILEGES;
 ALTER TABLE cursos 
