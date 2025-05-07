@@ -11,29 +11,23 @@ def index():
 @bp.route("/alumnos", methods=["GET", "POST"])
 def cargar_alumnos():
     if request.method == "POST":
-        # Verificar si se subió un archivo
         if 'archivo' not in request.files:
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
         archivo = request.files['archivo']
         
-        # Verificar si el nombre del archivo está vacío
         if archivo.filename == '':
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
-        # Procesar el archivo si es un JSON
         if archivo and archivo.filename.endswith('.json'):
-            # Guardar temporalmente el archivo
             temp_path = os.path.join('/tmp', archivo.filename)
             archivo.save(temp_path)
             
             try:
-                # Cargar datos desde el archivo JSON
                 resultados = JsonLoader.load_alumnos(temp_path)
                 
-                # Eliminar el archivo temporal
                 os.remove(temp_path)
                 
                 flash(f"Carga completada: {resultados['exitosos']} exitosos, {resultados['fallidos']} fallidos")
@@ -50,29 +44,23 @@ def cargar_alumnos():
 @bp.route("/profesores", methods=["GET", "POST"])
 def cargar_profesores():
     if request.method == "POST":
-        # Verificar si se subió un archivo
         if 'archivo' not in request.files:
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
         archivo = request.files['archivo']
         
-        # Verificar si el nombre del archivo está vacío
         if archivo.filename == '':
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
-        # Procesar el archivo si es un JSON
         if archivo and archivo.filename.endswith('.json'):
-            # Guardar temporalmente el archivo
             temp_path = os.path.join('/tmp', archivo.filename)
             archivo.save(temp_path)
             
             try:
-                # Cargar datos desde el archivo JSON
                 resultados = JsonLoader.load_profesores(temp_path)
                 
-                # Eliminar el archivo temporal
                 os.remove(temp_path)
                 
                 flash(f"Carga completada: {resultados['exitosos']} exitosos, {resultados['fallidos']} fallidos")
@@ -89,29 +77,23 @@ def cargar_profesores():
 @bp.route("/cursos", methods=["GET", "POST"])
 def cargar_cursos():
     if request.method == "POST":
-        # Verificar si se subió un archivo
         if 'archivo' not in request.files:
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
         archivo = request.files['archivo']
         
-        # Verificar si el nombre del archivo está vacío
         if archivo.filename == '':
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
-        # Procesar el archivo si es un JSON
         if archivo and archivo.filename.endswith('.json'):
-            # Guardar temporalmente el archivo
             temp_path = os.path.join('/tmp', archivo.filename)
             archivo.save(temp_path)
             
             try:
-                # Cargar datos desde el archivo JSON
                 resultados = JsonLoader.load_cursos(temp_path)
                 
-                # Eliminar el archivo temporal
                 os.remove(temp_path)
                 
                 flash(f"Carga completada: {resultados['exitosos']} exitosos, {resultados['fallidos']} fallidos")
@@ -128,29 +110,23 @@ def cargar_cursos():
 @bp.route("/salas", methods=["GET", "POST"])
 def cargar_salas():
     if request.method == "POST":
-        # Verificar si se subió un archivo
         if 'archivo' not in request.files:
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
         archivo = request.files['archivo']
         
-        # Verificar si el nombre del archivo está vacío
         if archivo.filename == '':
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
-        # Procesar el archivo si es un JSON
         if archivo and archivo.filename.endswith('.json'):
-            # Guardar temporalmente el archivo
             temp_path = os.path.join('/tmp', archivo.filename)
             archivo.save(temp_path)
             
             try:
-                # Cargar datos desde el archivo JSON
                 resultados = JsonLoader.load_salas(temp_path)
                 
-                # Eliminar el archivo temporal
                 os.remove(temp_path)
                 
                 flash(f"Carga completada: {resultados['exitosos']} exitosos, {resultados['fallidos']} fallidos")
@@ -167,29 +143,23 @@ def cargar_salas():
 @bp.route("/instancias", methods=["GET", "POST"])
 def cargar_instancias():
     if request.method == "POST":
-        # Verificar si se subió un archivo
         if 'archivo' not in request.files:
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
         archivo = request.files['archivo']
         
-        # Verificar si el nombre del archivo está vacío
         if archivo.filename == '':
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
-        # Procesar el archivo si es un JSON
         if archivo and archivo.filename.endswith('.json'):
-            # Guardar temporalmente el archivo
             temp_path = os.path.join('/tmp', archivo.filename)
             archivo.save(temp_path)
             
             try:
-                # Cargar datos desde el archivo JSON
                 resultados = JsonLoader.load_instancias_cursos(temp_path)
                 
-                # Eliminar el archivo temporal
                 os.remove(temp_path)
                 
                 flash(f"Carga completada: {resultados['exitosos']} exitosos, {resultados['fallidos']} fallidos")
@@ -206,29 +176,23 @@ def cargar_instancias():
 @bp.route("/secciones", methods=["GET", "POST"])
 def cargar_secciones():
     if request.method == "POST":
-        # Verificar si se subió un archivo
         if 'archivo' not in request.files:
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
         archivo = request.files['archivo']
         
-        # Verificar si el nombre del archivo está vacío
         if archivo.filename == '':
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
-        # Procesar el archivo si es un JSON
         if archivo and archivo.filename.endswith('.json'):
-            # Guardar temporalmente el archivo
             temp_path = os.path.join('/tmp', archivo.filename)
             archivo.save(temp_path)
             
             try:
-                # Cargar datos desde el archivo JSON
                 resultados = JsonLoader.load_secciones(temp_path)
                 
-                # Eliminar el archivo temporal
                 os.remove(temp_path)
                 
                 flash(f"Carga completada: {resultados['exitosos']} exitosos, {resultados['fallidos']} fallidos")
@@ -245,29 +209,23 @@ def cargar_secciones():
 @bp.route("/alumnos_seccion", methods=["GET", "POST"])
 def cargar_alumnos_seccion():
     if request.method == "POST":
-        # Verificar si se subió un archivo
         if 'archivo' not in request.files:
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
         archivo = request.files['archivo']
         
-        # Verificar si el nombre del archivo está vacío
         if archivo.filename == '':
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
-        # Procesar el archivo si es un JSON
         if archivo and archivo.filename.endswith('.json'):
-            # Guardar temporalmente el archivo
             temp_path = os.path.join('/tmp', archivo.filename)
             archivo.save(temp_path)
             
             try:
-                # Cargar datos desde el archivo JSON
                 resultados = JsonLoader.load_alumnos_seccion(temp_path)
                 
-                # Eliminar el archivo temporal
                 os.remove(temp_path)
                 
                 flash(f"Carga completada: {resultados['exitosos']} exitosos, {resultados['fallidos']} fallidos")
@@ -284,29 +242,23 @@ def cargar_alumnos_seccion():
 @bp.route("/notas", methods=["GET", "POST"])
 def cargar_notas():
     if request.method == "POST":
-        # Verificar si se subió un archivo
         if 'archivo' not in request.files:
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
         archivo = request.files['archivo']
         
-        # Verificar si el nombre del archivo está vacío
         if archivo.filename == '':
             flash('No se seleccionó ningún archivo')
             return redirect(request.url)
             
-        # Procesar el archivo si es un JSON
         if archivo and archivo.filename.endswith('.json'):
-            # Guardar temporalmente el archivo
             temp_path = os.path.join('/tmp', archivo.filename)
             archivo.save(temp_path)
             
             try:
-                # Cargar datos desde el archivo JSON
                 resultados = JsonLoader.load_notas(temp_path)
                 
-                # Eliminar el archivo temporal
                 os.remove(temp_path)
                 
                 flash(f"Carga completada: {resultados['exitosos']} exitosos, {resultados['fallidos']} fallidos")

@@ -108,3 +108,19 @@ WHERE a_s2.seccion_id = %s
        OR (h.hora_inicio >= %s AND h.hora_inicio < %s))
   AND h.seccion_id != %s
 """
+
+raw_schedule_query = """
+SELECT h.id, h.dia, h.hora_inicio, h.hora_fin, 
+      s.nombre as sala_nombre, s.capacidad as sala_capacidad,
+      c.codigo as curso_codigo, c.nombre as curso_nombre,
+      sec.numero as seccion_numero, p.nombre as profesor_nombre
+FROM horarios h
+JOIN salas s ON h.sala_id = s.id
+JOIN secciones sec ON h.seccion_id = sec.id
+JOIN instancias_curso ic ON sec.instancia_curso_id = ic.id
+JOIN cursos c ON ic.curso_id = c.id
+LEFT JOIN profesor_seccion ps ON sec.id = ps.seccion_id
+LEFT JOIN profesores p ON ps.profesor_id = p.id
+WHERE ic.anio = %s AND ic.periodo = %s
+ORDER BY h.dia, h.hora_inicio, s.nombre
+"""

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.sala import Sala
+from querys.sala_queries import get_classroom_schedule
 from db import execute_query
 
 bp = Blueprint("salas", __name__, url_prefix="/salas")
@@ -94,22 +95,9 @@ def delete(id):
 def view(id):
     sala = Sala.get_by_id(id)
     
-    # Obtener los horarios asignados a esta sala
     horarios = []
     try:
-        horarios = execute_query(
-            """
-            SELECT h.*, sec.numero as seccion_numero, c.codigo as curso_codigo, c.nombre as curso_nombre
-            FROM horarios h
-            JOIN secciones sec ON h.seccion_id = sec.id
-            JOIN instancias_curso ic ON sec.instancia_curso_id = ic.id
-            JOIN cursos c ON ic.curso_id = c.id
-            WHERE h.sala_id = %s
-            ORDER BY h.dia, h.hora_inicio
-            """,
-            (id,),
-            fetch=True
-        )
+        horarios = execute_query(get_classroom_schedule, (id,), fetch=True)
     except Exception:
         pass
 
