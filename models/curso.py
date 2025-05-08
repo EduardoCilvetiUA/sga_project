@@ -12,7 +12,7 @@ from querys.curso_queries import (
     get_course_eligible_students,
     close_course,
     reopen_course,
-    is_course_closed
+    is_course_closed,
 )
 
 
@@ -39,7 +39,7 @@ class Curso:
             creditos = curso_actual["creditos"]
         if not isinstance(creditos, int) or creditos <= 0:
             raise ValueError("Los créditos deben ser un número entero positivo")
-            
+
         execute_query(update_course, (codigo, nombre, creditos, curso_id))
         return curso_id
 
@@ -70,14 +70,16 @@ class Curso:
         prerequisites = Curso.get_prerequisites(curso_id)
         if not prerequisites:
             return True, []
-            
-        missing_prerequisites = Curso._find_missing_prerequisites(alumno_id, prerequisites)
+
+        missing_prerequisites = Curso._find_missing_prerequisites(
+            alumno_id, prerequisites
+        )
         return len(missing_prerequisites) == 0, missing_prerequisites
 
     @staticmethod
     def _find_missing_prerequisites(alumno_id, prerequisites):
         missing_prerequisites = []
-        
+
         for prerequisite in prerequisites:
             prereq_id = prerequisite["id"]
             if not CursoAprobado.is_curso_aprobado(alumno_id, prereq_id):
@@ -88,7 +90,7 @@ class Curso:
                         "nombre": prerequisite["nombre"],
                     }
                 )
-                
+
         return missing_prerequisites
 
     @staticmethod
@@ -98,11 +100,11 @@ class Curso:
     @staticmethod
     def close(curso_id):
         execute_query(close_course, (curso_id,))
-        
+
     @staticmethod
     def reopen(curso_id):
         execute_query(reopen_course, (curso_id,))
-        
+
     @staticmethod
     def is_closed(curso_id):
         result = execute_query(is_course_closed, (curso_id,), fetch=True)

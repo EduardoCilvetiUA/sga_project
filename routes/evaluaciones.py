@@ -18,39 +18,39 @@ def create():
 
     if request.method == "POST":
         return _handle_create_post(secciones, seccion_id)
-        
+
     return render_template(
         "evaluaciones/create.html", secciones=secciones, seccion_id=seccion_id
     )
 
+
 def _handle_create_post(secciones, seccion_id):
     form_data = _extract_topic_form_data()
     seccion_id = form_data["seccion_id"]
-    
+
     error = _validate_topic_form_data(form_data)
-    
+
     if error is None:
         error = _validate_section_percentage(seccion_id, form_data)
-    
+
     if error is None:
         try:
             Evaluacion.create_topic(
-                seccion_id, 
-                form_data["nombre"], 
-                form_data["valor"], 
-                form_data["usa_porcentaje"]
+                seccion_id,
+                form_data["nombre"],
+                form_data["valor"],
+                form_data["usa_porcentaje"],
             )
             flash("Tópico de evaluación creado exitosamente!")
             return redirect(url_for("evaluaciones.index"))
         except Exception as e:
             error = f"Error al crear el tópico de evaluación: {e}"
-    
+
     flash(error)
     return render_template(
-        "evaluaciones/create.html", 
-        secciones=secciones, 
-        seccion_id=seccion_id
+        "evaluaciones/create.html", secciones=secciones, seccion_id=seccion_id
     )
+
 
 def _extract_topic_form_data():
     """Extract topic form data from request."""
@@ -58,8 +58,9 @@ def _extract_topic_form_data():
         "seccion_id": request.form["seccion_id"],
         "nombre": request.form["nombre"],
         "valor": request.form["valor"],
-        "usa_porcentaje": "usa_porcentaje" in request.form
+        "usa_porcentaje": "usa_porcentaje" in request.form,
     }
+
 
 def _validate_topic_form_data(form_data):
     """Validate topic form data."""
@@ -70,6 +71,7 @@ def _validate_topic_form_data(form_data):
     elif not form_data["valor"]:
         return "El valor es requerido."
     return None
+
 
 def _validate_section_percentage(seccion_id, form_data):
     """Validate if the total percentage for a section does not exceed 100%."""
@@ -100,32 +102,31 @@ def edit_topic(id):
 
     if request.method == "POST":
         return _handle_edit_topic_post(id, topico)
-        
+
     return render_template("evaluaciones/edit_topic.html", topico=topico)
+
 
 def _handle_edit_topic_post(id, topico):
     form_data = _extract_topic_form_data()
-    
+
     error = _validate_edit_topic_form_data(form_data)
-    
+
     if error is None:
         error = _validate_edit_topic_percentage(topico, form_data)
-    
+
     if error is None:
         try:
             Evaluacion.update_topic(
-                id, 
-                form_data["nombre"], 
-                form_data["valor"], 
-                form_data["usa_porcentaje"]
+                id, form_data["nombre"], form_data["valor"], form_data["usa_porcentaje"]
             )
             flash("Tópico de evaluación actualizado exitosamente!")
             return redirect(url_for("evaluaciones.view_topic", id=id))
         except Exception as e:
             error = f"Error al actualizar el tópico de evaluación: {e}"
-    
+
     flash(error)
     return render_template("evaluaciones/edit_topic.html", topico=topico)
+
 
 def _validate_edit_topic_form_data(form_data):
     """Validate edit topic form data."""
@@ -134,6 +135,7 @@ def _validate_edit_topic_form_data(form_data):
     elif not form_data["valor"]:
         return "El valor es requerido."
     return None
+
 
 def _validate_edit_topic_percentage(topico, form_data):
     seccion_id = topico["seccion_id"]
@@ -150,7 +152,9 @@ def _validate_edit_topic_percentage(topico, form_data):
         valor_float = float(form_data["valor"])
 
         if total_valor_float + valor_float > 100:
-            return f"El porcentaje total excede el 100%. Actualmente: {total_valor_float}%"
+            return (
+                f"El porcentaje total excede el 100%. Actualmente: {total_valor_float}%"
+            )
     return None
 
 
@@ -181,39 +185,39 @@ def add_instance(id):
 
     if request.method == "POST":
         return _handle_add_instance_post(id, topico)
-        
+
     return render_template("evaluaciones/add_instance.html", topico=topico)
+
 
 def _handle_add_instance_post(id, topico):
     form_data = _extract_instance_form_data()
-    
+
     error = _validate_instance_form_data(form_data)
-    
+
     if error is None:
         error = _validate_instance_percentage(id, topico, form_data)
-    
+
     if error is None:
         try:
             Evaluacion.create_instance(
-                id, 
-                form_data["nombre"], 
-                form_data["valor"], 
-                form_data["opcional"]
+                id, form_data["nombre"], form_data["valor"], form_data["opcional"]
             )
             flash("Instancia de evaluación creada exitosamente!")
             return redirect(url_for("evaluaciones.view_topic", id=id))
         except Exception as e:
             error = f"Error al crear la instancia de evaluación: {e}"
-    
+
     flash(error)
     return render_template("evaluaciones/add_instance.html", topico=topico)
+
 
 def _extract_instance_form_data():
     return {
         "nombre": request.form["nombre"],
         "valor": request.form["valor"],
-        "opcional": "opcional" in request.form
+        "opcional": "opcional" in request.form,
     }
+
 
 def _validate_instance_form_data(form_data):
     if not form_data["nombre"]:
@@ -221,6 +225,7 @@ def _validate_instance_form_data(form_data):
     elif not form_data["valor"]:
         return "El valor es requerido."
     return None
+
 
 def _validate_instance_percentage(id, topico, form_data):
     usa_porcentaje = topico["usa_porcentaje"]
@@ -236,7 +241,9 @@ def _validate_instance_percentage(id, topico, form_data):
         valor_float = float(form_data["valor"])
 
         if total_valor_float + valor_float > 100:
-            return f"El porcentaje total excede el 100%. Actualmente: {total_valor_float}%"
+            return (
+                f"El porcentaje total excede el 100%. Actualmente: {total_valor_float}%"
+            )
     return None
 
 
@@ -246,24 +253,22 @@ def edit_instance(id):
 
     if request.method == "POST":
         return _handle_edit_instance_post(id, instancia)
-        
+
     return render_template("evaluaciones/edit_instance.html", instancia=instancia)
+
 
 def _handle_edit_instance_post(id, instancia):
     form_data = _extract_instance_form_data()
-    
+
     error = _validate_instance_form_data(form_data)
-    
+
     if error is None:
         error = _validate_edit_instance_percentage(instancia, form_data)
-    
+
     if error is None:
         try:
             Evaluacion.update_instance(
-                id, 
-                form_data["nombre"], 
-                form_data["valor"], 
-                form_data["opcional"]
+                id, form_data["nombre"], form_data["valor"], form_data["opcional"]
             )
             flash("Instancia de evaluación actualizada exitosamente!")
             return redirect(
@@ -271,9 +276,10 @@ def _handle_edit_instance_post(id, instancia):
             )
         except Exception as e:
             error = f"Error al actualizar la instancia de evaluación: {e}"
-    
+
     flash(error)
     return render_template("evaluaciones/edit_instance.html", instancia=instancia)
+
 
 def _validate_edit_instance_percentage(instancia, form_data):
     topico_id = instancia["topico_id"]
@@ -290,7 +296,9 @@ def _validate_edit_instance_percentage(instancia, form_data):
         valor_float = float(form_data["valor"])
 
         if total_valor_float + valor_float > 100:
-            return f"El porcentaje total excede el 100%. Actualmente: {total_valor_float}%"
+            return (
+                f"El porcentaje total excede el 100%. Actualmente: {total_valor_float}%"
+            )
     return None
 
 

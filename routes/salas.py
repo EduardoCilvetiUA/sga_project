@@ -94,7 +94,7 @@ def delete(id):
 @bp.route("/<int:id>/view")
 def view(id):
     sala = Sala.get_by_id(id)
-    
+
     horarios = []
     try:
         horarios = execute_query(get_classroom_schedule, (id,), fetch=True)

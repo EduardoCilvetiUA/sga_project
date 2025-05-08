@@ -65,26 +65,24 @@ class Nota:
     @staticmethod
     def calculate_final_grade(alumno_id, seccion_id):
         grades = Nota.get_grades_by_student_section(alumno_id, seccion_id)
-        
+
         if not grades:
             return None
-            
+
         use_porcentaje = grades[0]["usa_porcentaje"] if grades else True
-        
+
         group_grades_by_topic = Nota._group_grades_by_topic(grades)
-        
+
         topic_grades = Nota._calculate_topic_grades(group_grades_by_topic)
-        
+
         return Nota._calculate_weighted_final_grade(
-            topic_grades, 
-            group_grades_by_topic, 
-            use_porcentaje
+            topic_grades, group_grades_by_topic, use_porcentaje
         )
 
     @staticmethod
     def _group_grades_by_topic(grades):
         group_grades_by_topic = {}
-        
+
         for grade in grades:
             topic_name = grade["topico_nombre"]
             if topic_name not in group_grades_by_topic:
@@ -101,13 +99,13 @@ class Nota:
                     "nota": grade["nota"],
                 }
             )
-            
+
         return group_grades_by_topic
 
     @staticmethod
     def _calculate_topic_grades(group_grades_by_topic):
         topic_grades = {}
-        
+
         for topic, data in group_grades_by_topic.items():
             total_value = sum(inst["valor"] for inst in data["instancias"])
             weighted_sum = sum(
@@ -118,11 +116,13 @@ class Nota:
                 topic_grades[topic] = weighted_sum / total_value
             else:
                 topic_grades[topic] = 0
-                
+
         return topic_grades
 
     @staticmethod
-    def _calculate_weighted_final_grade(topic_grades, group_grades_by_topic, use_porcentaje):
+    def _calculate_weighted_final_grade(
+        topic_grades, group_grades_by_topic, use_porcentaje
+    ):
         if use_porcentaje:
             total_percentage = sum(
                 data["valor"] for data in group_grades_by_topic.values()

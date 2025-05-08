@@ -6,8 +6,9 @@ from querys.sala_queries import (
     create_classroom,
     update_classroom,
     delete_classroom,
-    get_classroom_availability
+    get_classroom_availability,
 )
+
 
 class Sala:
     @staticmethod
@@ -40,8 +41,17 @@ class Sala:
     def check_availability(sala_id, dia, hora_inicio, hora_fin):
         """Verifica si la sala está disponible en un horario específico"""
         conflictos = execute_query(
-            get_classroom_availability, 
-            (sala_id, dia, hora_inicio, hora_inicio, hora_fin, hora_fin, hora_inicio, hora_fin),
-            fetch=True
+            get_classroom_availability,
+            (
+                sala_id,
+                dia,
+                hora_inicio,
+                hora_inicio,
+                hora_fin,
+                hora_fin,
+                hora_inicio,
+                hora_fin,
+            ),
+            fetch=True,
         )
         return len(conflictos) == 0
