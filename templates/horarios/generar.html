@@ -19,7 +19,12 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="periodo" class="required">Período:</label>
-                        <input type="text" class="form-control" name="periodo" id="periodo" maxlength="2" required>
+                        <select class="form-select" id="periodo" name="periodo" required>
+                            <option value="" selected disabled>Seleccionar periodo...</option>
+                            <option value="1">01 (Primer Semestre)</option>
+                            <option value="2">02 (Segundo Semestre)</option>
+                            <option value="3">03 (Verano)</option>
+                        </select>
                     </div>
                 </div>
             </div>

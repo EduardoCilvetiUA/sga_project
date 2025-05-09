@@ -30,9 +30,9 @@
                 <label for="periodo" class="required">Periodo</label>
                 <select class="form-select" id="periodo" name="periodo" required>
                     <option value="" disabled>Seleccionar periodo...</option>
-                    <option value="01" {% if instancia.periodo == '01' %}selected{% endif %}>01 (Primer Semestre)</option>
-                    <option value="02" {% if instancia.periodo == '02' %}selected{% endif %}>02 (Segundo Semestre)</option>
-                    <option value="03" {% if instancia.periodo == '03' %}selected{% endif %}>03 (Verano)</option>
+                    <option value="1" {% if instancia.periodo == '01' %}selected{% endif %}>01 (Primer Semestre)</option>
+                    <option value="2" {% if instancia.periodo == '02' %}selected{% endif %}>02 (Segundo Semestre)</option>
+                    <option value="3" {% if instancia.periodo == '03' %}selected{% endif %}>03 (Verano)</option>
                 </select>
             </div>
             

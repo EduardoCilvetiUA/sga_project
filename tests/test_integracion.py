@@ -85,7 +85,7 @@ class TestIntegracion:
         """Crear instancia de curso"""
         # Crear instancia de curso
         TestIntegracion.instancia_id = Instancia.create(
-            TestIntegracion.curso_id, 2024, "01"
+            TestIntegracion.curso_id, 2024, "1"
         )
         assert TestIntegracion.instancia_id is not None
 
@@ -93,7 +93,7 @@ class TestIntegracion:
         instancia = Instancia.get_by_id(TestIntegracion.instancia_id)
         assert instancia["curso_id"] == TestIntegracion.curso_id
         assert instancia["anio"] == 2024
-        assert instancia["periodo"] == "01"
+        assert instancia["periodo"] == "1"
 
     def test_03_crear_seccion(self):
         """Crear sección para la instancia de curso"""
