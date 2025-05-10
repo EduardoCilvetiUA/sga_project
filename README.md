@@ -424,9 +424,19 @@ Registro de los cursos que los alumnos han completado, incluyendo la nota final,
 - **Acceder**: Desde el navbar, sección "Gestión de Horarios".
 - **Funcionalidades principales**:
 
-#### Generar Horarios
-- **Función**: Asignar automáticamente horarios a secciones sin conflictos
-- **Operación**: Seleccione el año y período académico, el sistema generará automáticamente horarios optimizados
+#### Generar Horarios (Automático)
+- **Función**: Asignar automáticamente horarios a todas las secciones sin conflictos
+- **Operación**: 
+  - Seleccione el año y período académico
+  - Haga clic en "Generar Horarios"
+  - El sistema asignará automáticamente horarios a todas las secciones
+- **Algoritmo de generación**:
+  - Considera la disponibilidad de salas según su capacidad
+  - Evita conflictos de profesores y alumnos
+  - Respeta el número de créditos de cada curso (máximo 4 horas consecutivas)
+  - Horarios permitidos: Lunes a Viernes, 9:00 a 18:00 (excepto 13:00-14:00)
+  - Las secciones con más de 4 créditos no se programarán
+  - Las secciones sin profesores asignados no se programarán
 
 #### Ver Horarios
 - **Función**: Visualizar horarios existentes en formato calendario
@@ -440,20 +450,11 @@ Registro de los cursos que los alumnos han completado, incluyendo la nota final,
 #### Exportar a Excel
 - **Función**: Descargar horarios en formato Excel
 - **Operación**: Seleccione el año y período, el sistema generará automáticamente un archivo Excel con todos los horarios
-- **Contenido del archivo**: Incluye día, hora, sala, curso, sección y profesor
-
-### Gestión Manual de Horarios
-- **Acceder**: Desde la vista detallada de una sección.
-- **Operaciones**: Se pueden realizar todas las acciones CRUD.
-- **Crear**:
-  - Seleccione la sección correspondiente
-  - Elija la sala donde se dictará la clase
-  - Especifique el día de la semana
-  - Indique la hora de inicio y fin (validando las restricciones)
-- **Validaciones automáticas**:
-  - El sistema verifica que no haya conflictos de horario en la sala
-  - Se asegura que las clases estén dentro del horario permitido (09:00-18:00)
-  - Previene que las clases crucen el horario de almuerzo (13:00-14:00)
+- **Contenido del archivo**: 
+  - Hoja "Horarios": Todos los horarios generales
+  - Hoja "Salas": Horarios organizados por sala
+  - Hoja "Cursos": Horarios organizados por curso y sección
+  - Hoja "Profesores": Horarios organizados por profesor
 
 ### Gestión de Tópicos de Evaluación
 - **Acceder**: Dentro de la vista de sección, use el botón "Añadir Tópico de Evaluación".
