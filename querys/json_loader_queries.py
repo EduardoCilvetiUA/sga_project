@@ -1,4 +1,3 @@
-# Consultas para alumnos
 check_alumno_exists = "SELECT id FROM alumnos WHERE id = %s"
 update_alumno = (
     "UPDATE alumnos SET nombre = %s, correo = %s, fecha_ingreso = %s WHERE id = %s"
@@ -6,13 +5,9 @@ update_alumno = (
 insert_alumno = (
     "INSERT INTO alumnos (id, nombre, correo, fecha_ingreso) VALUES (%s, %s, %s, %s)"
 )
-
-# Consultas para profesores
 check_profesor_exists = "SELECT id FROM profesores WHERE id = %s"
 update_profesor = "UPDATE profesores SET nombre = %s, correo = %s WHERE id = %s"
 insert_profesor = "INSERT INTO profesores (id, nombre, correo) VALUES (%s, %s, %s)"
-
-# Consultas para cursos
 check_curso_exists = "SELECT id FROM cursos WHERE id = %s"
 update_curso = "UPDATE cursos SET codigo = %s, nombre = %s, creditos = %s WHERE id = %s"
 insert_curso = "INSERT INTO cursos (id, codigo, nombre, creditos, cerrado) VALUES (%s, %s, %s, %s, %s)"
@@ -20,13 +15,9 @@ delete_prerequisitos = "DELETE FROM prerequisitos WHERE curso_id = %s"
 insert_prerequisito = (
     "INSERT INTO prerequisitos (curso_id, prerequisito_id) VALUES (%s, %s)"
 )
-
-# Consultas para salas
 check_sala_exists = "SELECT id FROM salas WHERE id = %s"
 update_sala = "UPDATE salas SET nombre = %s, capacidad = %s WHERE id = %s"
 insert_sala = "INSERT INTO salas (id, nombre, capacidad) VALUES (%s, %s, %s)"
-
-# Consultas para instancias de curso
 check_instancia_exists = "SELECT id FROM instancias_curso WHERE id = %s"
 update_instancia = (
     "UPDATE instancias_curso SET curso_id = %s, anio = %s, periodo = %s WHERE id = %s"
@@ -35,8 +26,6 @@ insert_instancia = (
     "INSERT INTO instancias_curso (id, curso_id, anio, periodo) VALUES (%s, %s, %s, %s)"
 )
 check_curso_exists_by_id = "SELECT id FROM cursos WHERE id = %s"
-
-# Consultas para secciones
 check_seccion_exists = "SELECT id FROM secciones WHERE id = %s"
 update_seccion = "UPDATE secciones SET instancia_curso_id = %s, numero = %s, usa_porcentaje = %s WHERE id = %s"
 insert_seccion = "INSERT INTO secciones (id, instancia_curso_id, numero, usa_porcentaje) VALUES (%s, %s, %s, %s)"
@@ -46,8 +35,6 @@ check_profesor_seccion_exists = (
 insert_profesor_seccion = (
     "INSERT INTO profesor_seccion (profesor_id, seccion_id) VALUES (%s, %s)"
 )
-
-# Consultas para tópicos de evaluación
 check_topico_exists = "SELECT id FROM topicos_evaluacion WHERE id = %s"
 update_topico = """
 UPDATE topicos_evaluacion 
@@ -65,8 +52,6 @@ INSERT INTO instancias_evaluacion
 (topico_id, nombre, valor, opcional) 
 VALUES (%s, %s, %s, %s)
 """
-
-# Consultas para alumnos por sección
 check_seccion_exists_by_id = "SELECT id FROM secciones WHERE id = %s"
 check_alumno_exists_by_id = "SELECT id FROM alumnos WHERE id = %s"
 check_alumno_seccion_exists = (
@@ -76,7 +61,6 @@ insert_alumno_seccion = (
     "INSERT INTO alumno_seccion (alumno_id, seccion_id) VALUES (%s, %s)"
 )
 
-# Consultas para notas
 check_topico_exists_by_id = "SELECT id FROM topicos_evaluacion WHERE id = %s"
 get_seccion_id_from_topico = "SELECT seccion_id FROM topicos_evaluacion WHERE id = %s"
 check_alumno_seccion_by_seccion = (

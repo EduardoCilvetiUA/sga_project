@@ -42,8 +42,10 @@ from querys.json_loader_queries import (
     insert_nota,
     get_max_section_number,
 )
+
 NOTA_MAX = 7.0
 NOTA_MIN = 1.0
+
 
 class JsonLoader:
     @staticmethod
@@ -87,7 +89,7 @@ class JsonLoader:
     @staticmethod
     def _check_required_fields(entity, required_fields, entity_type):
         entity_id = entity.get("id", "desconocido")
-        if not all(k in entity for k in required_fields):
+        if not all(field in entity for field in required_fields):
             raise ValueError(
                 f"{entity_type.capitalize()} con ID {entity_id} no tiene todos los campos requeridos"
             )

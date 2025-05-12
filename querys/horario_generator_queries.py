@@ -1,9 +1,6 @@
-# Consulta para obtener los créditos de un curso
 get_course_credits = """
 SELECT creditos FROM cursos WHERE id = %s
 """
-
-# Consulta para obtener secciones sin horario asignado
 get_sections_without_schedule = """
 SELECT s.id, s.numero, ic.id as instancia_curso_id, c.id as curso_id, 
        c.codigo, c.nombre, c.creditos
@@ -16,24 +13,18 @@ AND NOT EXISTS (
 )
 ORDER BY c.creditos DESC, s.id
 """
-
-# Consulta para obtener profesores de una sección
 get_professors_for_section = """
 SELECT p.id, p.nombre
 FROM profesores p
 JOIN profesor_seccion ps ON p.id = ps.profesor_id
 WHERE ps.seccion_id = %s
 """
-
-# Consulta para obtener alumnos de una sección
 get_students_for_section = """
 SELECT a.id, a.nombre
 FROM alumnos a
 JOIN alumno_seccion as_1 ON a.id = as_1.alumno_id
 WHERE as_1.seccion_id = %s
 """
-
-# Consulta para verificar disponibilidad de sala
 check_room_availability = """
 SELECT COUNT(*) as count
 FROM horarios
@@ -42,8 +33,6 @@ WHERE sala_id = %s AND dia = %s AND
  (hora_inicio < %s AND hora_fin >= %s) OR
  (hora_inicio >= %s AND hora_inicio < %s))
 """
-
-# Consulta para verificar disponibilidad de profesor
 check_professor_availability = """
 SELECT COUNT(*) as count
 FROM horarios h
@@ -53,8 +42,6 @@ WHERE ps.profesor_id = %s AND h.dia = %s AND
  (h.hora_inicio < %s AND h.hora_fin >= %s) OR
  (h.hora_inicio >= %s AND h.hora_inicio < %s))
 """
-
-# Consulta para verificar disponibilidad de alumno
 check_student_availability = """
 SELECT COUNT(*) as count
 FROM horarios h
@@ -64,14 +51,10 @@ WHERE as_1.alumno_id = %s AND h.dia = %s AND
  (h.hora_inicio < %s AND h.hora_fin >= %s) OR
  (h.hora_inicio >= %s AND h.hora_inicio < %s))
 """
-
-# Consulta para asignar horario
 assign_schedule = """
 INSERT INTO horarios (seccion_id, sala_id, dia, hora_inicio, hora_fin)
 VALUES (%s, %s, %s, %s, %s)
 """
-
-# Consulta para obtener horarios para exportar
 get_schedules_for_export = """
 SELECT h.dia, h.hora_inicio, h.hora_fin, s.nombre as sala_nombre,
        c.codigo as curso_codigo, c.nombre as curso_nombre,

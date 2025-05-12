@@ -106,8 +106,8 @@ def view():
         horarios_raw = execute_query(raw_schedule_query, (anio, periodo), fetch=True)
 
         horarios = []
-        for h in horarios_raw:
-            horario = dict(h)
+        for schedule_entry in horarios_raw:
+            horario = dict(schedule_entry)
             if hasattr(horario["hora_inicio"], "strftime"):
                 horario["hora_inicio"] = horario["hora_inicio"].strftime("%H:%M")
             elif isinstance(horario["hora_inicio"], str):

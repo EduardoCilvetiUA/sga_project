@@ -53,7 +53,6 @@ def _handle_create_post(secciones, seccion_id):
 
 
 def _extract_topic_form_data():
-    """Extract topic form data from request."""
     return {
         "seccion_id": request.form["seccion_id"],
         "nombre": request.form["nombre"],
@@ -63,7 +62,6 @@ def _extract_topic_form_data():
 
 
 def _validate_topic_form_data(form_data):
-    """Validate topic form data."""
     if not form_data["seccion_id"]:
         return "La sección es requerida."
     elif not form_data["nombre"]:
@@ -74,7 +72,6 @@ def _validate_topic_form_data(form_data):
 
 
 def _validate_section_percentage(seccion_id, form_data):
-    """Validate if the total percentage for a section does not exceed 100%."""
     try:
         seccion = Seccion.get_by_id(seccion_id)
         seccion_usa_porcentaje = seccion["usa_porcentaje"]
@@ -129,7 +126,6 @@ def _handle_edit_topic_post(id, topico):
 
 
 def _validate_edit_topic_form_data(form_data):
-    """Validate edit topic form data."""
     if not form_data["nombre"]:
         return "El nombre del tópico es requerido."
     elif not form_data["valor"]:
