@@ -3,6 +3,7 @@ from utils.json_loader import JsonLoader
 import os
 
 bp = Blueprint("cargas", __name__, url_prefix="/cargas")
+TEMP_DIR = "/tmp"
 
 
 @bp.route("/")
@@ -24,7 +25,7 @@ def cargar_alumnos():
             return redirect(request.url)
 
         if archivo and archivo.filename.endswith(".json"):
-            temp_path = os.path.join("/tmp", archivo.filename)
+            temp_path = os.path.join(TEMP_DIR, archivo.filename)
             archivo.save(temp_path)
 
             try:
@@ -62,7 +63,7 @@ def cargar_profesores():
             return redirect(request.url)
 
         if archivo and archivo.filename.endswith(".json"):
-            temp_path = os.path.join("/tmp", archivo.filename)
+            temp_path = os.path.join(TEMP_DIR, archivo.filename)
             archivo.save(temp_path)
 
             try:
@@ -100,7 +101,7 @@ def cargar_cursos():
             return redirect(request.url)
 
         if archivo and archivo.filename.endswith(".json"):
-            temp_path = os.path.join("/tmp", archivo.filename)
+            temp_path = os.path.join(TEMP_DIR, archivo.filename)
             archivo.save(temp_path)
 
             try:
@@ -138,7 +139,7 @@ def cargar_salas():
             return redirect(request.url)
 
         if archivo and archivo.filename.endswith(".json"):
-            temp_path = os.path.join("/tmp", archivo.filename)
+            temp_path = os.path.join(TEMP_DIR, archivo.filename)
             archivo.save(temp_path)
 
             try:
@@ -176,7 +177,7 @@ def cargar_instancias():
             return redirect(request.url)
 
         if archivo and archivo.filename.endswith(".json"):
-            temp_path = os.path.join("/tmp", archivo.filename)
+            temp_path = os.path.join(TEMP_DIR, archivo.filename)
             archivo.save(temp_path)
 
             try:
@@ -214,7 +215,7 @@ def cargar_secciones():
             return redirect(request.url)
 
         if archivo and archivo.filename.endswith(".json"):
-            temp_path = os.path.join("/tmp", archivo.filename)
+            temp_path = os.path.join(TEMP_DIR, archivo.filename)
             archivo.save(temp_path)
 
             try:
@@ -252,7 +253,7 @@ def cargar_alumnos_seccion():
             return redirect(request.url)
 
         if archivo and archivo.filename.endswith(".json"):
-            temp_path = os.path.join("/tmp", archivo.filename)
+            temp_path = os.path.join(TEMP_DIR, archivo.filename)
             archivo.save(temp_path)
 
             try:
@@ -292,7 +293,7 @@ def cargar_notas():
             return redirect(request.url)
 
         if archivo and archivo.filename.endswith(".json"):
-            temp_path = os.path.join("/tmp", archivo.filename)
+            temp_path = os.path.join(TEMP_DIR, archivo.filename)
             archivo.save(temp_path)
 
             try:
