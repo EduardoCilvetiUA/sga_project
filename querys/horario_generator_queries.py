@@ -86,3 +86,6 @@ LEFT JOIN profesores p ON ps.profesor_id = p.id
 WHERE ic.anio = %s AND ic.periodo = %s
 ORDER BY h.dia, h.hora_inicio, s.nombre
 """
+get_all_rooms_ordered_by_capacity = (
+    "SELECT id, nombre, capacidad FROM salas ORDER BY capacidad DESC"
+)
