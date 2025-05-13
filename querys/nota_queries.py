@@ -1,4 +1,4 @@
-get_all_grades = """
+get_all_notas = """
     SELECT n.*, a.nombre as alumno_nombre, a.correo as alumno_correo,
             ie.nombre as instancia_nombre, ie.opcional,
             te.nombre as topico_nombre, te.valor as topico_valor,
@@ -15,7 +15,7 @@ get_all_grades = """
     JOIN cursos c ON ic.curso_id = c.id
     ORDER BY c.codigo, ic.anio DESC, ic.periodo DESC, s.numero, te.nombre, ie.nombre, a.nombre
 """
-get_grade_by_id = """
+get_nota_by_id = """
     SELECT n.*, a.id as alumno_id, a.nombre as alumno_nombre, a.correo as alumno_correo,
             ie.id as instancia_id, ie.nombre as instancia_nombre, ie.opcional, ie.valor,
             te.id as topico_id, te.nombre as topico_nombre, te.valor as topico_valor,
@@ -32,10 +32,10 @@ get_grade_by_id = """
     JOIN cursos c ON ic.curso_id = c.id
     WHERE n.id = %s
 """
-create_grade = "INSERT INTO notas (alumno_seccion_id, instancia_evaluacion_id, nota) VALUES (%s, %s, %s)"
-update_grade = "UPDATE notas SET nota = %s WHERE id = %s"
-delete_grade = "DELETE FROM notas WHERE id = %s"
-get_all_grades_by_section = """
+create_nota = "INSERT INTO notas (alumno_seccion_id, instancia_evaluacion_id, nota) VALUES (%s, %s, %s)"
+update_nota = "UPDATE notas SET nota = %s WHERE id = %s"
+delete_nota = "DELETE FROM notas WHERE id = %s"
+get_all_notas_by_seccion = """
     SELECT n.*, a.nombre as alumno_nombre, a.correo as alumno_correo,
             ie.nombre as instancia_nombre, ie.opcional, ie.valor,
             te.nombre as topico_nombre, te.valor as topico_valor
@@ -47,7 +47,7 @@ get_all_grades_by_section = """
     WHERE te.seccion_id = %s
     ORDER BY a.nombre, te.nombre, ie.nombre
 """
-get_student_grades_in_section = """
+get_notas_alumno_in_seccion = """
     SELECT n.*, ie.nombre as instancia_nombre, ie.opcional, ie.valor,
             te.nombre as topico_nombre, te.valor as topico_valor,
             s.usa_porcentaje
@@ -59,11 +59,11 @@ get_student_grades_in_section = """
     WHERE als.alumno_id = %s AND te.seccion_id = %s
     ORDER BY te.nombre, ie.nombre
 """
-get_student_section_id = """
+get_alumno_seccion_by_id = """
     SELECT id FROM alumno_seccion
     WHERE alumno_id = %s AND seccion_id = %s
 """
-get_missing_grades_for_student = """
+get_notas_faltantes_by_alumno_id = """
     SELECT ie.*, te.nombre as topico_nombre
     FROM instancias_evaluacion ie
     JOIN topicos_evaluacion te ON ie.topico_id = te.id

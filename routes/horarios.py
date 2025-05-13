@@ -9,7 +9,7 @@ from flask import (
 )
 from utils.horario_generator import HorarioGenerator
 import os
-from querys.horario_queries import raw_schedule_query
+from querys.horario_queries import get_horarios_completos
 from db import execute_query
 from datetime import datetime
 
@@ -103,7 +103,9 @@ def view():
         anio = int(anio)
         periodo = str(periodo)
 
-        horarios_raw = execute_query(raw_schedule_query, (anio, periodo), fetch=True)
+        horarios_raw = execute_query(
+            get_horarios_completos, (anio, periodo), fetch=True
+        )
 
         horarios = []
         for schedule_entry in horarios_raw:

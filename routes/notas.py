@@ -93,7 +93,7 @@ def _handle_grade_submission(request):
 
     if error is None:
         try:
-            alumno_seccion_id = Nota.get_student_section_id(
+            alumno_seccion_id = Nota.get_alumno_seccion_by_id(
                 form_data["alumno_id"], form_data["seccion_id"]
             )
 

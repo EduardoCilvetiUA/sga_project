@@ -1,32 +1,32 @@
-get_all_classrooms = """
+get_all_salas = """
 SELECT *
 FROM salas
 ORDER BY nombre
 """
 
-get_classroom_by_id = """
+get_sala_by_id = """
 SELECT *
 FROM salas
 WHERE id = %s
 """
 
-create_classroom = """
+create_sala = """
 INSERT INTO salas (nombre, capacidad)
 VALUES (%s, %s)
 """
 
-update_classroom = """
+update_sala = """
 UPDATE salas
 SET nombre = %s, capacidad = %s
 WHERE id = %s
 """
 
-delete_classroom = """
+delete_sala = """
 DELETE FROM salas
 WHERE id = %s
 """
 
-get_classroom_availability = """
+get_disponibilidad_sala = """
 SELECT *
 FROM horarios 
 WHERE sala_id = %s AND dia = %s AND 
@@ -35,7 +35,7 @@ WHERE sala_id = %s AND dia = %s AND
  (hora_inicio >= %s AND hora_inicio < %s))
 """
 
-get_classroom_schedule = """
+get_horario_sala = """
 SELECT h.*, sec.numero as seccion_numero, c.codigo as curso_codigo, c.nombre as curso_nombre
 FROM horarios h
 JOIN secciones sec ON h.seccion_id = sec.id

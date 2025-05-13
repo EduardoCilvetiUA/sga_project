@@ -1,26 +1,25 @@
-# models/horario.py
 from db import execute_query
 from querys.horario_queries import (
-    get_all_schedules,
-    get_schedule_by_id,
-    create_schedule,
-    update_schedule,
-    delete_schedule,
-    get_schedule_by_section,
+    get_all_horarios,
+    get_horario_by_id,
+    create_horario,
+    update_horario,
+    delete_horario,
+    get_horario_by_seccion,
     check_disponibilidad_profesor,
     check_disponibilidad_alumno,
-    get_schedule_conflicts,
+    check_conflictos_horario,
 )
 
 
 class Horario:
     @staticmethod
     def get_all():
-        return execute_query(get_all_schedules, fetch=True)
+        return execute_query(get_all_horarios, fetch=True)
 
     @staticmethod
     def get_by_id(horario_id):
-        result = execute_query(get_schedule_by_id, (horario_id,), fetch=True)
+        result = execute_query(get_horario_by_id, (horario_id,), fetch=True)
         return result[0] if result else None
 
     @staticmethod
@@ -40,7 +39,7 @@ class Horario:
             )
 
         return execute_query(
-            create_schedule, (seccion_id, sala_id, dia, hora_inicio, hora_fin)
+            create_horario, (seccion_id, sala_id, dia, hora_inicio, hora_fin)
         )
 
     @staticmethod
@@ -60,18 +59,18 @@ class Horario:
             )
 
         execute_query(
-            update_schedule,
+            update_horario,
             (seccion_id, sala_id, dia, hora_inicio, hora_fin, horario_id),
         )
         return horario_id
 
     @staticmethod
     def delete(horario_id):
-        execute_query(delete_schedule, (horario_id,))
+        execute_query(delete_horario, (horario_id,))
 
     @staticmethod
     def get_by_section(seccion_id):
-        return execute_query(get_schedule_by_section, (seccion_id,), fetch=True)
+        return execute_query(get_horario_by_seccion, (seccion_id,), fetch=True)
 
     @staticmethod
     def check_professor_conflicts(profesor_id, dia, hora_inicio, hora_fin):
@@ -142,11 +141,11 @@ class Horario:
         ]
 
         if exclude_id:
-            query = get_schedule_conflicts + " AND h.id != %s"
+            query = check_conflictos_horario + " AND h.id != %s"
             params.append(exclude_id)
             params.append(exclude_id)
             params.append(exclude_id)
         else:
-            query = get_schedule_conflicts
+            query = check_conflictos_horario
 
         return execute_query(query, tuple(params), fetch=True)

@@ -40,7 +40,7 @@ from querys.json_loader_queries import (
     check_nota_exists,
     update_nota,
     insert_nota,
-    get_max_section_number,
+    get_max_numero_seccion,
 )
 
 NOTA_MAX = 7.0
@@ -439,7 +439,7 @@ class JsonLoader:
                 # Procesar sección
                 existing = execute_query(check_seccion_exists, (entity_id,), fetch=True)
                 max_numero = execute_query(
-                    get_max_section_number, (seccion["instancia_curso"],), fetch=True
+                    get_max_numero_seccion, (seccion["instancia_curso"],), fetch=True
                 )
                 siguiente_numero = (max_numero[0]["max_num"] or 0) + 1
 

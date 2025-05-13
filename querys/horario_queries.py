@@ -1,4 +1,4 @@
-get_all_schedules = """
+get_all_horarios = """
 SELECT h.*, s.nombre as sala_nombre, sec.numero as seccion_numero,
        ic.anio, ic.periodo, c.codigo as codigo_curso
 FROM horarios h
@@ -9,7 +9,7 @@ JOIN cursos c ON ic.curso_id = c.id
 ORDER BY h.dia, h.hora_inicio
 """
 
-get_schedule_by_id = """
+get_horario_by_id = """
 SELECT h.*, s.nombre as sala_nombre, sec.numero as seccion_numero,
        ic.anio, ic.periodo, c.codigo as codigo_curso
 FROM horarios h
@@ -20,23 +20,23 @@ JOIN cursos c ON ic.curso_id = c.id
 WHERE h.id = %s
 """
 
-create_schedule = """
+create_horario = """
 INSERT INTO horarios (seccion_id, sala_id, dia, hora_inicio, hora_fin)
 VALUES (%s, %s, %s, %s, %s)
 """
 
-update_schedule = """
+update_horario = """
 UPDATE horarios
 SET seccion_id = %s, sala_id = %s, dia = %s, hora_inicio = %s, hora_fin = %s
 WHERE id = %s
 """
 
-delete_schedule = """
+delete_horario = """
 DELETE FROM horarios
 WHERE id = %s
 """
 
-get_schedule_by_section = """
+get_horario_by_seccion = """
 SELECT h.*, s.nombre as sala_nombre, s.capacidad as sala_capacidad
 FROM horarios h
 JOIN salas s ON h.sala_id = s.id
@@ -66,7 +66,7 @@ WHERE a_s.alumno_id = %s
        OR (h.hora_inicio >= %s AND h.hora_inicio < %s))
 """
 
-get_schedule_conflicts = """
+check_conflictos_horario = """
 SELECT DISTINCT 'sala' as tipo_conflicto, h.id, s.nombre as sala_nombre, 
        h.dia, h.hora_inicio, h.hora_fin
 FROM horarios h
@@ -109,7 +109,7 @@ WHERE a_s2.seccion_id = %s
   AND h.seccion_id != %s
 """
 
-raw_schedule_query = """
+get_horarios_completos = """
 SELECT h.id, h.dia, h.hora_inicio, h.hora_fin, 
       s.nombre as sala_nombre, s.capacidad as sala_capacidad,
       c.codigo as curso_codigo, c.nombre as curso_nombre,

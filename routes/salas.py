@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.sala import Sala
-from querys.sala_queries import get_classroom_schedule
+from querys.sala_queries import get_horario_sala
 from db import execute_query
 
 bp = Blueprint("salas", __name__, url_prefix="/salas")
@@ -97,7 +97,7 @@ def view(id):
 
     horarios = []
     try:
-        horarios = execute_query(get_classroom_schedule, (id,), fetch=True)
+        horarios = execute_query(get_horario_sala, (id,), fetch=True)
     except Exception:
         pass
 

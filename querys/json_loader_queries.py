@@ -78,6 +78,6 @@ check_nota_exists = (
 update_nota = "UPDATE notas SET nota = %s WHERE id = %s"
 insert_nota = "INSERT INTO notas (alumno_seccion_id, instancia_evaluacion_id, nota) VALUES (%s, %s, %s)"
 
-get_max_section_number = (
+get_max_numero_seccion = (
     "SELECT MAX(numero) as max_num FROM secciones WHERE instancia_curso_id = %s"
 )

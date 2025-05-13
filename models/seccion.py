@@ -1,32 +1,32 @@
 from db import execute_query
 from models.curso_aprobado import CursoAprobado
 from querys.seccion_queries import (
-    get_all_sections,
-    get_section_by_id,
-    create_section,
-    update_section,
-    delete_section,
+    get_all_secciones,
+    get_seccion_by_id,
+    create_seccion,
+    update_seccion,
+    delete_seccion,
     get_profesores_by_seccion,
-    get_students_enrolled_in_section,
-    assign_professor_to_section,
-    remove_professor_from_section,
-    get_curso_id_for_section,
-    enroll_student_in_section,
-    unenroll_student_from_section,
-    get_not_enrolled_professors,
-    get_not_enrolled_students,
-    check_student_prerequisites_for_course,
+    get_enrolled_alumnos_in_seccion,
+    insert_profesor_in_seccion,
+    remove_profesor_from_seccion,
+    get_curso_id_for_seccion,
+    insert_alumno_in_seccion,
+    delete_alumno_from_seccion,
+    get_not_enrolled_profesores,
+    get_not_enrolled_alumnos,
+    check_prerequisitos_for_curso,
 )
 
 
 class Seccion:
     @staticmethod
     def get_all():
-        return execute_query(get_all_sections, fetch=True)
+        return execute_query(get_all_secciones, fetch=True)
 
     @staticmethod
     def get_by_id(seccion_id):
-        result = execute_query(get_section_by_id, (seccion_id,), fetch=True)
+        result = execute_query(get_seccion_by_id, (seccion_id,), fetch=True)
         return result[0] if result else None
 
     @staticmethod
@@ -40,7 +40,7 @@ class Seccion:
                 f"Creating section with: {instancia_curso_id}, {number}, {use_porcentaje}"
             )
             result = execute_query(
-                create_section, (instancia_curso_id, number, use_porcentaje)
+                create_seccion, (instancia_curso_id, number, use_porcentaje)
             )
 
             print(f"Section creation result: {result}")
@@ -58,7 +58,7 @@ class Seccion:
             use_porcentaje = bool(use_porcentaje)
 
             execute_query(
-                update_section, (instancia_curso_id, number, use_porcentaje, seccion_id)
+                update_seccion, (instancia_curso_id, number, use_porcentaje, seccion_id)
             )
             return seccion_id
         except Exception as e:
@@ -67,7 +67,7 @@ class Seccion:
 
     @staticmethod
     def delete(seccion_id):
-        execute_query(delete_section, (seccion_id,))
+        execute_query(delete_seccion, (seccion_id,))
 
     @staticmethod
     def get_professors(seccion_id):
@@ -75,21 +75,19 @@ class Seccion:
 
     @staticmethod
     def get_students(seccion_id):
-        return execute_query(
-            get_students_enrolled_in_section, (seccion_id,), fetch=True
-        )
+        return execute_query(get_enrolled_alumnos_in_seccion, (seccion_id,), fetch=True)
 
     @staticmethod
     def assign_professor(seccion_id, profesor_id):
-        return execute_query(assign_professor_to_section, (profesor_id, seccion_id))
+        return execute_query(insert_profesor_in_seccion, (profesor_id, seccion_id))
 
     @staticmethod
     def remove_professor(seccion_id, profesor_id):
-        execute_query(remove_professor_from_section, (profesor_id, seccion_id))
+        execute_query(remove_profesor_from_seccion, (profesor_id, seccion_id))
 
     @staticmethod
     def enroll_student(seccion_id, alumno_id):
-        result = execute_query(get_curso_id_for_section, (seccion_id,), fetch=True)
+        result = execute_query(get_curso_id_for_seccion, (seccion_id,), fetch=True)
         if not result:
             raise Exception("Seccion no encontrada")
 
@@ -99,24 +97,24 @@ class Seccion:
             raise Exception(
                 "El estudiante no cumple con todos los prerrequisitos para este curso"
             )
-        return execute_query(enroll_student_in_section, (alumno_id, seccion_id))
+        return execute_query(insert_alumno_in_seccion, (alumno_id, seccion_id))
 
     @staticmethod
     def unenroll_student(seccion_id, alumno_id):
-        execute_query(unenroll_student_from_section, (alumno_id, seccion_id))
+        execute_query(delete_alumno_from_seccion, (alumno_id, seccion_id))
 
     @staticmethod
     def get_available_professors(seccion_id):
-        return execute_query(get_not_enrolled_professors, (seccion_id,), fetch=True)
+        return execute_query(get_not_enrolled_profesores, (seccion_id,), fetch=True)
 
     @staticmethod
     def get_available_students(seccion_id):
-        return execute_query(get_not_enrolled_students, (seccion_id,), fetch=True)
+        return execute_query(get_not_enrolled_alumnos, (seccion_id,), fetch=True)
 
     @staticmethod
     def check_prerequisites(curso_id, alumno_id):
         prerequisites = execute_query(
-            check_student_prerequisites_for_course, (curso_id,), fetch=True
+            check_prerequisitos_for_curso, (curso_id,), fetch=True
         )
 
         if not prerequisites:
@@ -132,5 +130,5 @@ class Seccion:
 
     @staticmethod
     def get_curso_id(seccion_id):
-        result = execute_query(get_curso_id_for_section, (seccion_id,), fetch=True)
+        result = execute_query(get_curso_id_for_seccion, (seccion_id,), fetch=True)
         return result[0]["curso_id"] if result else None
