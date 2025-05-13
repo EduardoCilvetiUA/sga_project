@@ -15,7 +15,7 @@ get_section_by_id = """
 create_section = "INSERT INTO secciones (instancia_curso_id, numero, usa_porcentaje) VALUES (%s, %s, %s)"
 update_section = "UPDATE secciones SET instancia_curso_id = %s, numero = %s, usa_porcentaje = %s WHERE id = %s"
 delete_section = "DELETE FROM secciones WHERE id = %s"
-get_professors_for_section = """
+get_profesores_by_seccion = """
     SELECT p.* 
     FROM profesores p
     JOIN profesor_seccion ps ON p.id = ps.profesor_id

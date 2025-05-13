@@ -1,7 +1,7 @@
 from db import execute_query
 from datetime import date
 from querys.curso_aprobado_queries import (
-    get_cursos_aprobados_by_alumno ,
+    get_cursos_aprobados_by_alumno,
     get_curso_aprobado_by_id,
     check_curso_aprobado_by_alumno,
     check_there_is_record,
@@ -17,7 +17,7 @@ from querys.curso_aprobado_queries import (
 class CursoAprobado:
     @staticmethod
     def get_all_by_alumno(alumno_id):
-        return execute_query(get_cursos_aprobados_by_alumno , (alumno_id,), fetch=True)
+        return execute_query(get_cursos_aprobados_by_alumno, (alumno_id,), fetch=True)
 
     @staticmethod
     def get_by_id(curso_aprobado_id):

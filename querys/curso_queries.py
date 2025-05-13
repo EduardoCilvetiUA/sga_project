@@ -8,7 +8,7 @@ SELECT id, codigo, nombre, creditos, cerrado
 FROM cursos
 WHERE id = %s
 """
-create_curso  = """
+create_curso = """
 INSERT INTO cursos (codigo, nombre, creditos, cerrado)
 VALUES (%s, %s, %s, %s)
 """

@@ -2,8 +2,8 @@ from db import execute_query
 from models.curso_aprobado import CursoAprobado
 from querys.curso_queries import (
     get_all_cursos,
-    get_curso_by_id ,
-    create_curso ,
+    get_curso_by_id,
+    create_curso,
     update_curso,
     delete_curso,
     get_curso_prerequisitos,
@@ -23,12 +23,12 @@ class Curso:
 
     @staticmethod
     def get_by_id(curso_id):
-        result = execute_query(get_curso_by_id , (curso_id,), fetch=True)
+        result = execute_query(get_curso_by_id, (curso_id,), fetch=True)
         return result[0] if result else None
 
     @staticmethod
     def create(codigo, nombre, creditos=2, cerrado=False):
-        return execute_query(create_curso , (codigo, nombre, creditos, cerrado))
+        return execute_query(create_curso, (codigo, nombre, creditos, cerrado))
 
     @staticmethod
     def update(curso_id, codigo, nombre, creditos=None):

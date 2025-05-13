@@ -10,7 +10,7 @@ get_course_instance_by_id = """
     JOIN cursos c ON ic.curso_id = c.id
     WHERE ic.id = %s
 """
-create_curso _instance = (
+create_curso_instance = (
     "INSERT INTO instancias_curso (curso_id, anio, periodo) VALUES (%s, %s, %s)"
 )
 update_curso_instance = (

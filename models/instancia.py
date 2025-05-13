@@ -2,7 +2,7 @@ from db import execute_query
 from querys.instancia_queries import (
     get_all_course_instances,
     get_course_instance_by_id,
-    create_curso _instance,
+    create_curso_instance,
     update_curso_instance,
     delete_curso_instance,
     get_sections_by_course_instance_id,
@@ -21,7 +21,7 @@ class Instancia:
 
     @staticmethod
     def create(curso_id, anio, periodo):
-        return execute_query(create_curso _instance, (curso_id, anio, periodo))
+        return execute_query(create_curso_instance, (curso_id, anio, periodo))
 
     @staticmethod
     def update(instancia_id, curso_id, anio, periodo):

@@ -44,7 +44,7 @@ WHERE h.seccion_id = %s
 ORDER BY h.dia, h.hora_inicio
 """
 
-check_professor_availability = """
+check_disponibilidad_profesor = """
 SELECT h.id
 FROM horarios h
 JOIN profesor_seccion ps ON h.seccion_id = ps.seccion_id
@@ -55,7 +55,7 @@ WHERE ps.profesor_id = %s
        OR (h.hora_inicio >= %s AND h.hora_inicio < %s))
 """
 
-check_student_availability = """
+check_disponibilidad_alumno = """
 SELECT h.id
 FROM horarios h
 JOIN alumno_seccion a_s ON h.seccion_id = a_s.seccion_id

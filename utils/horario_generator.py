@@ -4,16 +4,16 @@ from datetime import datetime, timedelta, time
 import random
 import traceback
 from querys.horario_generator_queries import (
-    get_course_credits,
-    get_sections_without_schedule,
-    get_professors_for_section,
-    get_students_for_section,
-    check_room_availability,
-    check_professor_availability,
-    check_student_availability,
-    assign_schedule,
-    get_schedules_for_export,
-    get_all_rooms_ordered_by_capacity,
+    get_creditos_curso,
+    get_secciones_sin_horario_by_periodo,
+    get_profesores_by_seccion,
+    get_alumnos_by_seccion,
+    check_disponibilidad_sala,
+    check_disponibilidad_profesor,
+    check_disponibilidad_alumno,
+    create_horario,
+    get_horarios_for_export,
+    get_salas_ordered_by_capacidad,
 )
 
 
@@ -35,23 +35,25 @@ class HorarioGenerator:
         self.hora_fin_dia = datetime.strptime("18:00", "%H:%M").time()
 
     def get_curso_creditos(self, curso_id):
-        result = execute_query(get_course_credits, (curso_id,), fetch=True)
+        result = execute_query(get_creditos_curso, (curso_id,), fetch=True)
         return result[0]["creditos"] if result else 2
 
     def get_secciones_sin_horario(self, anio, periodo):
-        return execute_query(get_sections_without_schedule, (anio, periodo), fetch=True)
+        return execute_query(
+            get_secciones_sin_horario_by_periodo, (anio, periodo), fetch=True
+        )
 
     def get_salas_disponibles(self):
         return execute_query(
-            get_all_rooms_ordered_by_capacity,
+            get_salas_ordered_by_capacidad,
             fetch=True,
         )
 
     def get_profesores_seccion(self, seccion_id):
-        return execute_query(get_professors_for_section, (seccion_id,), fetch=True)
+        return execute_query(get_profesores_by_seccion, (seccion_id,), fetch=True)
 
     def get_alumnos_seccion(self, seccion_id):
-        return execute_query(get_students_for_section, (seccion_id,), fetch=True)
+        return execute_query(get_alumnos_by_seccion, (seccion_id,), fetch=True)
 
     def check_disponibilidad(self, check_query, entity_id, dia, hora_inicio, hora_fin):
         conflictos = execute_query(
@@ -72,23 +74,21 @@ class HorarioGenerator:
 
     def check_sala_disponible(self, sala_id, dia, hora_inicio, hora_fin):
         return self.check_disponibilidad(
-            check_room_availability, sala_id, dia, hora_inicio, hora_fin
+            check_disponibilidad_sala, sala_id, dia, hora_inicio, hora_fin
         )
 
     def check_profesor_disponible(self, profesor_id, dia, hora_inicio, hora_fin):
         return self.check_disponibilidad(
-            check_professor_availability, profesor_id, dia, hora_inicio, hora_fin
+            check_disponibilidad_profesor, profesor_id, dia, hora_inicio, hora_fin
         )
 
     def check_alumno_disponible(self, alumno_id, dia, hora_inicio, hora_fin):
         return self.check_disponibilidad(
-            check_student_availability, alumno_id, dia, hora_inicio, hora_fin
+            check_disponibilidad_alumno, alumno_id, dia, hora_inicio, hora_fin
         )
 
     def asignar_horario(self, seccion_id, sala_id, dia, hora_inicio, hora_fin):
-        execute_query(
-            assign_schedule, (seccion_id, sala_id, dia, hora_inicio, hora_fin)
-        )
+        execute_query(create_horario, (seccion_id, sala_id, dia, hora_inicio, hora_fin))
 
     def es_horario_valido(self, hora_inicio, hora_fin):
         if hora_fin > self.hora_fin_dia:
@@ -252,7 +252,7 @@ class HorarioGenerator:
     def exportar_horarios_excel(self, anio, periodo, file_path):
         try:
             horarios_db = execute_query(
-                get_schedules_for_export, (anio, periodo), fetch=True
+                get_horarios_for_export, (anio, periodo), fetch=True
             )
 
             if not horarios_db:

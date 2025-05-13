@@ -7,8 +7,8 @@ from querys.horario_queries import (
     update_schedule,
     delete_schedule,
     get_schedule_by_section,
-    check_professor_availability,
-    check_student_availability,
+    check_disponibilidad_profesor,
+    check_disponibilidad_alumno,
     get_schedule_conflicts,
 )
 
@@ -76,7 +76,7 @@ class Horario:
     @staticmethod
     def check_professor_conflicts(profesor_id, dia, hora_inicio, hora_fin):
         conflictos = execute_query(
-            check_professor_availability,
+            check_disponibilidad_profesor,
             (
                 profesor_id,
                 dia,
@@ -94,7 +94,7 @@ class Horario:
     @staticmethod
     def check_student_conflicts(alumno_id, dia, hora_inicio, hora_fin):
         conflictos = execute_query(
-            check_student_availability,
+            check_disponibilidad_alumno,
             (
                 alumno_id,
                 dia,

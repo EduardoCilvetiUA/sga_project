@@ -1,4 +1,4 @@
-get_cursos_aprobados_by_alumno  = """
+get_cursos_aprobados_by_alumno = """
     SELECT ca.*, c.codigo, c.nombre
     FROM cursos_aprobados ca
     JOIN cursos c ON ca.curso_id = c.id

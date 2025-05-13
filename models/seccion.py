@@ -6,7 +6,7 @@ from querys.seccion_queries import (
     create_section,
     update_section,
     delete_section,
-    get_professors_for_section,
+    get_profesores_by_seccion,
     get_students_enrolled_in_section,
     assign_professor_to_section,
     remove_professor_from_section,
@@ -71,7 +71,7 @@ class Seccion:
 
     @staticmethod
     def get_professors(seccion_id):
-        return execute_query(get_professors_for_section, (seccion_id,), fetch=True)
+        return execute_query(get_profesores_by_seccion, (seccion_id,), fetch=True)
 
     @staticmethod
     def get_students(seccion_id):
