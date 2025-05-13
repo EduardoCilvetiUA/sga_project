@@ -10,7 +10,7 @@ from querys.seccion_queries import (
     get_students_enrolled_in_section,
     assign_professor_to_section,
     remove_professor_from_section,
-    get_course_id_for_section,
+    get_curso_id_for_section,
     enroll_student_in_section,
     unenroll_student_from_section,
     get_not_enrolled_professors,
@@ -89,7 +89,7 @@ class Seccion:
 
     @staticmethod
     def enroll_student(seccion_id, alumno_id):
-        result = execute_query(get_course_id_for_section, (seccion_id,), fetch=True)
+        result = execute_query(get_curso_id_for_section, (seccion_id,), fetch=True)
         if not result:
             raise Exception("Seccion no encontrada")
 
@@ -131,6 +131,6 @@ class Seccion:
         return True
 
     @staticmethod
-    def get_course_id(seccion_id):
-        result = execute_query(get_course_id_for_section, (seccion_id,), fetch=True)
+    def get_curso_id(seccion_id):
+        result = execute_query(get_curso_id_for_section, (seccion_id,), fetch=True)
         return result[0]["curso_id"] if result else None

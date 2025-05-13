@@ -34,7 +34,7 @@ assign_professor_to_section = (
 remove_professor_from_section = (
     "DELETE FROM profesor_seccion WHERE profesor_id = %s AND seccion_id = %s"
 )
-get_course_id_for_section = """
+get_curso_id_for_section = """
     SELECT ic.curso_id 
     FROM secciones s
     JOIN instancias_curso ic ON s.instancia_curso_id = ic.id

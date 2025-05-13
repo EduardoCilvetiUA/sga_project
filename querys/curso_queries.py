@@ -1,35 +1,35 @@
-get_all_courses = """
+get_all_cursos = """
 SELECT id, codigo, nombre, creditos, cerrado
 FROM cursos
 ORDER BY codigo
 """
-get_course_by_id = """
+get_curso_by_id = """
 SELECT id, codigo, nombre, creditos, cerrado
 FROM cursos
 WHERE id = %s
 """
-create_course = """
+create_curso  = """
 INSERT INTO cursos (codigo, nombre, creditos, cerrado)
 VALUES (%s, %s, %s, %s)
 """
-update_course = """
+update_curso = """
 UPDATE cursos
 SET codigo = %s, nombre = %s, creditos = %s
 WHERE id = %s
 """
-delete_course = "DELETE FROM cursos WHERE id = %s"
-get_course_prerequisites = """
+delete_curso = "DELETE FROM cursos WHERE id = %s"
+get_curso_prerequisitos = """
     SELECT c.* FROM cursos c
     JOIN prerequisitos p ON c.id = p.prerequisito_id
     WHERE p.curso_id = %s
 """
-add_course_prerequisite = (
+add_curso_prerequisitos = (
     "INSERT INTO prerequisitos (curso_id, prerequisito_id) VALUES (%s, %s)"
 )
-remove_course_prerequisite = (
+remove_curso_prerequisitos = (
     "DELETE FROM prerequisitos WHERE curso_id = %s AND prerequisito_id = %s"
 )
-get_course_eligible_students = """
+get_alumnos_eligibles_by_curso = """
     SELECT a.* 
     FROM alumnos a
     WHERE NOT EXISTS (
@@ -44,19 +44,19 @@ get_course_eligible_students = """
     )
     ORDER BY a.nombre
 """
-close_course = """
+close_curso = """
 UPDATE cursos
 SET cerrado = TRUE
 WHERE id = %s
 """
 
-reopen_course = """
+reopen_curso = """
 UPDATE cursos
 SET cerrado = FALSE
 WHERE id = %s
 """
 
-is_course_closed = """
+is_curso_closed = """
 SELECT cerrado
 FROM cursos
 WHERE id = %s
