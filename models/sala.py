@@ -1,4 +1,3 @@
-# models/sala.py
 from db import execute_query
 from querys.sala_queries import (
     get_all_salas,
