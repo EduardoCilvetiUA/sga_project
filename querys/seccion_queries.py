@@ -43,7 +43,6 @@ get_course_id_for_section = """
 enroll_student_in_section = (
     "INSERT INTO alumno_seccion (alumno_id, seccion_id) VALUES (%s, %s)"
 )
-"""Unenroll a student from a section"""
 unenroll_student_from_section = (
     "DELETE FROM alumno_seccion WHERE alumno_id = %s AND seccion_id = %s"
 )
