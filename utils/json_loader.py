@@ -353,13 +353,13 @@ class JsonLoader:
     def load_instancias_cursos(file_path):
         data = JsonLoader.load_file(file_path)
 
-        if not all(k in data for k in ["año", "semestre", "instancias"]):
+        if not all(key in data for key in ["año", "semestre", "instancias"]):
             raise ValueError(
                 "El archivo JSON no tiene la estructura esperada para instancias de cursos"
             )
 
         result = JsonLoader._create_result_template(len(data["instancias"]))
-        año = data["año"]
+        anio = data["año"]
         semestre = data["semestre"]
 
         for instancia in data["instancias"]:
@@ -384,12 +384,12 @@ class JsonLoader:
                 if existing:
                     execute_query(
                         update_instancia,
-                        (instancia["curso_id"], año, str(semestre), entity_id),
+                        (instancia["curso_id"], anio, str(semestre), entity_id),
                     )
                 else:
                     execute_query(
                         insert_instancia,
-                        (entity_id, instancia["curso_id"], año, str(semestre)),
+                        (entity_id, instancia["curso_id"], anio, str(semestre)),
                     )
 
                 result["exitosos"] += 1

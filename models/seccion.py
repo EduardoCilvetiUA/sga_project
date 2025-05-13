@@ -70,60 +70,60 @@ class Seccion:
         execute_query(delete_seccion, (seccion_id,))
 
     @staticmethod
-    def get_professors(seccion_id):
+    def get_profesores(seccion_id):
         return execute_query(get_profesores_by_seccion, (seccion_id,), fetch=True)
 
     @staticmethod
-    def get_students(seccion_id):
+    def get_alumnos(seccion_id):
         return execute_query(get_enrolled_alumnos_in_seccion, (seccion_id,), fetch=True)
 
     @staticmethod
-    def assign_professor(seccion_id, profesor_id):
+    def assign_profesor(seccion_id, profesor_id):
         return execute_query(insert_profesor_in_seccion, (profesor_id, seccion_id))
 
     @staticmethod
-    def remove_professor(seccion_id, profesor_id):
+    def remove_profesor(seccion_id, profesor_id):
         execute_query(remove_profesor_from_seccion, (profesor_id, seccion_id))
 
     @staticmethod
-    def enroll_student(seccion_id, alumno_id):
+    def enroll_alumno(seccion_id, alumno_id):
         result = execute_query(get_curso_id_for_seccion, (seccion_id,), fetch=True)
         if not result:
             raise Exception("Seccion no encontrada")
 
         curso_id = result[0]["curso_id"]
 
-        if not Seccion.check_prerequisites(curso_id, alumno_id):
+        if not Seccion.check_prerequisitos(curso_id, alumno_id):
             raise Exception(
                 "El estudiante no cumple con todos los prerrequisitos para este curso"
             )
         return execute_query(insert_alumno_in_seccion, (alumno_id, seccion_id))
 
     @staticmethod
-    def unenroll_student(seccion_id, alumno_id):
+    def unenroll_alumno(seccion_id, alumno_id):
         execute_query(delete_alumno_from_seccion, (alumno_id, seccion_id))
 
     @staticmethod
-    def get_available_professors(seccion_id):
+    def get_available_profesores(seccion_id):
         return execute_query(get_not_enrolled_profesores, (seccion_id,), fetch=True)
 
     @staticmethod
-    def get_available_students(seccion_id):
+    def get_available_alumnos(seccion_id):
         return execute_query(get_not_enrolled_alumnos, (seccion_id,), fetch=True)
 
     @staticmethod
-    def check_prerequisites(curso_id, alumno_id):
-        prerequisites = execute_query(
+    def check_prerequisitos(curso_id, alumno_id):
+        prerequisitos = execute_query(
             check_prerequisitos_for_curso, (curso_id,), fetch=True
         )
 
-        if not prerequisites:
+        if not prerequisitos:
             return True
 
-        for prereq in prerequisites:
-            prereq_id = prereq["prerequisito_id"]
+        for prerequisito in prerequisitos:
+            prerequisito_id = prerequisito["prerequisito_id"]
 
-            if not CursoAprobado.is_curso_aprobado(alumno_id, prereq_id):
+            if not CursoAprobado.is_curso_aprobado(alumno_id, prerequisito_id):
                 return False
 
         return True

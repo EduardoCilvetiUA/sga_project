@@ -46,9 +46,9 @@ def _load_grade_creation_data(seccion_id, alumno_id):
     instancias = []
 
     if seccion_id:
-        alumnos = Seccion.get_students(seccion_id)
+        alumnos = Seccion.get_alumnos(seccion_id)
         if alumno_id:
-            instancias = Nota.get_pending_evaluations(alumno_id, seccion_id)
+            instancias = Nota.get_pending_evaluaciones(alumno_id, seccion_id)
 
     return alumnos, instancias
 
@@ -172,8 +172,8 @@ def delete(id):
 def student_grades(alumno_id, seccion_id):
     alumno = Alumno.get_by_id(alumno_id)
     seccion = Seccion.get_by_id(seccion_id)
-    notas = Nota.get_grades_by_student_section(alumno_id, seccion_id)
-    nota_final = Nota.calculate_final_grade(alumno_id, seccion_id)
+    notas = Nota.get_notas_by_alumno_seccion(alumno_id, seccion_id)
+    nota_final = Nota.calculate_nota_final(alumno_id, seccion_id)
 
     return render_template(
         "notas/student_grades.html",
@@ -187,12 +187,12 @@ def student_grades(alumno_id, seccion_id):
 @bp.route("/section/<int:seccion_id>")
 def section_grades(seccion_id):
     seccion = Seccion.get_by_id(seccion_id)
-    alumnos = Seccion.get_students(seccion_id)
-    topicos = Evaluacion.get_topics_by_section(seccion_id)
+    alumnos = Seccion.get_alumnos(seccion_id)
+    topicos = Evaluacion.get_topicos_by_seccion(seccion_id)
 
     notas_finales = {}
     for alumno in alumnos:
-        nota_final = Nota.calculate_final_grade(alumno["id"], seccion_id)
+        nota_final = Nota.calculate_nota_final(alumno["id"], seccion_id)
         notas_finales[alumno["id"]] = nota_final
 
     return render_template(

@@ -88,7 +88,7 @@ def delete(id):
 @bp.route("/<int:id>/view")
 def view(id):
     instancia = Instancia.get_by_id(id)
-    secciones = Instancia.get_sections(id)
+    secciones = Instancia.get_secciones(id)
 
     return render_template(
         "instancias/view.html", instancia=instancia, secciones=secciones

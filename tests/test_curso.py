@@ -74,9 +74,9 @@ def test_prerequisitos():
 
     prereq_id = Curso.create("PRE123", "Prerequisito de Prueba")
 
-    Curso.add_prerequisite(curso_id_test, prereq_id)
+    Curso.add_prerequisito(curso_id_test, prereq_id)
 
-    prereqs = Curso.get_prerequisites(curso_id_test)
+    prereqs = Curso.get_prerequisitos(curso_id_test)
     assert len(prereqs) > 0
 
     prereq_encontrado = False
@@ -87,9 +87,9 @@ def test_prerequisitos():
 
     assert prereq_encontrado
 
-    Curso.remove_prerequisite(curso_id_test, prereq_id)
+    Curso.remove_prerequisito(curso_id_test, prereq_id)
 
-    prereqs = Curso.get_prerequisites(curso_id_test)
+    prereqs = Curso.get_prerequisitos(curso_id_test)
     assert prereqs is not None
 
     prereqs = [] if prereqs is None else prereqs

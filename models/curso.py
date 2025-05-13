@@ -50,51 +50,51 @@ class Curso:
         execute_query(delete_curso, (curso_id,))
 
     @staticmethod
-    def get_prerequisites(curso_id):
+    def get_prerequisitos(curso_id):
         return execute_query(get_curso_prerequisitos, (curso_id,), fetch=True)
 
     @staticmethod
-    def add_prerequisite(curso_id, prerequisito_id):
+    def add_prerequisito(curso_id, prerequisito_id):
         if Curso.is_closed(curso_id):
             raise ValueError("No se puede modificar un curso cerrado")
         return execute_query(add_curso_prerequisitos, (curso_id, prerequisito_id))
 
     @staticmethod
-    def remove_prerequisite(curso_id, prerequisito_id):
+    def remove_prerequisito(curso_id, prerequisito_id):
         if Curso.is_closed(curso_id):
             raise ValueError("No se puede modificar un curso cerrado")
         execute_query(remove_curso_prerequisitos, (curso_id, prerequisito_id))
 
     @staticmethod
-    def check_student_prerequisites(curso_id, alumno_id):
-        prerequisites = Curso.get_prerequisites(curso_id)
-        if not prerequisites:
+    def check_alumno_prerequisitos(curso_id, alumno_id):
+        prerequisitos = Curso.get_prerequisitos(curso_id)
+        if not prerequisitos:
             return True, []
 
-        missing_prerequisites = Curso._find_missing_prerequisites(
-            alumno_id, prerequisites
+        missing_prerequisitos = Curso._find_missing_prerequisitos(
+            alumno_id, prerequisitos
         )
-        return len(missing_prerequisites) == 0, missing_prerequisites
+        return len(missing_prerequisitos) == 0, missing_prerequisitos
 
     @staticmethod
-    def _find_missing_prerequisites(alumno_id, prerequisites):
-        missing_prerequisites = []
+    def _find_missing_prerequisitos(alumno_id, prerequisitos):
+        missing_prerequisitos = []
 
-        for prerequisite in prerequisites:
-            prereq_id = prerequisite["id"]
+        for prerequisito in prerequisitos:
+            prereq_id = prerequisito["id"]
             if not CursoAprobado.is_curso_aprobado(alumno_id, prereq_id):
-                missing_prerequisites.append(
+                missing_prerequisitos.append(
                     {
                         "id": prereq_id,
-                        "codigo": prerequisite["codigo"],
-                        "nombre": prerequisite["nombre"],
+                        "codigo": prerequisito["codigo"],
+                        "nombre": prerequisito["nombre"],
                     }
                 )
 
-        return missing_prerequisites
+        return missing_prerequisitos
 
     @staticmethod
-    def get_students_eligible_for_course(curso_id):
+    def get_alumnos_eligible_for_curso(curso_id):
         return execute_query(get_alumnos_eligibles_by_curso, (curso_id,), fetch=True)
 
     @staticmethod

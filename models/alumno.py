@@ -33,5 +33,5 @@ class Alumno:
         execute_query(delete_alumno, (alumno_id,))
 
     @staticmethod
-    def get_sections(alumno_id):
+    def get_secciones(alumno_id):
         return execute_query(get_seccion_alumno, (alumno_id,), fetch=True)

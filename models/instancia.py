@@ -33,7 +33,7 @@ class Instancia:
         execute_query(delete_instancias_curso, (instancia_id,))
 
     @staticmethod
-    def get_sections(instancia_id):
+    def get_secciones(instancia_id):
         return execute_query(
             get_secciones_by_instancia_curso_id, (instancia_id,), fetch=True
         )

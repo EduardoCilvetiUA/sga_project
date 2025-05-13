@@ -33,5 +33,5 @@ class Profesor:
         execute_query(delete_profesor, (profesor_id,))
 
     @staticmethod
-    def get_sections(profesor_id):
+    def get_secciones(profesor_id):
         return execute_query(get_secciones_by_profesor, (profesor_id,), fetch=True)

@@ -89,8 +89,8 @@ def delete(id):
 @bp.route("/<int:id>/view")
 def view(id):
     seccion = Seccion.get_by_id(id)
-    profesores = Seccion.get_professors(id)
-    alumnos = Seccion.get_students(id)
+    profesores = Seccion.get_profesores(id)
+    alumnos = Seccion.get_alumnos(id)
 
     return render_template(
         "secciones/view.html", seccion=seccion, profesores=profesores, alumnos=alumnos
@@ -98,10 +98,10 @@ def view(id):
 
 
 @bp.route("/<int:id>/assign_professor", methods=("GET", "POST"))
-def assign_professor(id):
+def assign_profesor(id):
     seccion = Seccion.get_by_id(id)
-    profesores_asignados = Seccion.get_professors(id)
-    profesores_disponibles = Seccion.get_available_professors(id)
+    profesores_asignados = Seccion.get_profesores(id)
+    profesores_disponibles = Seccion.get_available_profesores(id)
 
     if request.method == "POST":
         profesor_id = request.form["profesor_id"]
@@ -110,7 +110,7 @@ def assign_professor(id):
             flash("Por favor seleccione un profesor.")
         else:
             try:
-                Seccion.assign_professor(id, profesor_id)
+                Seccion.assign_profesor(id, profesor_id)
                 flash("Profesor asignado exitosamente!")
                 return redirect(url_for("secciones.view", id=id))
             except Exception as e:
@@ -125,9 +125,9 @@ def assign_professor(id):
 
 
 @bp.route("/<int:id>/remove_professor/<int:profesor_id>", methods=("POST",))
-def remove_professor(id, profesor_id):
+def remove_profesor(id, profesor_id):
     try:
-        Seccion.remove_professor(id, profesor_id)
+        Seccion.remove_profesor(id, profesor_id)
         flash("Profesor removido exitosamente!")
     except Exception as e:
         flash(f"Error al remover el profesor: {e}")
@@ -136,10 +136,10 @@ def remove_professor(id, profesor_id):
 
 
 @bp.route("/<int:id>/enroll_student", methods=("GET", "POST"))
-def enroll_student(id):
+def enroll_alumno(id):
     seccion = Seccion.get_by_id(id)
-    alumnos_inscritos = Seccion.get_students(id)
-    alumnos_disponibles = Seccion.get_available_students(id)
+    alumnos_inscritos = Seccion.get_alumnos(id)
+    alumnos_disponibles = Seccion.get_available_alumnos(id)
 
     if request.method == "POST":
         alumno_id = request.form["alumno_id"]
@@ -148,7 +148,7 @@ def enroll_student(id):
             flash("Por favor seleccione un alumno.")
         else:
             try:
-                Seccion.enroll_student(id, alumno_id)
+                Seccion.enroll_alumno(id, alumno_id)
                 flash("Alumno inscrito exitosamente!")
                 return redirect(url_for("secciones.view", id=id))
             except Exception as e:
@@ -163,9 +163,9 @@ def enroll_student(id):
 
 
 @bp.route("/<int:id>/unenroll_student/<int:alumno_id>", methods=("POST",))
-def unenroll_student(id, alumno_id):
+def unenroll_alumno(id, alumno_id):
     try:
-        Seccion.unenroll_student(id, alumno_id)
+        Seccion.unenroll_alumno(id, alumno_id)
         flash("Alumno removido exitosamente!")
     except Exception as e:
         flash(f"Error al remover al alumno: {e}")

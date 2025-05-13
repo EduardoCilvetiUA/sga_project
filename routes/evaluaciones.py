@@ -7,7 +7,7 @@ bp = Blueprint("evaluaciones", __name__, url_prefix="/evaluaciones")
 
 @bp.route("/")
 def index():
-    topicos = Evaluacion.get_all_topics()
+    topicos = Evaluacion.get_all_topicos()
     return render_template("evaluaciones/index.html", topicos=topicos)
 
 
@@ -35,7 +35,7 @@ def _handle_create_post(secciones, seccion_id):
 
     if error is None:
         try:
-            Evaluacion.create_topic(
+            Evaluacion.create_topico(
                 seccion_id,
                 form_data["nombre"],
                 form_data["valor"],
@@ -77,7 +77,7 @@ def _validate_section_percentage(seccion_id, form_data):
         seccion_usa_porcentaje = seccion["usa_porcentaje"]
 
         if seccion_usa_porcentaje:
-            total_valor = Evaluacion.get_section_total_percentage(seccion_id)
+            total_valor = Evaluacion.get_seccion_total_percentage(seccion_id)
 
             if total_valor is not None:
                 total_valor_float = float(total_valor)
@@ -95,7 +95,7 @@ def _validate_section_percentage(seccion_id, form_data):
 
 @bp.route("/topic/<int:id>/edit", methods=("GET", "POST"))
 def edit_topic(id):
-    topico = Evaluacion.get_topic_by_id(id)
+    topico = Evaluacion.get_topico_by_id(id)
 
     if request.method == "POST":
         return _handle_edit_topic_post(id, topico)
@@ -113,7 +113,7 @@ def _handle_edit_topic_post(id, topico):
 
     if error is None:
         try:
-            Evaluacion.update_topic(
+            Evaluacion.update_topico(
                 id, form_data["nombre"], form_data["valor"], form_data["usa_porcentaje"]
             )
             flash("Tópico de evaluación actualizado exitosamente!")
@@ -138,7 +138,7 @@ def _validate_edit_topic_percentage(topico, form_data):
     seccion_usa_porcentaje = topico["seccion_usa_porcentaje"]
 
     if seccion_usa_porcentaje:
-        total_valor = Evaluacion.get_section_total_percentage(seccion_id)
+        total_valor = Evaluacion.get_seccion_total_percentage(seccion_id)
 
         if total_valor is not None:
             total_valor_float = float(total_valor) - float(topico["valor"])
@@ -155,9 +155,9 @@ def _validate_edit_topic_percentage(topico, form_data):
 
 
 @bp.route("/topic/<int:id>/delete", methods=("POST",))
-def delete_topic(id):
+def delete_topico(id):
     try:
-        Evaluacion.delete_topic(id)
+        Evaluacion.delete_topico(id)
         flash("Tópico de evaluación eliminado exitosamente!")
     except Exception as e:
         flash(f"Error al eliminar el tópico de evaluación: {e}")
@@ -167,8 +167,8 @@ def delete_topic(id):
 
 @bp.route("/topic/<int:id>/view")
 def view_topic(id):
-    topico = Evaluacion.get_topic_by_id(id)
-    instancias = Evaluacion.get_instances(id)
+    topico = Evaluacion.get_topico_by_id(id)
+    instancias = Evaluacion.get_instancias(id)
 
     return render_template(
         "evaluaciones/view_topic.html", topico=topico, instancias=instancias
@@ -177,7 +177,7 @@ def view_topic(id):
 
 @bp.route("/topic/<int:id>/add_instance", methods=("GET", "POST"))
 def add_instance(id):
-    topico = Evaluacion.get_topic_by_id(id)
+    topico = Evaluacion.get_topico_by_id(id)
 
     if request.method == "POST":
         return _handle_add_instance_post(id, topico)
@@ -195,7 +195,7 @@ def _handle_add_instance_post(id, topico):
 
     if error is None:
         try:
-            Evaluacion.create_instance(
+            Evaluacion.create_instancia(
                 id, form_data["nombre"], form_data["valor"], form_data["opcional"]
             )
             flash("Instancia de evaluación creada exitosamente!")
@@ -227,7 +227,7 @@ def _validate_instance_percentage(id, topico, form_data):
     usa_porcentaje = topico["usa_porcentaje"]
 
     if usa_porcentaje:
-        total_valor = Evaluacion.get_topic_total_percentage(id)
+        total_valor = Evaluacion.get_topico_total_percentage(id)
 
         if total_valor is not None:
             total_valor_float = float(total_valor)
@@ -245,7 +245,7 @@ def _validate_instance_percentage(id, topico, form_data):
 
 @bp.route("/instance/<int:id>/edit", methods=("GET", "POST"))
 def edit_instance(id):
-    instancia = Evaluacion.get_instance_by_id(id)
+    instancia = Evaluacion.get_instancia_by_id(id)
 
     if request.method == "POST":
         return _handle_edit_instance_post(id, instancia)
@@ -263,7 +263,7 @@ def _handle_edit_instance_post(id, instancia):
 
     if error is None:
         try:
-            Evaluacion.update_instance(
+            Evaluacion.update_instancia(
                 id, form_data["nombre"], form_data["valor"], form_data["opcional"]
             )
             flash("Instancia de evaluación actualizada exitosamente!")
@@ -282,7 +282,7 @@ def _validate_edit_instance_percentage(instancia, form_data):
     usa_porcentaje = instancia["usa_porcentaje"]
 
     if usa_porcentaje:
-        total_valor = Evaluacion.get_topic_total_percentage(topico_id)
+        total_valor = Evaluacion.get_topico_total_percentage(topico_id)
 
         if total_valor is not None:
             total_valor_float = float(total_valor) - float(instancia["valor"])
@@ -299,12 +299,12 @@ def _validate_edit_instance_percentage(instancia, form_data):
 
 
 @bp.route("/instance/<int:id>/delete", methods=("POST",))
-def delete_instance(id):
-    instancia = Evaluacion.get_instance_by_id(id)
+def delete_instancia(id):
+    instancia = Evaluacion.get_instancia_by_id(id)
     topico_id = instancia["topico_id"]
 
     try:
-        Evaluacion.delete_instance(id)
+        Evaluacion.delete_instancia(id)
         flash("Instancia de evaluación eliminada exitosamente!")
     except Exception as e:
         flash(f"Error al eliminar la instancia de evaluación: {e}")

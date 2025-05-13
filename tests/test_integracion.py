@@ -90,11 +90,11 @@ class TestIntegracion:
         assert seccion["numero"] == 1
 
     def test_04_asignar_profesor(self):
-        Seccion.assign_professor(
+        Seccion.assign_profesor(
             TestIntegracion.seccion_id, TestIntegracion.profesor_id
         )
 
-        profesores = Seccion.get_professors(TestIntegracion.seccion_id)
+        profesores = Seccion.get_profesores(TestIntegracion.seccion_id)
         assert len(profesores) > 0
         profesor_encontrado = False
         for profesor in profesores:
@@ -104,9 +104,9 @@ class TestIntegracion:
         assert profesor_encontrado
 
     def test_05_inscribir_alumno(self):
-        Seccion.enroll_student(TestIntegracion.seccion_id, TestIntegracion.alumno_id)
+        Seccion.enroll_alumno(TestIntegracion.seccion_id, TestIntegracion.alumno_id)
 
-        alumnos = Seccion.get_students(TestIntegracion.seccion_id)
+        alumnos = Seccion.get_alumnos(TestIntegracion.seccion_id)
         assert len(alumnos) > 0
         alumno_encontrado = False
         for alumno in alumnos:
@@ -127,23 +127,23 @@ class TestIntegracion:
         TestIntegracion.alumno_seccion_id = result["id"]
 
     def test_06_crear_topico_evaluacion(self):
-        TestIntegracion.topico_id = Evaluacion.create_topic(
+        TestIntegracion.topico_id = Evaluacion.create_topico(
             TestIntegracion.seccion_id, "Controles", 60.0
         )
         assert TestIntegracion.topico_id is not None
 
-        topico = Evaluacion.get_topic_by_id(TestIntegracion.topico_id)
+        topico = Evaluacion.get_topico_by_id(TestIntegracion.topico_id)
         assert topico["seccion_id"] == TestIntegracion.seccion_id
         assert topico["nombre"] == "Controles"
         assert float(topico["porcentaje"]) == 60.0
 
     def test_07_crear_instancia_evaluacion(self):
-        TestIntegracion.instancia_evaluacion_id = Evaluacion.create_instance(
+        TestIntegracion.instancia_evaluacion_id = Evaluacion.create_instancia(
             TestIntegracion.topico_id, "Control 1", 1.0, False
         )
         assert TestIntegracion.instancia_evaluacion_id is not None
 
-        instancia = Evaluacion.get_instance_by_id(
+        instancia = Evaluacion.get_instancia_by_id(
             TestIntegracion.instancia_evaluacion_id
         )
         assert instancia["topico_id"] == TestIntegracion.topico_id
@@ -159,7 +159,7 @@ class TestIntegracion:
         )
         assert nota_id is not None
 
-        notas = Nota.get_grades_by_student_section(
+        notas = Nota.get_notas_by_alumno_seccion(
             TestIntegracion.alumno_id, TestIntegracion.seccion_id
         )
         assert len(notas) > 0
@@ -175,7 +175,7 @@ class TestIntegracion:
         assert nota_encontrada
 
     def test_09_calcular_nota_final(self):
-        nota_final = Nota.calculate_final_grade(
+        nota_final = Nota.calculate_nota_final(
             TestIntegracion.alumno_id, TestIntegracion.seccion_id
         )
 

@@ -66,10 +66,10 @@ class CursoAprobado:
         if not alumno_seccion:
             raise Exception("Alumno no encontrado en la sección")
         alumno_seccion_id = alumno_seccion[0]["id"]
-        grade_result = execute_query(
+        nota = execute_query(
             calculate_nota_final_by_alumno, (alumno_seccion_id,), fetch=True
         )
-        nota_final = grade_result[0]["nota_final"] if grade_result else 0
+        nota_final = nota[0]["nota_final"] if nota else 0
         aprobado = nota_final >= 4.0
         return CursoAprobado.register_curso_aprobado(
             alumno_id, curso_id, seccion_id, nota_final, aprobado

@@ -38,11 +38,11 @@ class Nota:
         execute_query(delete_nota, (nota_id,))
 
     @staticmethod
-    def get_grades_by_section(seccion_id):
+    def get_notas_by_seccion(seccion_id):
         return execute_query(get_all_notas_by_seccion, (seccion_id,), fetch=True)
 
     @staticmethod
-    def get_grades_by_student_section(alumno_id, seccion_id):
+    def get_notas_by_alumno_seccion(alumno_id, seccion_id):
         return execute_query(
             get_notas_alumno_in_seccion, (alumno_id, seccion_id), fetch=True
         )
@@ -55,7 +55,7 @@ class Nota:
         return result[0]["id"] if result else None
 
     @staticmethod
-    def get_pending_evaluations(alumno_id, seccion_id):
+    def get_pending_evaluaciones(alumno_id, seccion_id):
         return execute_query(
             get_notas_faltantes_by_alumno_id,
             (seccion_id, alumno_id, seccion_id),
@@ -63,87 +63,87 @@ class Nota:
         )
 
     @staticmethod
-    def calculate_final_grade(alumno_id, seccion_id):
-        grades = Nota.get_grades_by_student_section(alumno_id, seccion_id)
+    def calculate_nota_final(alumno_id, seccion_id):
+        notas = Nota.get_notas_by_alumno_seccion(alumno_id, seccion_id)
 
-        if not grades:
+        if not notas:
             return None
 
-        use_porcentaje = grades[0]["usa_porcentaje"] if grades else True
+        use_porcentaje = notas[0]["usa_porcentaje"] if notas else True
 
-        group_grades_by_topic = Nota._group_grades_by_topic(grades)
+        group_notas_by_topico = Nota._group_notas_by_topico(notas)
 
-        topic_grades = Nota._calculate_topic_grades(group_grades_by_topic)
+        notas_topico = Nota._calculate_notas_topico(group_notas_by_topico)
 
-        return Nota._calculate_weighted_final_grade(
-            topic_grades, group_grades_by_topic, use_porcentaje
+        return Nota._calculate_weighted_nota_final(
+            notas_topico, group_notas_by_topico, use_porcentaje
         )
 
     @staticmethod
-    def _group_grades_by_topic(grades):
-        group_grades_by_topic = {}
+    def _group_notas_by_topico(notas):
+        group_notas_by_topico = {}
 
-        for grade in grades:
-            topic_name = grade["topico_nombre"]
-            if topic_name not in group_grades_by_topic:
-                group_grades_by_topic[topic_name] = {
-                    "valor": grade["topico_valor"],
+        for nota in notas:
+            topic_name = nota["topico_nombre"]
+            if topic_name not in group_notas_by_topico:
+                group_notas_by_topico[topic_name] = {
+                    "valor": nota["topico_valor"],
                     "instancias": [],
                 }
 
-            group_grades_by_topic[topic_name]["instancias"].append(
+            group_notas_by_topico[topic_name]["instancias"].append(
                 {
-                    "nombre": grade["instancia_nombre"],
-                    "valor": grade["valor"],
-                    "opcional": grade["opcional"],
-                    "nota": grade["nota"],
+                    "nombre": nota["instancia_nombre"],
+                    "valor": nota["valor"],
+                    "opcional": nota["opcional"],
+                    "nota": nota["nota"],
                 }
             )
 
-        return group_grades_by_topic
+        return group_notas_by_topico
 
     @staticmethod
-    def _calculate_topic_grades(group_grades_by_topic):
-        topic_grades = {}
+    def _calculate_notas_topico(group_notas_by_topico):
+        notas_topico = {}
 
-        for topic, data in group_grades_by_topic.items():
-            total_value = sum(inst["valor"] for inst in data["instancias"])
+        for topico, data in group_notas_by_topico.items():
+            total_value = sum(instancia["valor"] for instancia in data["instancias"])
             weighted_sum = sum(
-                inst["nota"] * inst["valor"] for inst in data["instancias"]
+                instancia["nota"] * instancia["valor"] for instancia in data["instancias"]
             )
 
             if total_value > 0:
-                topic_grades[topic] = weighted_sum / total_value
+                notas_topico[topico] = weighted_sum / total_value
             else:
-                topic_grades[topic] = 0
+                notas_topico[topico] = 0
 
-        return topic_grades
+        return notas_topico
 
     @staticmethod
-    def _calculate_weighted_final_grade(
-        topic_grades, group_grades_by_topic, use_porcentaje
+    def _calculate_weighted_nota_final(
+        notas_topico, group_notas_by_topico, use_porcentaje
     ):
         if use_porcentaje:
             total_percentage = sum(
-                data["valor"] for data in group_grades_by_topic.values()
+                data["valor"] for data in group_notas_by_topico.values()
             )
 
             if total_percentage <= 0:
                 return None
 
-            final_grade = 0
-            for topic, nota in topic_grades.items():
-                value = group_grades_by_topic[topic]["valor"]
-                final_grade += nota * (value / total_percentage)
+            nota_final = 0
+            for topico, nota in notas_topico.items():
+                value = group_notas_by_topico[topico]["valor"]
+                nota_final += nota * (value / total_percentage)
         else:
-            total_weight = sum(data["valor"] for data in group_grades_by_topic.values())
+            total_weight = sum(data["valor"] for data in group_notas_by_topico.values())
 
             if total_weight <= 0:
                 return None
 
-            final_grade = 0
-            for topic, nota in topic_grades.items():
-                value = group_grades_by_topic[topic]["valor"]
-                final_grade += nota * (value / total_weight)
+            nota_final = 0
+            for topico, nota in notas_topico.items():
+                value = group_notas_by_topico[topico]["valor"]
+                nota_final += nota * (value / total_weight)
 
-        return round(final_grade, 1)
+        return round(nota_final, 1)
