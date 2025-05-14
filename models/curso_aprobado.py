@@ -13,6 +13,7 @@ from querys.curso_aprobado_queries import (
     calculate_nota_final_by_alumno,
 )
 
+APPROVAL_NOTA = 4.0
 
 class CursoAprobado:
     @staticmethod
@@ -70,7 +71,7 @@ class CursoAprobado:
             calculate_nota_final_by_alumno, (alumno_seccion_id,), fetch=True
         )
         nota_final = nota[0]["nota_final"] if nota else 0
-        aprobado = nota_final >= 4.0
+        aprobado = nota_final >= APPROVAL_NOTA 
         return CursoAprobado.register_curso_aprobado(
             alumno_id, curso_id, seccion_id, nota_final, aprobado
         )

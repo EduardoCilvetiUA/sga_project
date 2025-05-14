@@ -418,7 +418,7 @@ class JsonLoader:
                     "sección",
                 )
 
-                # Verificar dependencias
+
                 if not execute_query(
                     check_instancia_exists, (seccion["instancia_curso"],), fetch=True
                 ):
@@ -436,7 +436,7 @@ class JsonLoader:
                 tipo_evaluacion = seccion["evaluacion"]["tipo"]
                 usa_porcentaje = tipo_evaluacion == "porcentaje"
 
-                # Procesar sección
+
                 existing = execute_query(check_seccion_exists, (entity_id,), fetch=True)
                 max_numero = execute_query(
                     get_max_numero_seccion, (seccion["instancia_curso"],), fetch=True
@@ -464,7 +464,6 @@ class JsonLoader:
                         ),
                     )
 
-                # Asignar profesor
                 profesor_seccion_exists = execute_query(
                     check_profesor_seccion_exists,
                     (seccion["profesor_id"], entity_id),
@@ -476,7 +475,7 @@ class JsonLoader:
                         insert_profesor_seccion, (seccion["profesor_id"], entity_id)
                     )
 
-                # Procesar tópicos
+
                 JsonLoader._process_topicos_evaluacion(seccion, usa_porcentaje, result)
 
                 result["exitosos"] += 1
@@ -502,12 +501,11 @@ class JsonLoader:
                 alumno_id = asignacion.get("alumno_id", "desconocido")
                 seccion_id = asignacion.get("seccion_id", "desconocido")
 
-                if not all(k in asignacion for k in ["seccion_id", "alumno_id"]):
+                if not all(key in asignacion for key in ["seccion_id", "alumno_id"]):
                     raise ValueError(
                         "La asignación no tiene todos los campos requeridos"
                     )
 
-                # Verificar dependencias
                 if not execute_query(
                     check_seccion_exists_by_id, (seccion_id,), fetch=True
                 ):
@@ -518,7 +516,6 @@ class JsonLoader:
                 ):
                     raise ValueError(f"No existe un alumno con ID {alumno_id}")
 
-                # Inscribir alumno si no existe
                 existing = execute_query(
                     check_alumno_seccion_exists, (alumno_id, seccion_id), fetch=True
                 )
@@ -558,7 +555,7 @@ class JsonLoader:
                 ):
                     raise ValueError("La nota no tiene todos los campos requeridos")
 
-                # Verificar dependencias
+
                 if not execute_query(
                     check_alumno_exists_by_id, (alumno_id,), fetch=True
                 ):
@@ -569,7 +566,6 @@ class JsonLoader:
                 ):
                     raise ValueError(f"No existe un tópico con ID {topico_id}")
 
-                # Obtener sección del tópico
                 seccion_result = execute_query(
                     get_seccion_id_from_topico, (topico_id,), fetch=True
                 )
@@ -580,7 +576,6 @@ class JsonLoader:
 
                 seccion_id = seccion_result[0]["seccion_id"]
 
-                # Verificar que alumno está en la sección
                 alumno_seccion = execute_query(
                     check_alumno_seccion_by_seccion, (alumno_id, seccion_id), fetch=True
                 )
@@ -592,7 +587,6 @@ class JsonLoader:
 
                 alumno_seccion_id = alumno_seccion[0]["id"]
 
-                # Obtener la instancia de evaluación
                 instancia_evaluacion = execute_query(
                     get_instancia_evaluacion_by_offset,
                     (topico_id, instancia_num - 1),
@@ -606,14 +600,14 @@ class JsonLoader:
 
                 instancia_id = instancia_evaluacion[0]["id"]
 
-                # Validar nota
+
                 nota_valor = float(nota_data["nota"])
                 if nota_valor < NOTA_MIN or nota_valor > NOTA_MAX:
                     raise ValueError(
                         f"La nota debe estar entre 1.0 y 7.0. Valor: {nota_valor}"
                     )
 
-                # Insertar o actualizar nota
+
                 existing = execute_query(
                     check_nota_exists, (alumno_seccion_id, instancia_id), fetch=True
                 )
