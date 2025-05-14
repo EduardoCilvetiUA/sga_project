@@ -84,6 +84,6 @@ def delete(id):
 @bp.route("/<int:id>/view")
 def view(id):
     alumno = Alumno.get_by_id(id)
-    secciones = Alumno.get_sections(id)
+    secciones = Alumno.get_secciones(id)
 
     return render_template("alumnos/view.html", alumno=alumno, secciones=secciones)

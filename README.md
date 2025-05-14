@@ -11,6 +11,14 @@ Este proyecto implementa un sistema de gestión académica centrado en el regist
 - Gestión de secciones
 - Sistema de evaluación flexible (tópicos e instancias)
 - Registro y cálculo de notas
+- **Gestión completa de salas de clases (CRUD)**
+- **Sistema de horarios con validaciones**
+- **Carga masiva de datos en formato JSON**
+- **Generación automática de horarios**
+- **Visualización de horarios en calendario**
+- **Exportación de horarios a Excel**
+- **Control de capacidad de salas**
+- **Créditos y estado de los cursos**
 
 ## Requisitos técnicos
 
@@ -126,11 +134,16 @@ Para ejecutar la aplicación utilizando Docker, siga los siguientes pasos:
 - `routes/`: Contiene las rutas de la aplicación
 - `templates/`: Contiene las plantillas HTML
 - `static/`: Contiene los recursos estáticos (CSS, JS, etc.)
+- **`utils/`**: Contiene utilidades del sistema
+  - **Generador de horarios**: Archivo para la generación automática de horarios
+  - **Cargador de JSON**: Archivo para procesar las cargas masivas de datos en formato JSON
 
 ## Estructuras clave
 
 ### Cursos
-Los cursos tienen código, nombre y pueden tener requisitos (otros cursos).
+Los cursos tienen código, nombre y pueden tener requisitos (otros cursos). **Nuevos atributos**:
+- **`creditos`**: Número de créditos académicos (por defecto: 2)
+- **`cerrado`**: Indica si el curso está cerrado para inscripción (por defecto: false)
 
 ### Instancias de Cursos
 Representan un curso dictado en un periodo específico (año y semestre).
@@ -153,6 +166,196 @@ Registro de las calificaciones de los alumnos en cada instancia de evaluación.
 ### Cursos Aprobados
 Registro de los cursos que los alumnos han completado, incluyendo la nota final, si fue aprobado o no, y la fecha de aprobación. Esta estructura es fundamental para el seguimiento del historial académico de los estudiantes.
 
+### **Nuevas estructuras**
+
+### Salas de Clases
+- **`id`**: Identificador único
+- **`nombre`**: Nombre de la sala (único)
+- **`capacidad`**: Número máximo de estudiantes (debe ser mayor a 0)
+
+### Horarios
+- **`id`**: Identificador único  
+- **`seccion_id`**: Referencia a la sección
+- **`sala_id`**: Referencia a la sala asignada
+- **`dia`**: Día de la semana (Lunes-Viernes)
+- **`hora_inicio`**: Hora de inicio de la clase
+- **`hora_fin`**: Hora de término de la clase
+
+#### Validaciones de horarios:
+- El horario debe estar entre 09:00 y 18:00
+- La hora de inicio debe ser anterior a la hora de fin
+- Se prohíben clases que crucen el horario de almuerzo (13:00-14:00)
+- Cada sala puede tener solo un horario por día y hora específica
+
+## Formatos de datos para carga masiva
+
+### Formato JSON para Alumnos
+```json
+{
+  "alumnos": [
+    {
+      "id": 1,
+      "nombre": "Juan Pérez",
+      "correo": "juan.perez@ejemplo.com",
+      "anio_ingreso": 2023
+    }
+  ]
+}
+```
+
+### Formato JSON para Profesores
+```json
+{
+  "profesores": [
+    {
+      "id": 1,
+      "nombre": "María González",
+      "correo": "maria.gonzalez@ejemplo.com"
+    }
+  ]
+}
+```
+
+### Formato JSON para Cursos
+```json
+{
+  "cursos": [
+    {
+      "id": 20,
+      "codigo": "ICC1001",
+      "descripcion": "Introducción a la Programación",
+      "requisitos": [],
+      "creditos": 2
+    },
+    {
+      "id": 19,
+      "codigo": "ICC1002",
+      "descripcion": "Estructuras de Datos",
+      "requisitos": [
+        "ICC1001"
+      ],
+      "creditos": 1
+    }
+  ]
+}
+```
+
+### Formato JSON para Salas
+```json
+{
+  "salas": [
+    {
+      "id": 1,
+      "nombre": "Reloj 102",
+      "capacidad": 17
+    },
+    {
+      "id": 2,
+      "nombre": "Ciencias 506",
+      "capacidad": 45
+    }
+  ]
+}
+```
+
+### Formato JSON para Instancias de Curso
+```json
+{
+  "año": 2025,
+  "semestre": 1,
+  "instancias": [
+    {
+      "id": 1,
+      "curso_id": 20
+    },
+    {
+      "id": 2,
+      "curso_id": 19
+    }
+  ]
+}
+```
+
+### Formato JSON para Secciones con Evaluación
+```json
+{
+  "secciones": [
+    {
+      "id": 1,
+      "instancia_curso": 1,
+      "profesor_id": 5,
+      "evaluacion": {
+        "tipo": "porcentaje",
+        "combinacion_topicos": [
+          {
+            "id": 1,
+            "nombre": "Pruebas",
+            "valor": 30.0
+          },
+          {
+            "id": 2,
+            "nombre": "Proyecto",
+            "valor": 70.0
+          }
+        ],
+        "topicos": {
+          "1": {
+            "id": 1,
+            "cantidad": 2,
+            "tipo": "porcentaje",
+            "valores": [50.0, 50.0],
+            "obligatorias": [true, true]
+          },
+          "2": {
+            "id": 2,
+            "cantidad": 3,
+            "tipo": "peso",
+            "valores": [1, 2, 2],
+            "obligatorias": [true, false, true]
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+### Formato JSON para Alumnos por Sección
+```json
+{
+  "alumnos_seccion": [
+    {
+      "seccion_id": 1,
+      "alumno_id": 1
+    },
+    {
+      "seccion_id": 1,
+      "alumno_id": 2
+    }
+  ]
+}
+```
+
+### Formato JSON para Notas
+```json
+{
+  "notas": [
+    {
+      "alumno_id": 1,
+      "topico_id": 1,
+      "instancia": 1,
+      "nota": 6.3
+    },
+    {
+      "alumno_id": 1,
+      "topico_id": 2,
+      "instancia": 1,
+      "nota": 4.9
+    }
+  ]
+}
+```
+
 ## Aclaraciones sobre el sistema de evaluación
 
 - Cada tópico de evaluación tiene un porcentaje o peso del total de la nota final, según la configuración de la sección
@@ -170,12 +373,27 @@ Registro de los cursos que los alumnos han completado, incluyendo la nota final,
 - **Crear un curso**: 
   - Introduzca un código único (Ejemplo: ICC5130)
   - Añada el nombre del curso
+  - **Especifique el número de créditos (por defecto: 2)**
+  - **Marque si el curso está cerrado para inscripción**
 - **Requisitos**: En la vista detallada de un curso específico, puede agregar los requisitos previos para ese curso.
 
 ### Gestión de Profesores y Alumnos
 - **Acceder**: Seleccione el tópico correspondiente en el navbar o en la página de inicio.
 - **Operaciones**: Se pueden realizar todas las acciones CRUD.
 - **Crear**: Complete todos los datos requeridos y el usuario será creado.
+
+### **Carga Masiva de Datos**
+- **Acceder**: Desde el navbar o la página de inicio, sección "Carga Masiva de Datos".
+- **Funcionalidades disponibles**:
+  - Carga de alumnos en masa
+  - Carga de profesores en masa
+  - Carga de cursos y prerrequisitos en masa
+  - Carga de salas en masa
+  - Carga de instancias de curso en masa
+  - Carga de secciones en masa
+  - Carga de inscripciones de alumnos en secciones
+  - Carga de notas en masa
+- **Importante**: Cada tipo de carga requiere un formato JSON específico. Si el formato no es correcto, el sistema mostrará un error indicando la estructura esperada.
 
 ### Gestión de Instancias de Curso
 - **Acceder**: Vaya desde el navbar o la página de inicio.
@@ -193,6 +411,50 @@ Registro de los cursos que los alumnos han completado, incluyendo la nota final,
   - Dentro de una sección creada, puede agregar profesores y alumnos existentes
   - Los alumnos solo pueden inscribirse si han aprobado los cursos requisito o si el curso no tiene requisitos
 - **Detalles**: En la vista detallada de la sección puede editar, eliminar, agregar tópicos de evaluación y ver las notas específicas.
+
+### **Gestión de Salas** (CRUD completo)
+- **Acceder**: Desde el navbar o la página de inicio.
+- **Operaciones**: Se pueden realizar todas las acciones CRUD.
+- **Crear**:
+  - Asigne un nombre único a la sala
+  - Especifique la capacidad máxima (debe ser mayor a 0)
+- **Gestión**: Las salas se pueden asociar a horarios específicos de las secciones.
+
+### **Sistema de Gestión de Horarios**
+- **Acceder**: Desde el navbar, sección "Gestión de Horarios".
+- **Funcionalidades principales**:
+
+#### Generar Horarios (Automático)
+- **Función**: Asignar automáticamente horarios a todas las secciones sin conflictos
+- **Operación**: 
+  - Seleccione el año y período académico
+  - Haga clic en "Generar Horarios"
+  - El sistema asignará automáticamente horarios a todas las secciones
+- **Algoritmo de generación**:
+  - Considera la disponibilidad de salas según su capacidad
+  - Evita conflictos de profesores y alumnos
+  - Respeta el número de créditos de cada curso (máximo 4 horas consecutivas)
+  - Horarios permitidos: Lunes a Viernes, 9:00 a 18:00 (excepto 13:00-14:00)
+  - Las secciones con más de 4 créditos no se programarán
+  - Las secciones sin profesores asignados no se programarán
+
+#### Ver Horarios
+- **Función**: Visualizar horarios existentes en formato calendario
+- **Operación**: Seleccione el año y período para ver todos los horarios en una vista de calendario
+- **Filtros disponibles**:
+  - Por día de la semana
+  - Por sala específica
+  - Por curso específico
+  - Por profesor específico
+
+#### Exportar a Excel
+- **Función**: Descargar horarios en formato Excel
+- **Operación**: Seleccione el año y período, el sistema generará automáticamente un archivo Excel con todos los horarios
+- **Contenido del archivo**: 
+  - Hoja "Horarios": Todos los horarios generales
+  - Hoja "Salas": Horarios organizados por sala
+  - Hoja "Cursos": Horarios organizados por curso y sección
+  - Hoja "Profesores": Horarios organizados por profesor
 
 ### Gestión de Tópicos de Evaluación
 - **Acceder**: Dentro de la vista de sección, use el botón "Añadir Tópico de Evaluación".

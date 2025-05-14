@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Carga de Cursos - SGA{% endblock %}
+
+{% block header %}Carga de Cursos{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        Seleccionar archivo JSON
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="archivo" class="required">Archivo JSON:</label>
+                <input type="file" class="form-control" name="archivo" id="archivo" accept=".json" required>
+                <small class="form-text text-muted">El archivo debe tener formato JSON con la estructura adecuada para cursos.</small>
+            </div>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Cargar</button>
+                <a href="{{ url_for('cargas.index') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

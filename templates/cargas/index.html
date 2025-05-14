@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block header %}Carga Masiva de Datos{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Alumnos</h5>
+                <p class="card-text">Carga masiva de datos de alumnos.</p>
+                <a href="{{ url_for('cargas.cargar_alumnos') }}" class="btn btn-primary">Cargar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Profesores</h5>
+                <p class="card-text">Carga masiva de datos de profesores.</p>
+                <a href="{{ url_for('cargas.cargar_profesores') }}" class="btn btn-primary">Cargar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Cursos</h5>
+                <p class="card-text">Carga masiva de datos de cursos y prerrequisitos.</p>
+                <a href="{{ url_for('cargas.cargar_cursos') }}" class="btn btn-primary">Cargar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Salas</h5>
+                <p class="card-text">Carga masiva de datos de salas de clases.</p>
+                <a href="{{ url_for('cargas.cargar_salas') }}" class="btn btn-primary">Cargar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Instancias de Cursos</h5>
+                <p class="card-text">Carga masiva de instancias de cursos.</p>
+                <a href="{{ url_for('cargas.cargar_instancias') }}" class="btn btn-primary">Cargar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Secciones</h5>
+                <p class="card-text">Carga masiva de secciones con configuración de evaluación.</p>
+                <a href="{{ url_for('cargas.cargar_secciones') }}" class="btn btn-primary">Cargar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Alumnos por Sección</h5>
+                <p class="card-text">Carga masiva de inscripciones de alumnos en secciones.</p>
+                <a href="{{ url_for('cargas.cargar_alumnos_seccion') }}" class="btn btn-primary">Cargar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Notas</h5>
+                <p class="card-text">Carga masiva de notas de alumnos.</p>
+                <a href="{{ url_for('cargas.cargar_notas') }}" class="btn btn-primary">Cargar</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

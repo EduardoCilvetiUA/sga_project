@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block header %}Detalle de Sala{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        Información de la Sala
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ sala.nombre }}</h5>
+        <p class="card-text"><strong>Capacidad:</strong> {{ sala.capacidad }} personas</p>
+        
+        <div class="mt-3">
+            <a href="{{ url_for('salas.edit', id=sala.id) }}" class="btn btn-warning">Editar</a>
+            <form action="{{ url_for('salas.delete', id=sala.id) }}" method="post" class="d-inline">
+                <button type="button" class="btn btn-danger delete-button">Eliminar</button>
+            </form>
+            <a href="{{ url_for('salas.index') }}" class="btn btn-secondary">Volver</a>
+        </div>
+    </div>
+</div>
+
+{% if horarios %}
+<div class="card">
+    <div class="card-header">
+        Horarios Asignados
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Día</th>
+                        <th>Hora Inicio</th>
+                        <th>Hora Fin</th>
+                        <th>Curso</th>
+                        <th>Sección</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for horario in horarios %}
+                    <tr>
+                        <td>{{ horario.dia }}</td>
+                        <td>{{ horario.hora_inicio }}</td>
+                        <td>{{ horario.hora_fin }}</td>
+                        <td>{{ horario.curso_codigo }} - {{ horario.curso_nombre }}</td>
+                        <td>{{ horario.seccion_numero }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">
+    No hay horarios asignados a esta sala.
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        delete_pop_up('.delete-button', '¿Estás seguro que deseas eliminar esta sala?');
+    });
+</script>
+{% endblock %}

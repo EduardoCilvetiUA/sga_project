@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block header %}Horarios: {{ anio }} - {{ periodo }}{% endblock %}
+
+{% block content %}
+{% if horarios %}
+<div class="card mb-4">
+    <div class="card-header">
+        Horarios por día
+    </div>
+    <div class="card-body">
+        <!-- Filtros -->
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <select id="filtro-dia" class="form-select">
+                    <option value="">Todos los días</option>
+                    <option value="Lunes">Lunes</option>
+                    <option value="Martes">Martes</option>
+                    <option value="Miércoles">Miércoles</option>
+                    <option value="Jueves">Jueves</option>
+                    <option value="Viernes">Viernes</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="filtro-sala" class="form-select">
+                    <option value="">Todas las salas</option>
+                    {% set salas = [] %}
+                    {% for horario in horarios %}
+                        {% if horario.sala_nombre not in salas %}
+                            <option value="{{ horario.sala_nombre }}">{{ horario.sala_nombre }}</option>
+                            {% set _ = salas.append(horario.sala_nombre) %}
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="filtro-curso" class="form-select">
+                    <option value="">Todos los cursos</option>
+                    {% set cursos = [] %}
+                    {% for horario in horarios %}
+                        {% if horario.curso_codigo not in cursos %}
+                            <option value="{{ horario.curso_codigo }}">{{ horario.curso_codigo }}</option>
+                            {% set _ = cursos.append(horario.curso_codigo) %}
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="filtro-profesor" class="form-select">
+                    <option value="">Todos los profesores</option>
+                    {% set profesores = [] %}
+                    {% for horario in horarios %}
+                        {% if horario.profesor_nombre and horario.profesor_nombre not in profesores %}
+                            <option value="{{ horario.profesor_nombre }}">{{ horario.profesor_nombre }}</option>
+                            {% set _ = profesores.append(horario.profesor_nombre) %}
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Tabla de horarios -->
+        <div class="table-responsive">
+            <table class="table table-striped" id="tabla-horarios">
+                <thead>
+                    <tr>
+                        <th>Día</th>
+                        <th>Hora</th>
+                        <th>Sala</th>
+                        <th>Curso</th>
+                        <th>Sección</th>
+                        <th>Profesor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for horario in horarios %}
+                    <tr 
+                        data-dia="{{ horario.dia }}" 
+                        data-sala="{{ horario.sala_nombre }}" 
+                        data-curso="{{ horario.curso_codigo }}" 
+                        data-profesor="{{ horario.profesor_nombre }}">
+                        <td>{{ horario.dia }}</td>
+                        <td>{{ horario.hora_inicio }} - {{ horario.hora_fin }}</td>
+                        <td>{{ horario.sala_nombre }}</td>
+                        <td>{{ horario.curso_codigo }} - {{ horario.curso_nombre }}</td>
+                        <td>{{ horario.seccion_numero }}</td>
+                        <td>{{ horario.profesor_nombre }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <a href="{{ url_for('horarios.index') }}" class="btn btn-primary">Volver</a>
+    </div>
+    <div class="col-md-6 text-end">
+        <form action="{{ url_for('horarios.exportar') }}" method="post">
+            <input type="hidden" name="anio" value="{{ anio }}">
+            <input type="hidden" name="periodo" value="{{ periodo }}">
+            <button type="submit" class="btn btn-success">Exportar a Excel</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Función para aplicar los filtros
+        function aplicarFiltros() {
+            const filtroDia = document.getElementById('filtro-dia').value;
+            const filtroSala = document.getElementById('filtro-sala').value;
+            const filtroCurso = document.getElementById('filtro-curso').value;
+            const filtroProfesor = document.getElementById('filtro-profesor').value;
+            
+            const filas = document.querySelectorAll('#tabla-horarios tbody tr');
+            
+            filas.forEach(fila => {
+                const dia = fila.getAttribute('data-dia');
+                const sala = fila.getAttribute('data-sala');
+                const curso = fila.getAttribute('data-curso');
+                const profesor = fila.getAttribute('data-profesor');
+                
+                const mostrarDia = filtroDia === '' || dia === filtroDia;
+                const mostrarSala = filtroSala === '' || sala === filtroSala;
+                const mostrarCurso = filtroCurso === '' || curso === filtroCurso;
+                const mostrarProfesor = filtroProfesor === '' || profesor === filtroProfesor;
+                
+                if (mostrarDia && mostrarSala && mostrarCurso && mostrarProfesor) {
+                    fila.style.display = '';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        }
+        
+        // Aplicar filtros al cambiar selección
+        document.getElementById('filtro-dia').addEventListener('change', aplicarFiltros);
+        document.getElementById('filtro-sala').addEventListener('change', aplicarFiltros);
+        document.getElementById('filtro-curso').addEventListener('change', aplicarFiltros);
+        document.getElementById('filtro-profesor').addEventListener('change', aplicarFiltros);
+    });
+</script>
+{% else %}
+<div class="alert alert-info">
+    No hay horarios asignados para el año {{ anio }}, período {{ periodo }}.
+</div>
+<a href="{{ url_for('horarios.index') }}" class="btn btn-primary">Volver</a>
+{% endif %}
+{% endblock %}

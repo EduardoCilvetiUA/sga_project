@@ -39,7 +39,7 @@
   <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <span>Profesores</span>
-        <a href="{{ url_for('secciones.assign_professor', id=seccion.id) }}" class="btn btn-sm btn-primary">
+        <a href="{{ url_for('secciones.assign_profesor', id=seccion.id) }}" class="btn btn-sm btn-primary">
             Asignar Profesor
         </a>
     </div>
@@ -49,7 +49,7 @@
             {% for profesor in profesores %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 {{ profesor.nombre }} ({{ profesor.correo }})
-                <form action="{{ url_for('secciones.remove_professor', id=seccion.id, profesor_id=profesor.id) }}" method="post" class="d-inline form-eliminar">
+                <form action="{{ url_for('secciones.remove_profesor', id=seccion.id, profesor_id=profesor.id) }}" method="post" class="d-inline form-eliminar">
                     <button type="button" class="btn btn-sm btn-danger btn-action delete-professor" data-id="{{ profesor.id }}">
                         Quitar
                     </button>
@@ -66,7 +66,7 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <span>Alumnos</span>
-        <a href="{{ url_for('secciones.enroll_student', id=seccion.id) }}" class="btn btn-sm btn-primary">
+        <a href="{{ url_for('secciones.enroll_alumno', id=seccion.id) }}" class="btn btn-sm btn-primary">
             Inscribir Alumno
         </a>
     </div>
@@ -87,7 +87,7 @@
                         <td>{{ alumno.nombre }}</td>
                         <td>{{ alumno.correo }}</td>
                         <td>
-                            <form action="{{ url_for('secciones.unenroll_student', id=seccion.id, alumno_id=alumno.id) }}" method="post" class="d-inline form-eliminar">
+                            <form action="{{ url_for('secciones.unenroll_alumno', id=seccion.id, alumno_id=alumno.id) }}" method="post" class="d-inline form-eliminar">
                                 <button type="button" class="btn btn-sm btn-danger btn-action delete-student" data-id="{{ alumno.id }}">
                                     Quitar
                                 </button>

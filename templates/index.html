@@ -73,5 +73,35 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Salas</h5>
+                <p class="card-text">Administra las salas de clases y su capacidad.</p>
+                <a href="{{ url_for('salas.index') }}" class="btn btn-primary">Administrar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Carga Masiva</h5>
+                <p class="card-text">Importar datos masivamente desde archivos JSON.</p>
+                <a href="{{ url_for('cargas.index') }}" class="btn btn-primary">Administrar</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Horarios</h5>
+                <p class="card-text">Genera y administra la asignación de horarios.</p>
+                <a href="{{ url_for('horarios.index') }}" class="btn btn-primary">Administrar</a>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

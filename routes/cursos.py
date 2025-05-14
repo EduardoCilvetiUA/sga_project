@@ -78,7 +78,7 @@ def delete(id):
 @bp.route("/<int:id>/view")
 def view(id):
     curso = Curso.get_by_id(id)
-    prerequisitos = Curso.get_prerequisites(id)
+    prerequisitos = Curso.get_prerequisitos(id)
     cursos_disponibles = [c for c in Curso.get_all() if c["id"] != id]
 
     return render_template(
@@ -89,12 +89,12 @@ def view(id):
     )
 
 
-@bp.route("/<int:id>/add_prerequisite", methods=("POST",))
-def add_prerequisite(id):
+@bp.route("/<int:id>/add_prerequisito", methods=("POST",))
+def add_prerequisito(id):
     prerequisito_id = request.form["prerequisito_id"]
 
     try:
-        Curso.add_prerequisite(id, prerequisito_id)
+        Curso.add_prerequisito(id, prerequisito_id)
         flash("Prerequisito añadido exitosamente!")
     except Exception as e:
         flash(f"Error al añadir el prerequisito: {e}")
@@ -102,12 +102,34 @@ def add_prerequisite(id):
     return redirect(url_for("cursos.view", id=id))
 
 
-@bp.route("/<int:id>/remove_prerequisite/<int:prerequisito_id>", methods=("POST",))
-def remove_prerequisite(id, prerequisito_id):
+@bp.route("/<int:id>/remove_prerequisito/<int:prerequisito_id>", methods=("POST",))
+def remove_prerequisito(id, prerequisito_id):
     try:
-        Curso.remove_prerequisite(id, prerequisito_id)
+        Curso.remove_prerequisito(id, prerequisito_id)
         flash("Prerequisito eliminado exitosamente!")
     except Exception as e:
         flash(f"Error al eliminar el prerequisito: {e}")
+
+    return redirect(url_for("cursos.view", id=id))
+
+
+@bp.route("/<int:id>/close", methods=("POST",))
+def close(id):
+    try:
+        Curso.close(id)
+        flash("Curso cerrado exitosamente. No se podrán realizar cambios.")
+    except Exception as e:
+        flash(f"Error al cerrar el curso: {e}")
+
+    return redirect(url_for("cursos.view", id=id))
+
+
+@bp.route("/<int:id>/reopen", methods=("POST",))
+def reopen(id):
+    try:
+        Curso.reopen(id)
+        flash("Curso reabierto exitosamente. Se podrán realizar cambios.")
+    except Exception as e:
+        flash(f"Error al reabrir el curso: {e}")
 
     return redirect(url_for("cursos.view", id=id))

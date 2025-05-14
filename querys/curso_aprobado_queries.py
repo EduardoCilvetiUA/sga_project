@@ -1,17 +1,17 @@
-get_courses_approved_by_student = """
+get_cursos_aprobados_by_alumno = """
     SELECT ca.*, c.codigo, c.nombre
     FROM cursos_aprobados ca
     JOIN cursos c ON ca.curso_id = c.id
     WHERE ca.alumno_id = %s
     ORDER BY ca.fecha_aprobacion DESC
 """
-get_approved_course_by_id = """
+get_curso_aprobado_by_id = """
     SELECT ca.*, c.codigo, c.nombre
     FROM cursos_aprobados ca
     JOIN cursos c ON ca.curso_id = c.id
     WHERE ca.id = %s
 """
-check_course_passed_by_student = """
+check_curso_aprobado_by_alumno = """
     SELECT * 
     FROM cursos_aprobados
     WHERE alumno_id = %s AND curso_id = %s AND aprobado = TRUE
@@ -30,18 +30,18 @@ create_record = """
     (alumno_id, curso_id, seccion_id, nota_final, aprobado, fecha_aprobacion)
     VALUES (%s, %s, %s, %s, %s, %s)
 """
-delete_approved_course = "DELETE FROM cursos_aprobados WHERE id = %s"
-get_course_id = """
+delete_curso_aprobado = "DELETE FROM cursos_aprobados WHERE id = %s"
+get_curso_id = """
     SELECT ic.curso_id 
     FROM secciones s
     JOIN instancias_curso ic ON s.instancia_curso_id = ic.id
     WHERE s.id = %s
 """
-get_students_id_by_alumno_and_seccion = """
+get_alumno_seccion_id = """
     SELECT id FROM alumno_seccion
     WHERE alumno_id = %s AND seccion_id = %s
 """
-calculate_student_final_grade = """
+calculate_nota_final_by_alumno = """
     SELECT COALESCE(AVG(n.nota), 0) AS nota_final
     FROM notas n
     JOIN instancias_evaluacion ie ON n.instancia_evaluacion_id = ie.id

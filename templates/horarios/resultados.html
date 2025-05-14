@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block header %}Resultados de Generación de Horarios{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        Resumen de la generación
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card bg-light mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Total Secciones</h5>
+                        <p class="card-text display-4">{{ resultados.total }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Horarios Asignados</h5>
+                        <p class="card-text display-4">{{ resultados.asignados }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-danger text-white mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">No Asignados</h5>
+                        <p class="card-text display-4">{{ resultados.no_asignados }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if resultados.secciones_asignadas %}
+<div class="card mb-4">
+    <div class="card-header">
+        Horarios Asignados
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Curso</th>
+                        <th>Sección</th>
+                        <th>Sala</th>
+                        <th>Día</th>
+                        <th>Horario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seccion in resultados.secciones_asignadas %}
+                    <tr>
+                        <td>{{ seccion.curso_codigo }}</td>
+                        <td>{{ seccion.seccion_id }}</td>
+                        <td>{{ seccion.sala_nombre }}</td>
+                        <td>{{ seccion.dia }}</td>
+                        <td>{{ seccion.hora_inicio }} - {{ seccion.hora_fin }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if resultados.secciones_no_asignadas %}
+<div class="card mb-4">
+    <div class="card-header">
+        Secciones sin horario asignado
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Curso</th>
+                        <th>Sección</th>
+                        <th>Motivo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seccion in resultados.secciones_no_asignadas %}
+                    <tr>
+                        <td>{{ seccion.curso_codigo }}</td>
+                        <td>{{ seccion.seccion_id }}</td>
+                        <td>{{ seccion.motivo }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-6">
+        <a href="{{ url_for('horarios.index') }}" class="btn btn-primary">Volver</a>
+    </div>
+    <div class="col-md-6 text-end">
+        <form action="{{ url_for('horarios.exportar') }}" method="post">
+            <input type="hidden" name="anio" value="{{ anio }}">
+            <input type="hidden" name="periodo" value="{{ periodo }}">
+            <button type="submit" class="btn btn-success">Exportar a Excel</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
