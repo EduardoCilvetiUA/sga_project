@@ -135,7 +135,7 @@ def remove_profesor(id, profesor_id):
     return redirect(url_for("secciones.view", id=id))
 
 
-@bp.route("/<int:id>/enroll_student", methods=("GET", "POST"))
+@bp.route("/<int:id>/enroll_alumno", methods=("GET", "POST"))
 def enroll_alumno(id):
     seccion = Seccion.get_by_id(id)
     alumnos_inscritos = Seccion.get_alumnos(id)
@@ -155,14 +155,14 @@ def enroll_alumno(id):
                 flash(f"Error al inscribir al alumno: {e}")
 
     return render_template(
-        "secciones/enroll_student.html",
+        "secciones/enroll_alumno.html",
         seccion=seccion,
         alumnos_inscritos=alumnos_inscritos,
         alumnos_disponibles=alumnos_disponibles,
     )
 
 
-@bp.route("/<int:id>/unenroll_student/<int:alumno_id>", methods=("POST",))
+@bp.route("/<int:id>/unenroll_alumno/<int:alumno_id>", methods=("POST",))
 def unenroll_alumno(id, alumno_id):
     try:
         Seccion.unenroll_alumno(id, alumno_id)

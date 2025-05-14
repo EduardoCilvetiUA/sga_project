@@ -41,7 +41,7 @@
     </div>
     <div class="card-footer">
       <a href="{{ url_for('evaluaciones.edit_topic', id=topico['id']) }}" class="btn btn-warning">Editar</a>
-      <form action="{{ url_for('evaluaciones.delete_topic', id=topico['id']) }}" method="POST" class="d-inline form-eliminar">
+      <form action="{{ url_for('evaluaciones.delete_topico', id=topico['id']) }}" method="POST" class="d-inline form-eliminar">
         <button type="button" class="btn btn-sm btn-danger btn-action delete-evaluation-topic" data-id="{{ topico['id'] }}">
           Eliminar
         </button>
@@ -80,7 +80,7 @@
                 <td>{% if instancia['opcional'] %}Sí{% else %}No{% endif %}</td>
                 <td>
                   <a href="{{ url_for('evaluaciones.edit_instance', id=instancia['id']) }}" class="btn btn-sm btn-warning">Editar</a>
-                  <form action="{{ url_for('evaluaciones.delete_instance', id=instancia['id']) }}" method="POST" class="d-inline form-eliminar">
+                  <form action="{{ url_for('evaluaciones.delete_instancia', id=instancia['id']) }}" method="POST" class="d-inline form-eliminar">
                     <button type="button" class="btn btn-sm btn-danger btn-action delete-evaluation-instance" data-id="{{ instancia['id'] }}">
                       Eliminar
                     </button>

@@ -16,7 +16,7 @@
         <p class="card-text"><strong>Sección:</strong> {{ topico.numero }}</p>
         <div class="d-flex justify-content-end">
             <a href="{{ url_for('evaluaciones.edit_topic', id=topico.id) }}" class="btn btn-warning me-2">Editar</a>
-            <form action="{{ url_for('evaluaciones.delete_topic', id=topico.id) }}" method="post" class="d-inline form-eliminar">
+            <form action="{{ url_for('evaluaciones.delete_topico', id=topico.id) }}" method="post" class="d-inline form-eliminar">
                 <button type="button" class="btn btn-sm btn-danger btn-action delete-topic" data-id="{{ topico.id }}">
                     Eliminar
                 </button>
@@ -52,7 +52,7 @@
                         <td>{% if instancia.opcional %}Sí{% else %}No{% endif %}</td>
                         <td>
                             <a href="{{ url_for('evaluaciones.edit_instance', id=instancia.id) }}" class="btn btn-sm btn-warning">Editar</a>
-                            <form action="{{ url_for('evaluaciones.delete_instance', id=instancia.id) }}" class="d-inline form-eliminar">
+                            <form action="{{ url_for('evaluaciones.delete_instancia', id=instancia.id) }}" class="d-inline form-eliminar">
                                 <button type="button" class="btn btn-sm btn-danger btn-action delete-instance" data-id="{{ instancia.id }}">
                                     Eliminar
                                 </button>
