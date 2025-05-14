@@ -90,9 +90,7 @@ class TestIntegracion:
         assert seccion["numero"] == 1
 
     def test_04_asignar_profesor(self):
-        Seccion.assign_profesor(
-            TestIntegracion.seccion_id, TestIntegracion.profesor_id
-        )
+        Seccion.assign_profesor(TestIntegracion.seccion_id, TestIntegracion.profesor_id)
 
         profesores = Seccion.get_profesores(TestIntegracion.seccion_id)
         assert len(profesores) > 0

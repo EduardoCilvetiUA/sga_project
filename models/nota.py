@@ -109,7 +109,8 @@ class Nota:
         for topico, data in group_notas_by_topico.items():
             total_value = sum(instancia["valor"] for instancia in data["instancias"])
             weighted_sum = sum(
-                instancia["nota"] * instancia["valor"] for instancia in data["instancias"]
+                instancia["nota"] * instancia["valor"]
+                for instancia in data["instancias"]
             )
 
             if total_value > 0:
