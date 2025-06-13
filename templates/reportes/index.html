@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block header %}Sistema de Reportes{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Notas por Instancia de Tópico</h5>
+                <p class="card-text">
+                    Genera un reporte con las notas de una instancia específica de evaluación.
+                    <br><small class="text-muted">Ejemplo: Control 1 del tópico "Pruebas"</small>
+                </p>
+                <a href="{{ url_for('reportes.notas_instancia_topico') }}" class="btn btn-primary">
+                    <i class="bi bi-file-earmark-text"></i> Generar Reporte
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Notas Finales por Sección</h5>
+                <p class="card-text">
+                    Genera un reporte con las notas finales de una sección específica.
+                    <br><small class="text-muted">Solo disponible para cursos cerrados</small>
+                </p>
+                <a href="{{ url_for('reportes.notas_finales_seccion') }}" class="btn btn-primary">
+                    <i class="bi bi-file-earmark-spreadsheet"></i> Generar Reporte
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Certificado de Notas</h5>
+                <p class="card-text">
+                    Genera el certificado completo de notas de un alumno específico.
+                    <br><small class="text-muted">Incluye todos los cursos cerrados</small>
+                </p>
+                <a href="{{ url_for('reportes.certificado_notas') }}" class="btn btn-primary">
+                    <i class="bi bi-award"></i> Generar Certificado
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <h5><i class="bi bi-info-circle"></i> Información sobre los Reportes</h5>
+            <ul class="mb-0">
+                <li><strong>Notas por Instancia:</strong> Muestra todas las notas de una evaluación específica (ej: Control 1)</li>
+                <li><strong>Notas Finales:</strong> Solo disponible para cursos que han sido cerrados por el administrador</li>
+                <li><strong>Certificado:</strong> Historial académico completo del alumno con estadísticas</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

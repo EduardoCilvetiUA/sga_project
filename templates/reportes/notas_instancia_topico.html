@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Reporte de Notas por Instancia - SGA{% endblock %}
+
+{% block header %}Reporte: Notas por Instancia de Tópico{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Seleccionar Instancia de Evaluación</h5>
+                <form method="post">
+                    <div class="form-group">
+                        <label for="instancia_evaluacion_id" class="required">Instancia de Evaluación:</label>
+                        <select class="form-select" id="instancia_evaluacion_id" name="instancia_evaluacion_id" required>
+                            <option value="" disabled selected>Seleccionar instancia...</option>
+                            {% for instancia in instancias %}
+                            <option value="{{ instancia.id }}">{{ instancia.display_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">
+                            Seleccione la instancia de evaluación para la cual desea ver las notas.
+                        </small>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('reportes.index') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Volver a Reportes
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-file-earmark-text"></i> Generar Reporte
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if reporte %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-file-earmark-text"></i> 
+                    {{ reporte.info.curso_codigo }} - {{ reporte.info.topico_nombre }} - {{ reporte.info.instancia_nombre }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Información del reporte -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6>Información del Curso:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Curso:</strong> {{ reporte.info.curso_codigo }} - {{ reporte.info.curso_nombre }}</li>
+                            <li><strong>Período:</strong> {{ reporte.info.anio }}-{{ reporte.info.periodo }}</li>
+                            <li><strong>Sección:</strong> {{ reporte.info.seccion_numero }}</li>
+                            <li><strong>Tópico:</strong> {{ reporte.info.topico_nombre }}</li>
+                            <li><strong>Instancia:</strong> {{ reporte.info.instancia_nombre }}</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Estadísticas:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Total Alumnos:</strong> {{ reporte.info.total_alumnos }}</li>
+                            <li><strong>Promedio:</strong> {{ reporte.info.promedio }}</li>
+                            <li><strong>Nota Máxima:</strong> {{ reporte.info.nota_maxima }}</li>
+                            <li><strong>Nota Mínima:</strong> {{ reporte.info.nota_minima }}</li>
+                            <li><strong>Aprobados:</strong> {{ reporte.info.aprobados }} ({{ ((reporte.info.aprobados / reporte.info.total_alumnos) * 100) | round(1) }}%)</li>
+                            <li><strong>Reprobados:</strong> {{ reporte.info.reprobados }} ({{ ((reporte.info.reprobados / reporte.info.total_alumnos) * 100) | round(1) }}%)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Tabla de notas -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Alumno</th>
+                                <th>Correo</th>
+                                <th class="text-center">Nota</th>
+                                <th class="text-center">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for nota in reporte.notas %}
+                            <tr>
+                                <td>{{ nota.alumno_nombre }}</td>
+                                <td>{{ nota.alumno_correo }}</td>
+                                <td class="text-center">
+                                    <span class="badge {% if nota.nota >= 4.0 %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ nota.nota }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    {% if nota.nota >= 4.0 %}
+                                        <span class="badge bg-success">Aprobado</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Reprobado</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Botones de acción -->
+                <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-success me-2" onclick="window.print()">
+                        <i class="bi bi-printer"></i> Imprimir
+                    </button>
+                    <button class="btn btn-info" onclick="exportToCSV()">
+                        <i class="bi bi-download"></i> Exportar CSV
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function exportToCSV() {
+    const data = [
+        ['Alumno', 'Correo', 'Nota', 'Estado'],
+        {% for nota in reporte.notas %}
+        ['{{ nota.alumno_nombre }}', '{{ nota.alumno_correo }}', '{{ nota.nota }}', '{% if nota.nota >= 4.0 %}Aprobado{% else %}Reprobado{% endif %}'],
+        {% endfor %}
+    ];
+    
+    const csvContent = data.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '{{ reporte.info.curso_codigo }}_{{ reporte.info.topico_nombre }}_{{ reporte.info.instancia_nombre }}.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+</script>
+{% endif %}
+{% endblock %}

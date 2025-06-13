@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+
+{% block title %}Certificado de Notas - SGA{% endblock %}
+
+{% block header %}Certificado de Notas{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Seleccionar Alumno</h5>
+                <form method="post">
+                    <div class="form-group">
+                        <label for="alumno_id" class="required">Alumno:</label>
+                        <select class="form-select" id="alumno_id" name="alumno_id" required>
+                            <option value="" disabled selected>Seleccionar alumno...</option>
+                            {% for alumno in alumnos %}
+                            <option value="{{ alumno.id }}">{{ alumno.display_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">
+                            Seleccione el alumno para generar su certificado de notas.
+                        </small>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('reportes.index') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Volver a Reportes
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-award"></i> Generar Certificado
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if reporte %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header text-center bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-award"></i> CERTIFICADO DE NOTAS
+                </h4>
+            </div>
+            <div class="card-body">
+                <!-- Información del alumno -->
+                <div class="text-center mb-4">
+                    <h5>{{ reporte.alumno.nombre }}</h5>
+                    <p class="text-muted">{{ reporte.alumno.correo }}</p>
+                </div>
+                
+                <!-- Estadísticas generales -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">Resumen Académico</h6>
+                                <ul class="list-unstyled mb-0">
+                                    <li><strong>Total de Cursos:</strong> {{ reporte.estadisticas.total_cursos }}</li>
+                                    <li><strong>Cursos Aprobados:</strong> {{ reporte.estadisticas.cursos_aprobados }}</li>
+                                    <li><strong>Cursos Reprobados:</strong> {{ reporte.estadisticas.cursos_reprobados }}</li>
+                                    <li><strong>Promedio General:</strong> 
+                                        <span class="badge {% if reporte.estadisticas.promedio_general >= 4.0 %}bg-success{% else %}bg-danger{% endif %}">
+                                            {{ reporte.estadisticas.promedio_general }}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">Créditos Académicos</h6>
+                                <ul class="list-unstyled mb-0">
+                                    <li><strong>Total de Créditos:</strong> {{ reporte.estadisticas.total_creditos }}</li>
+                                    <li><strong>Créditos Aprobados:</strong> {{ reporte.estadisticas.creditos_aprobados }}</li>
+                                    <li><strong>Progreso:</strong> 
+                                        {% set progreso = (reporte.estadisticas.creditos_aprobados / reporte.estadisticas.total_creditos * 100) if reporte.estadisticas.total_creditos > 0 else 0 %}
+                                        <span class="badge bg-info">{{ progreso | round(1) }}%</span>
+                                    </li>
+                                    <li><strong>Tasa de Aprobación:</strong>
+                                        {% set tasa = (reporte.estadisticas.cursos_aprobados / reporte.estadisticas.total_cursos * 100) if reporte.estadisticas.total_cursos > 0 else 0 %}
+                                        <span class="badge {% if tasa >= 70 %}bg-success{% elif tasa >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ tasa | round(1) }}%
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Historial de cursos -->
+                <h6>Historial Académico Detallado</h6>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Curso</th>
+                                <th class="text-center">Créditos</th>
+                                <th class="text-center">Período</th>
+                                <th class="text-center">Sección</th>
+                                <th class="text-center">Nota Final</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-center">Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for curso in reporte.cursos %}
+                            <tr>
+                                <td><strong>{{ curso.curso_codigo }}</strong></td>
+                                <td>{{ curso.curso_nombre }}</td>
+                                <td class="text-center">{{ curso.creditos }}</td>
+                                <td class="text-center">{{ curso.periodo_nombre }}</td>
+                                <td class="text-center">{{ curso.seccion_numero }}</td>
+                                <td class="text-center">
+                                    <span class="badge {% if curso.aprobado %}bg-success{% else %}bg-danger{% endif %} fs-6">
+                                        {{ curso.nota_final }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    {% if curso.aprobado %}
+                                        <span class="badge bg-success">APROBADO</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">REPROBADO</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if curso.fecha_aprobacion %}
+                                        {{ curso.fecha_aprobacion.strftime('%Y-%m-%d') }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pie de certificado -->
+                <div class="text-center mt-4 pt-4 border-top">
+                    <p class="text-muted">
+                        <small>
+                            Este certificado incluye únicamente los cursos que han sido cerrados por la administración.<br>
+                            Generado el {{ moment().format('DD/MM/YYYY [a las] HH:mm') }} hrs.
+                        </small>
+                    </p>
+                </div>
+                
+                <!-- Botones de acción -->
+                <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-success me-2" onclick="window.print()">
+                        <i class="bi bi-printer"></i> Imprimir Certificado
+                    </button>
+                    <button class="btn btn-info" onclick="exportToCSV()">
+                        <i class="bi bi-download"></i> Exportar CSV
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function exportToCSV() {
+    const data = [
+        ['Alumno', '{{ reporte.alumno.nombre }}'],
+        ['Correo', '{{ reporte.alumno.correo }}'],
+        ['Promedio General', '{{ reporte.estadisticas.promedio_general }}'],
+        ['Total Cursos', '{{ reporte.estadisticas.total_cursos }}'],
+        ['Cursos Aprobados', '{{ reporte.estadisticas.cursos_aprobados }}'],
+        ['Total Créditos', '{{ reporte.estadisticas.total_creditos }}'],
+        ['Créditos Aprobados', '{{ reporte.estadisticas.creditos_aprobados }}'],
+        [],
+        ['Código', 'Curso', 'Créditos', 'Período', 'Sección', 'Nota Final', 'Estado', 'Fecha'],
+        {% for curso in reporte.cursos %}
+        ['{{ curso.curso_codigo }}', '{{ curso.curso_nombre }}', '{{ curso.creditos }}', '{{ curso.periodo_nombre }}', '{{ curso.seccion_numero }}', '{{ curso.nota_final }}', '{% if curso.aprobado %}APROBADO{% else %}REPROBADO{% endif %}', '{% if curso.fecha_aprobacion %}{{ curso.fecha_aprobacion.strftime("%Y-%m-%d") }}{% else %}-{% endif %}'],
+        {% endfor %}
+    ];
+    
+    const csvContent = data.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'certificado_{{ reporte.alumno.nombre.replace(" ", "_") }}.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+</script>
+{% endif %}
+{% endblock %}
