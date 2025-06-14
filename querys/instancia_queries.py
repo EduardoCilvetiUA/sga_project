@@ -20,3 +20,4 @@ delete_instancias_curso = "DELETE FROM instancias_curso WHERE id = %s"
 get_secciones_by_instancia_curso_id = (
     "SELECT * FROM secciones WHERE instancia_curso_id = %s ORDER BY numero"
 )
+is_instancia_cerrada = "SELECT cerrado FROM instancias_curso WHERE id = %s"

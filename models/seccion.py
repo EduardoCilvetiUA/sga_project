@@ -1,5 +1,6 @@
 from db import execute_query
 from models.curso_aprobado import CursoAprobado
+from models.instancia import Instancia
 from querys.seccion_queries import (
     get_all_secciones,
     get_seccion_by_id,

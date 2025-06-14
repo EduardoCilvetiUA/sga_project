@@ -10,7 +10,7 @@ update_profesor = "UPDATE profesores SET nombre = %s, correo = %s WHERE id = %s"
 insert_profesor = "INSERT INTO profesores (id, nombre, correo) VALUES (%s, %s, %s)"
 check_curso_exists = "SELECT id FROM cursos WHERE id = %s"
 update_curso = "UPDATE cursos SET codigo = %s, nombre = %s, creditos = %s WHERE id = %s"
-insert_curso = "INSERT INTO cursos (id, codigo, nombre, creditos, cerrado) VALUES (%s, %s, %s, %s, %s)"
+insert_curso = "INSERT INTO cursos (id, codigo, nombre, creditos) VALUES (%s, %s, %s, %s)"
 delete_prerequisitos = "DELETE FROM prerequisitos WHERE curso_id = %s"
 insert_prerequisito = (
     "INSERT INTO prerequisitos (curso_id, prerequisito_id) VALUES (%s, %s)"

@@ -134,7 +134,11 @@
                                 </td>
                                 <td class="text-center">
                                     {% if curso.fecha_aprobacion %}
-                                        {{ curso.fecha_aprobacion.strftime('%Y-%m-%d') }}
+                                        {% if curso.fecha_aprobacion is string %}
+                                            {{ curso.fecha_aprobacion }}
+                                        {% else %}
+                                            {{ curso.fecha_aprobacion.strftime('%Y-%m-%d') }}
+                                        {% endif %}
                                     {% else %}
                                         -
                                     {% endif %}
@@ -150,7 +154,7 @@
                     <p class="text-muted">
                         <small>
                             Este certificado incluye únicamente los cursos que han sido cerrados por la administración.<br>
-                            Generado el {{ moment().format('DD/MM/YYYY [a las] HH:mm') }} hrs.
+                            Generado el <span id="fecha-generacion"></span>.
                         </small>
                     </p>
                 </div>
@@ -170,6 +174,19 @@
 </div>
 
 <script>
+// Generar fecha actual
+document.addEventListener('DOMContentLoaded', function() {
+    const now = new Date();
+    const fechaGeneracion = now.toLocaleString('es-CL', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    document.getElementById('fecha-generacion').textContent = fechaGeneracion + ' hrs';
+});
+
 function exportToCSV() {
     const data = [
         ['Alumno', '{{ reporte.alumno.nombre }}'],
@@ -182,7 +199,7 @@ function exportToCSV() {
         [],
         ['Código', 'Curso', 'Créditos', 'Período', 'Sección', 'Nota Final', 'Estado', 'Fecha'],
         {% for curso in reporte.cursos %}
-        ['{{ curso.curso_codigo }}', '{{ curso.curso_nombre }}', '{{ curso.creditos }}', '{{ curso.periodo_nombre }}', '{{ curso.seccion_numero }}', '{{ curso.nota_final }}', '{% if curso.aprobado %}APROBADO{% else %}REPROBADO{% endif %}', '{% if curso.fecha_aprobacion %}{{ curso.fecha_aprobacion.strftime("%Y-%m-%d") }}{% else %}-{% endif %}'],
+        ['{{ curso.curso_codigo }}', '{{ curso.curso_nombre }}', '{{ curso.creditos }}', '{{ curso.periodo_nombre }}', '{{ curso.seccion_numero }}', '{{ curso.nota_final }}', '{% if curso.aprobado %}APROBADO{% else %}REPROBADO{% endif %}', '{% if curso.fecha_aprobacion %}{% if curso.fecha_aprobacion is string %}{{ curso.fecha_aprobacion }}{% else %}{{ curso.fecha_aprobacion.strftime("%Y-%m-%d") }}{% endif %}{% else %}-{% endif %}'],
         {% endfor %}
     ];
     

@@ -337,7 +337,6 @@ class JsonLoader:
                             curso["codigo"],
                             curso["descripcion"],
                             creditos,
-                            False,
                         ),
                     )
 

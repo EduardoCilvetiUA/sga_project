@@ -6,6 +6,7 @@ from querys.instancia_queries import (
     update_instancias_curso,
     delete_instancias_curso,
     get_secciones_by_instancia_curso_id,
+    is_instancia_cerrada,
 )
 
 
@@ -37,3 +38,13 @@ class Instancia:
         return execute_query(
             get_secciones_by_instancia_curso_id, (instancia_id,), fetch=True
         )
+
+    @staticmethod
+    def is_cerrada(instancia_id):
+        result = execute_query(is_instancia_cerrada, (instancia_id,), fetch=True)
+        return result[0]["cerrado"] if result else False
+
+    @staticmethod
+    def validate_not_cerrada(instancia_id, operation="operación"):
+        if Instancia.is_cerrada(instancia_id):
+            raise ValueError(f"No se puede realizar esta {operation} en una instancia cerrada")
