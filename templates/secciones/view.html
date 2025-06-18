@@ -32,7 +32,7 @@
         </button>
       </form>
       <a href="{{ url_for('evaluaciones.create', seccion_id=seccion['id']) }}" class="btn btn-info">Agregar Tópico de Evaluación</a>
-      <a href="{{ url_for('notas.section_grades', seccion_id=seccion['id']) }}" class="btn btn-success">Ver Notas</a>
+      <a href="{{ url_for('notas.grades_by_seccion', seccion_id=seccion['id']) }}" class="btn btn-success">Ver Notas</a>
     </div>
   </div>
 

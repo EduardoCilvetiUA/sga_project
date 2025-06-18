@@ -169,14 +169,14 @@ def delete(id):
 
 
 @bp.route("/student/<int:alumno_id>/section/<int:seccion_id>")
-def student_grades(alumno_id, seccion_id):
+def grades_by_alumno(alumno_id, seccion_id):
     alumno = Alumno.get_by_id(alumno_id)
     seccion = Seccion.get_by_id(seccion_id)
     notas = Nota.get_notas_by_alumno_seccion(alumno_id, seccion_id)
     nota_final = Nota.calculate_nota_final(alumno_id, seccion_id)
 
     return render_template(
-        "notas/student_grades.html",
+        "notas/grades_by_alumno.html",
         alumno=alumno,
         seccion=seccion,
         notas=notas,
@@ -185,7 +185,7 @@ def student_grades(alumno_id, seccion_id):
 
 
 @bp.route("/section/<int:seccion_id>")
-def section_grades(seccion_id):
+def grades_by_seccion(seccion_id):
     seccion = Seccion.get_by_id(seccion_id)
     alumnos = Seccion.get_alumnos(seccion_id)
     topicos = Evaluacion.get_topicos_by_seccion(seccion_id)
@@ -196,7 +196,7 @@ def section_grades(seccion_id):
         notas_finales[alumno["id"]] = nota_final
 
     return render_template(
-        "notas/section_grades.html",
+        "notas/grades_by_seccion.html",
         seccion=seccion,
         alumnos=alumnos,
         topicos=topicos,

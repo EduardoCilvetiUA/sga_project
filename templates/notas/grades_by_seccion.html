@@ -77,7 +77,7 @@
                   {% endif %}
                 </td>
                 <td>
-                  <a href="{{ url_for('notas.student_grades', alumno_id=alumno['id'], seccion_id=seccion['id']) }}" class="btn btn-sm btn-info">Ver Detalle</a>
+                  <a href="{{ url_for('notas.grades_by_alumno', alumno_id=alumno['id'], seccion_id=seccion['id']) }}" class="btn btn-sm btn-info">Ver Detalle</a>
                   <a href="{{ url_for('notas.create', seccion_id=seccion['id'], alumno_id=alumno['id']) }}" class="btn btn-sm btn-primary">Agregar Nota</a>
                 </td>
               </tr>
