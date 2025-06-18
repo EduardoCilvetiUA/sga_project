@@ -29,6 +29,7 @@
                 <td>{{ instancia.anio }}</td>
                 <td>{{ instancia.periodo }}</td>
                 <td>
+                    {% if not instancia.cerrada %}
                     <a href="{{ url_for('instancias.view', id=instancia.id) }}" class="btn btn-sm btn-info btn-action">
                         <i class="bi bi-eye"></i> Ver
                     </a>
@@ -40,6 +41,7 @@
                             <i class="bi bi-trash"></i> Eliminar
                         </button>
                     </form>
+                    {% endif %}
                 </td>
             </tr>
             {% else %}

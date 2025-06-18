@@ -46,7 +46,7 @@ def create():
 def edit(id):
     instancia = Instancia.get_by_id(id)
     cursos = Curso.get_all()
-
+    cerrada = Instancia.is_cerrada() 
     if request.method == "POST":
         curso_id = request.form["curso_id"]
         anio = request.form["anio"]
@@ -71,7 +71,7 @@ def edit(id):
 
         flash(error)
 
-    return render_template("instancias/edit.html", instancia=instancia, cursos=cursos)
+    return render_template("instancias/edit.html", instancia=instancia, cursos=cursos, cerrada=cerrada)
 
 
 @bp.route("/<int:id>/delete", methods=("POST",))
@@ -93,3 +93,4 @@ def view(id):
     return render_template(
         "instancias/view.html", instancia=instancia, secciones=secciones
     )
+
