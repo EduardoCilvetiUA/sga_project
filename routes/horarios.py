@@ -38,7 +38,7 @@ def generar():
             periodo = str(periodo)
 
             generator = HorarioGenerator()
-            resultados = generator.generar_horarios(anio, periodo)
+            resultados = generator.generate_horario(anio, periodo)
 
             if resultados["estado"] in ["no_secciones", "no_salas", "error"]:
                 flash(resultados["mensaje"])
@@ -75,7 +75,7 @@ def exportar():
         file_path = os.path.join("/tmp", filename)
 
         generator = HorarioGenerator()
-        resultados = generator.exportar_horarios_excel(anio, periodo, file_path)
+        resultados = generator.export_horarios_excel(anio, periodo, file_path)
 
         if resultados["estado"] != "exito":
             flash(resultados["mensaje"])

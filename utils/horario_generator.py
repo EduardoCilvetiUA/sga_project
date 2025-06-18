@@ -82,10 +82,10 @@ class HorarioGenerator:
         return self.check_disponibilidad(check_disponibilidad_alumno, alumno_id, dia, hora_inicio, hora_fin)
 
 
-    def asignar_horario(self, seccion_id, sala_id, dia, hora_inicio, hora_fin):
+    def assign_horario(self, seccion_id, sala_id, dia, hora_inicio, hora_fin):
         execute_query(create_horario, (seccion_id, sala_id, dia, hora_inicio, hora_fin))
 
-    def es_horario_valido(self, hora_inicio, hora_fin):
+    def is_valid_horario(self, hora_inicio, hora_fin):
         if hora_fin > self.hora_fin_dia:
             return False
         if hora_inicio < self.hora_almuerzo_inicio and hora_fin > self.hora_almuerzo_inicio:
@@ -93,7 +93,7 @@ class HorarioGenerator:
         return True
 
 
-    def generar_horarios(self, anio, periodo):
+    def generate_horario(self, anio, periodo):
         secciones = self.get_secciones_sin_horario(anio, periodo)
         salas = self.get_salas_disponibles()
         resultados = self._init_resultados(secciones, salas)
@@ -101,7 +101,7 @@ class HorarioGenerator:
             return resultados
 
         for seccion in secciones:
-            self._procesar_seccion(seccion, salas, resultados)
+            self._process_seccion(seccion, salas, resultados)
         return resultados
 
     def _init_resultados(self, secciones, salas):
@@ -135,28 +135,28 @@ class HorarioGenerator:
             "secciones_no_asignadas": [],
         }
 
-    def _procesar_seccion(self, seccion, salas, resultados):
+    def _process_seccion(self, seccion, salas, resultados):
         seccion_id = seccion["id"]
         curso_codigo = seccion["codigo"]
         curso_id = seccion["curso_id"]
         creditos = self.get_curso_creditos(curso_id)
 
         if creditos > 4:
-            self._registrar_no_asignado(resultados, seccion_id, curso_codigo, f"El curso tiene {creditos} créditos, excede el máximo de 4 horas consecutivas")
+            self._register_no_assign(resultados, seccion_id, curso_codigo, f"El curso tiene {creditos} créditos, excede el máximo de 4 horas consecutivas")
             return
 
         profesores = self.get_profesores_seccion(seccion_id)
         alumnos = self.get_alumnos_seccion(seccion_id)
 
         if not profesores:
-            self._registrar_no_asignado(resultados, seccion_id, curso_codigo, "La sección no tiene profesores asignados")
+            self._register_no_assign(resultados, seccion_id, curso_codigo, "La sección no tiene profesores asignados")
             return
 
-        horario_asignado = self._buscar_y_asignar_horario(seccion_id, curso_codigo, creditos, profesores, alumnos, salas, resultados)
+        horario_asignado = self._search_and_assign_horario(seccion_id, curso_codigo, creditos, profesores, alumnos, salas, resultados)
         if not horario_asignado:
-            self._registrar_no_asignado(resultados, seccion_id, curso_codigo, "No se encontró un horario disponible sin conflictos")
+            self._register_no_assign(resultados, seccion_id, curso_codigo, "No se encontró un horario disponible sin conflictos")
 
-    def _registrar_no_asignado(self, resultados, seccion_id, curso_codigo, motivo):
+    def _register_no_assign(self, resultados, seccion_id, curso_codigo, motivo):
         resultados["no_asignados"] += ADD_ONE
         resultados["secciones_no_asignadas"].append({
             "seccion_id": seccion_id,
@@ -164,21 +164,21 @@ class HorarioGenerator:
             "motivo": motivo,
         })
 
-    def _buscar_y_asignar_horario(self, seccion_id, curso_codigo, creditos, profesores, alumnos, salas, resultados):
+    def _search_and_assign_horario(self, seccion_id, curso_codigo, creditos, profesores, alumnos, salas, resultados):
         for dia in random.sample(self.dias, len(self.dias)):
             for hora_inicio_str in random.sample(self.horas_inicio, len(self.horas_inicio)):
                 hora_inicio = datetime.strptime(hora_inicio_str, "%H:%M").time()
                 hora_fin = (datetime.combine(datetime.today(), hora_inicio) + timedelta(hours=creditos)).time()
-                if not self.es_horario_valido(hora_inicio, hora_fin):
+                if not self.is_valid_horario(hora_inicio, hora_fin):
                     continue
                 for sala in salas:
-                    if self._puede_asignar(sala, alumnos, dia, hora_inicio, hora_fin, profesores):
-                        self.asignar_horario(seccion_id, sala["id"], dia, hora_inicio, hora_fin)
-                        self._registrar_asignado(resultados, seccion_id, curso_codigo, sala, dia, hora_inicio, hora_fin)
+                    if self._can_assign(sala, alumnos, dia, hora_inicio, hora_fin, profesores):
+                        self.assign_horario(seccion_id, sala["id"], dia, hora_inicio, hora_fin)
+                        self._register_assign(resultados, seccion_id, curso_codigo, sala, dia, hora_inicio, hora_fin)
                         return True
         return False
 
-    def _puede_asignar(self, sala, alumnos, dia, hora_inicio, hora_fin, profesores):
+    def _can_assign(self, sala, alumnos, dia, hora_inicio, hora_fin, profesores):
         if len(alumnos) > sala["capacidad"]:
             return False
         if not self.check_sala_disponible(sala["id"], dia, hora_inicio, hora_fin):
@@ -189,7 +189,7 @@ class HorarioGenerator:
             return False
         return True
 
-    def _registrar_asignado(self, resultados, seccion_id, curso_codigo, sala, dia, hora_inicio, hora_fin):
+    def _register_assign(self, resultados, seccion_id, curso_codigo, sala, dia, hora_inicio, hora_fin):
         resultados["asignados"] += ADD_ONE
         resultados["secciones_asignadas"].append({
             "seccion_id": seccion_id,
@@ -201,15 +201,15 @@ class HorarioGenerator:
             "hora_fin": hora_fin.strftime("%H:%M"),
         })
 
-    def exportar_horarios_excel(self, anio, periodo, file_path):
+    def export_horarios_excel(self, anio, periodo, file_path):
         try:
             horarios_db = execute_query(get_horarios_for_export, (anio, periodo), fetch=True)
             if not horarios_db:
                 return {"estado": "no_horarios", "mensaje": "No hay horarios para exportar"}
 
-            datos_procesados = [self._procesar_fila_horario(dict(row)) for row in horarios_db]
+            datos_procesados = [self._process_queue_horario(dict(row)) for row in horarios_db]
             df = pd.DataFrame(datos_procesados)
-            self._exportar_a_excel(df, file_path)
+            self._export_to_excel(df, file_path)
             return {
                 "estado": "exito",
                 "mensaje": f"Horarios exportados exitosamente a {file_path}",
@@ -223,7 +223,7 @@ class HorarioGenerator:
                 "detalle": error_trace,
             }
 
-    def _procesar_fila_horario(self, fila):
+    def _process_queue_horario(self, fila):
         for campo in ["hora_inicio", "hora_fin"]:
             if campo in fila and isinstance(fila[campo], timedelta):
                 total_segundos = fila[campo].total_seconds()
@@ -232,7 +232,7 @@ class HorarioGenerator:
                 fila[campo] = f"{horas:02d}:{minutos:02d}"
         return fila
 
-    def _exportar_a_excel(self, df, file_path):
+    def _export_to_excel(self, df, file_path):
         df_salas = df if "sala_nombre" not in df.columns else df.sort_values(["sala_nombre", "dia", "hora_inicio"])
         df_cursos = df if "curso_codigo" not in df.columns else df.sort_values(["curso_codigo", "seccion_numero", "dia", "hora_inicio"])
         df_profesores = df if "profesor_nombre" not in df.columns else df.sort_values(["profesor_nombre", "dia", "hora_inicio"])
