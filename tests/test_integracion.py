@@ -126,14 +126,14 @@ class TestIntegracion:
 
     def test_06_crear_topico_evaluacion(self):
         TestIntegracion.topico_id = Evaluacion.create_topico(
-            TestIntegracion.seccion_id, "Controles", 60.0
+            TestIntegracion.seccion_id, "Controles", 60.0, True
         )
         assert TestIntegracion.topico_id is not None
 
         topico = Evaluacion.get_topico_by_id(TestIntegracion.topico_id)
         assert topico["seccion_id"] == TestIntegracion.seccion_id
         assert topico["nombre"] == "Controles"
-        assert float(topico["porcentaje"]) == 60.0
+        assert float(topico["valor"]) == 60.0
 
     def test_07_crear_instancia_evaluacion(self):
         TestIntegracion.instancia_evaluacion_id = Evaluacion.create_instancia(
@@ -146,7 +146,7 @@ class TestIntegracion:
         )
         assert instancia["topico_id"] == TestIntegracion.topico_id
         assert instancia["nombre"] == "Control 1"
-        assert float(instancia["peso"]) == 1.0
+        assert float(instancia["valor"]) == 1.0
         assert instancia["opcional"] == 0
 
     def test_08_registrar_nota(self):
