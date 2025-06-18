@@ -115,12 +115,12 @@ Para ejecutar la aplicación utilizando Docker, siga los siguientes pasos:
 
 7. Para ejecutar pruebas dentro del contenedor:
    ```
-   docker exec -it sga2-web-1 pytest -v
+   docker exec -it sga_project-web-1 pytest -v
    ```
    
    Para ejecutar pruebas con cobertura:
    ```
-   docker exec -it sga2-web-1 pytest --cov=. tests/
+   docker exec -it sga_project-web-1 pytest --cov=. tests/
    ```
 
 ## Estructura del proyecto
@@ -484,3 +484,72 @@ Registro de los cursos que los alumnos han completado, incluyendo la nota final,
   - Seleccione la instancia de evaluación
   - Asigne la nota
 - **Visualizar**: Las notas específicas de una sección se pueden ver en los detalles de dicha sección.
+
+Claro, aquí tienes un texto en formato README, redactado en tercera persona, que explica las funcionalidades implementadas en la tercera parte del proyecto, tomando en cuenta las aclaraciones proporcionadas:
+
+## Nuevas Funcionalidades - Entrega 3
+
+### Cierre de Instancias de Curso
+
+#### **Funcionalidad de Cierre**
+- **Acceder**: Desde la vista detallada de una instancia de curso específica.
+- **Operación**: Utilice el botón "Cerrar Instancia" para finalizar el período académico.
+- **Proceso automático**:
+  - Al cerrar una instancia, el sistema calcula automáticamente las notas finales de todos los alumnos inscritos en las secciones correspondientes
+  - Las notas finales se generan basándose en la configuración de evaluación de cada sección (porcentaje o peso)
+  - Se considera el estado de todas las instancias de evaluación (obligatorias y opcionales)
+
+#### **Restricciones para Instancias Cerradas**
+Una vez que una instancia de curso está cerrada:
+- **No es posible editar** la información de la instancia
+- **No es posible modificar** las secciones asociadas a la instancia
+- **No se pueden agregar** nuevos tópicos de evaluación
+- **No se pueden modificar** las notas existentes
+- **No se pueden inscribir** nuevos alumnos
+- Estas restricciones garantizan la integridad de las notas finales calculadas
+
+### Sistema de Reportes
+
+#### **Reporte de Notas por Instancia de Tópico**
+- **Función**: Generar reporte de notas de una evaluación específica
+- **Ejemplo**: Notas de la "Entrega 2 del Proyecto" de la sección 1 del curso ICC5130 202501
+- **Acceso**: Desde la vista detallada de la instancia de evaluación correspondiente
+- **Contenido**: Lista de todos los alumnos con sus notas en esa evaluación específica
+
+#### **Reporte de Notas Finales por Sección**
+- **Función**: Generar reporte de notas finales de una sección completa
+- **Ejemplo**: Notas finales de la sección 1 de ICC5130 202501
+- **Restricción**: Solo disponible para cursos con instancias cerradas
+- **Acceso**: Desde la vista detallada de la sección
+- **Contenido**: Lista completa de alumnos con sus notas finales calculadas y estado de aprobación
+
+#### **Certificado de Notas del Alumno**
+- **Función**: Generar certificado académico completo de un estudiante
+- **Acceso**: Desde el perfil del alumno o sección de reportes
+- **Contenido incluido**:
+  - Todas las notas de cursos cerrados tomados por el alumno
+  - Nota final obtenida en cada curso
+  - Información del curso (código y nombre)
+  - Instancia específica (año/semestre)
+  - Sección cursada
+  - Fecha de cursado
+  - Estado de aprobación
+- **Formato**: Reporte ordenado cronológicamente para facilitar la revisión del historial académico
+
+### Manejo Robusto de Errores y Validaciones
+
+#### **Validación en Carga Masiva**
+El sistema cuenta con validación exhaustiva para la carga masiva de datos (implementado desde entregas anteriores):
+- **Validación de formato JSON**: Detecta automáticamente si el archivo no tiene el formato JSON correcto
+- **Validación de estructura**: Verifica que la estructura del JSON coincida con el formato esperado para cada tipo de carga
+- **Validación de datos**: Comprueba que los datos cumplan con las restricciones de la base de datos (valores únicos, tipos de datos, etc.)
+- **Mensajes de error específicos**: El sistema proporciona mensajes detallados indicando exactamente qué está mal en el archivo cargado
+- **Prevención de errores**: No hay problemas al equivocarse en subir un JSON incorrecto o con parámetros mal definidos, ya que el sistema identifica y reporta el error
+
+#### **Robustez General del Sistema**
+- **Validación de formularios**: Todos los formularios incluyen validación tanto en frontend como backend
+- **Manejo de excepciones**: El sistema captura y maneja apropiadamente todas las excepciones que puedan ocurrir
+- **Mensajes informativos**: Los usuarios reciben mensajes claros sobre cualquier error o problema encontrado
+- **Prevención de estados inconsistentes**: El sistema previene operaciones que podrían dejar la base de datos en un estado inconsistente
+- **Validación de integridad**: Se verifican todas las relaciones entre entidades antes de realizar operaciones
+- **Transacciones seguras**: Las operaciones críticas se realizan dentro de transacciones para garantizar consistencia

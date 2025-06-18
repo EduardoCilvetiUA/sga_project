@@ -11,6 +11,7 @@ from routes import (
     cargas,
     horarios,
     salas,
+    reportes,
 )
 
 app = Flask(__name__)
@@ -26,6 +27,7 @@ app.register_blueprint(notas.bp)
 app.register_blueprint(cargas.bp)
 app.register_blueprint(horarios.bp)
 app.register_blueprint(salas.bp)
+app.register_blueprint(reportes.bp)
 
 
 @app.route("/")

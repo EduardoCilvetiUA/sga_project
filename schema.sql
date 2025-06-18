@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS cursos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(10) NOT NULL,
     nombre VARCHAR(100) NOT NULL,
+    creditos INT NOT NULL DEFAULT 2,
     CONSTRAINT UC_curso UNIQUE (codigo)
 );
 
@@ -37,6 +38,7 @@ CREATE TABLE IF NOT EXISTS instancias_curso (
     curso_id INT NOT NULL,
     anio INT NOT NULL,
     periodo VARCHAR(2) NOT NULL,
+    cerrado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si esta instancia específica está cerrada',
     FOREIGN KEY (curso_id) REFERENCES cursos(id) ON DELETE CASCADE,
     CONSTRAINT UC_instancia UNIQUE (curso_id, anio, periodo)
 );
@@ -112,12 +114,6 @@ CREATE TABLE IF NOT EXISTS cursos_aprobados (
     CONSTRAINT UC_curso_aprobado UNIQUE (alumno_id, curso_id)
 );
 
-GRANT ALL PRIVILEGES ON sga_db.* TO 'sga_user'@'%';
-FLUSH PRIVILEGES;
-ALTER TABLE cursos 
-ADD COLUMN creditos INT NOT NULL DEFAULT 2,
-ADD COLUMN cerrado BOOLEAN NOT NULL DEFAULT FALSE;
-
 -- Crear tabla para salas de clases
 CREATE TABLE IF NOT EXISTS salas (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -145,7 +141,10 @@ CREATE TABLE IF NOT EXISTS horarios (
     CONSTRAINT UC_horario UNIQUE (sala_id, dia, hora_inicio)
 );
 
--- Índices para optimizar consultas
 CREATE INDEX idx_horario_seccion ON horarios(seccion_id);
 CREATE INDEX idx_horario_sala ON horarios(sala_id);
 CREATE INDEX idx_horario_tiempo ON horarios(dia, hora_inicio, hora_fin);
+CREATE INDEX idx_instancias_curso_cerrado ON instancias_curso(cerrado);
+
+GRANT ALL PRIVILEGES ON sga_db.* TO 'sga_user'@'%';
+FLUSH PRIVILEGES;

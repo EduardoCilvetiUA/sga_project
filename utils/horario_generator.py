@@ -1,6 +1,6 @@
 import pandas as pd
 from db import execute_query
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
 import random
 import traceback
 from querys.horario_generator_queries import (
@@ -15,6 +15,16 @@ from querys.horario_generator_queries import (
     get_horarios_for_export,
     get_salas_ordered_by_capacidad,
 )
+
+HOUR_IN_SECONDS = 3600
+FIRST_INDEX = 0
+ZERO_COUNT = 0
+CREDITS_TWO = 2
+ADD_ONE = 1
+DIVIDE_TO_GET_MINUTES = 60
+SET_COLUMN_WIDTH = 10
+SET_COLUMN_WIDTH_20 = 20
+SET_COLUMN_WIDTH_30 = 30
 
 
 class HorarioGenerator:
@@ -36,7 +46,7 @@ class HorarioGenerator:
 
     def get_curso_creditos(self, curso_id):
         result = execute_query(get_creditos_curso, (curso_id,), fetch=True)
-        return result[0]["creditos"] if result else 2
+        return result[FIRST_INDEX]["creditos"] if result else CREDITS_TWO
 
     def get_secciones_sin_horario(self, anio, periodo):
         return execute_query(
@@ -70,7 +80,7 @@ class HorarioGenerator:
             ),
             fetch=True,
         )
-        return conflictos[0]["count"] == 0
+        return conflictos[FIRST_INDEX]["count"] == ZERO_COUNT
 
     def check_sala_disponible(self, sala_id, dia, hora_inicio, hora_fin):
         return self.check_disponibilidad(
@@ -110,9 +120,9 @@ class HorarioGenerator:
             return {
                 "estado": "no_secciones",
                 "mensaje": "No hay secciones sin horario asignado",
-                "total": 0,
-                "asignados": 0,
-                "no_asignados": 0,
+                "total": ZERO_COUNT,
+                "asignados": ZERO_COUNT,
+                "no_asignados": ZERO_COUNT,
                 "secciones_asignadas": [],
                 "secciones_no_asignadas": [],
             }
@@ -121,9 +131,9 @@ class HorarioGenerator:
             return {
                 "estado": "no_salas",
                 "mensaje": "No hay salas disponibles",
-                "total": 0,
-                "asignados": 0,
-                "no_asignados": 0,
+                "total": ZERO_COUNT,
+                "asignados": ZERO_COUNT,
+                "no_asignados": ZERO_COUNT,
                 "secciones_asignadas": [],
                 "secciones_no_asignadas": [],
             }
@@ -132,8 +142,8 @@ class HorarioGenerator:
             "estado": "ok",
             "mensaje": "Horarios generados correctamente",
             "total": len(secciones),
-            "asignados": 0,
-            "no_asignados": 0,
+            "asignados": ZERO_COUNT,
+            "no_asignados": ZERO_COUNT,
             "secciones_asignadas": [],
             "secciones_no_asignadas": [],
         }
@@ -145,7 +155,7 @@ class HorarioGenerator:
             creditos = self.get_curso_creditos(curso_id)
 
             if creditos > 4:
-                resultados["no_asignados"] += 1
+                resultados["no_asignados"] += ADD_ONE
                 resultados["secciones_no_asignadas"].append(
                     {
                         "seccion_id": seccion_id,
@@ -159,7 +169,7 @@ class HorarioGenerator:
             alumnos = self.get_alumnos_seccion(seccion_id)
 
             if not profesores:
-                resultados["no_asignados"] += 1
+                resultados["no_asignados"] += ADD_ONE
                 resultados["secciones_no_asignadas"].append(
                     {
                         "seccion_id": seccion_id,
@@ -221,7 +231,7 @@ class HorarioGenerator:
                             seccion_id, sala_id, dia, hora_inicio, hora_fin
                         )
 
-                        resultados["asignados"] += 1
+                        resultados["asignados"] += ADD_ONE
                         resultados["secciones_asignadas"].append(
                             {
                                 "seccion_id": seccion_id,
@@ -238,7 +248,7 @@ class HorarioGenerator:
                         break
 
             if not horario_asignado:
-                resultados["no_asignados"] += 1
+                resultados["no_asignados"] += ADD_ONE
                 resultados["secciones_no_asignadas"].append(
                     {
                         "seccion_id": seccion_id,
@@ -269,15 +279,19 @@ class HorarioGenerator:
                 if "hora_inicio" in fila:
                     if isinstance(fila["hora_inicio"], timedelta):
                         total_segundos = fila["hora_inicio"].total_seconds()
-                        horas = int(total_segundos // 3600)
-                        minutos = int((total_segundos % 3600) // 60)
+                        horas = int(total_segundos // HOUR_IN_SECONDS)
+                        minutos = int(
+                            (total_segundos % HOUR_IN_SECONDS) // DIVIDE_TO_GET_MINUTES
+                        )
                         fila["hora_inicio"] = f"{horas:02d}:{minutos:02d}"
 
                 if "hora_fin" in fila:
                     if isinstance(fila["hora_fin"], timedelta):
                         total_segundos = fila["hora_fin"].total_seconds()
-                        horas = int(total_segundos // 3600)
-                        minutos = int((total_segundos % 3600) // 60)
+                        horas = int(total_segundos // HOUR_IN_SECONDS)
+                        minutos = int(
+                            (total_segundos % HOUR_IN_SECONDS) // DIVIDE_TO_GET_MINUTES
+                        )
                         fila["hora_fin"] = f"{horas:02d}:{minutos:02d}"
 
                 datos_procesados.append(fila)
@@ -317,17 +331,22 @@ class HorarioGenerator:
                     "Cursos": writer.sheets["Cursos"],
                     "Profesores": writer.sheets["Profesores"],
                 }.items():
-                    for i, col in enumerate(df.columns):
+                    for counter, col in enumerate(df.columns):
                         if col == "hora_inicio" or col == "hora_fin":
-                            worksheet.set_column(i + 1, i + 1, 10, hora_format)
+                            worksheet.set_column(
+                                counter + ADD_ONE,
+                                counter + ADD_ONE,
+                                SET_COLUMN_WIDTH,
+                                hora_format,
+                            )
 
-                    worksheet.set_column("A:A", 10)
-                    worksheet.set_column("B:B", 10)
-                    worksheet.set_column("E:E", 20)
-                    worksheet.set_column("F:F", 10)
-                    worksheet.set_column("G:G", 30)
-                    worksheet.set_column("H:H", 10)
-                    worksheet.set_column("I:I", 20)
+                    worksheet.set_column("A:A", SET_COLUMN_WIDTH)
+                    worksheet.set_column("B:B", SET_COLUMN_WIDTH)
+                    worksheet.set_column("E:E", SET_COLUMN_WIDTH_30)
+                    worksheet.set_column("F:F", SET_COLUMN_WIDTH)
+                    worksheet.set_column("G:G", SET_COLUMN_WIDTH_20)
+                    worksheet.set_column("H:H", SET_COLUMN_WIDTH)
+                    worksheet.set_column("I:I", SET_COLUMN_WIDTH_30)
 
             return {
                 "estado": "exito",

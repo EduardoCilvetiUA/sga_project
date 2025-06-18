@@ -19,6 +19,7 @@
                 <th>Curso</th>
                 <th>Año</th>
                 <th>Periodo</th>
+                <th>Estado</th>
                 <th class="table-actions">Acciones</th>
             </tr>
         </thead>
@@ -29,9 +30,17 @@
                 <td>{{ instancia.anio }}</td>
                 <td>{{ instancia.periodo }}</td>
                 <td>
+                    {% if instancia.cerrado %}
+                        <span class="badge bg-danger">Cerrada</span>
+                    {% else %}
+                        <span class="badge bg-success">Abierta</span>
+                    {% endif %}
+                </td>
+                <td>
                     <a href="{{ url_for('instancias.view', id=instancia.id) }}" class="btn btn-sm btn-info btn-action">
                         <i class="bi bi-eye"></i> Ver
                     </a>
+                    {% if not instancia.cerrado %}
                     <a href="{{ url_for('instancias.edit', id=instancia.id) }}" class="btn btn-sm btn-warning btn-action">
                         <i class="bi bi-pencil"></i> Editar
                     </a>
@@ -40,11 +49,14 @@
                             <i class="bi bi-trash"></i> Eliminar
                         </button>
                     </form>
+                    {% else %}
+                    <span class="text-muted"><i class="bi bi-lock"></i> Bloqueada</span>
+                    {% endif %}
                 </td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="4" class="text-center">No hay instancias de cursos registradas.</td>
+                <td colspan="5" class="text-center">No hay instancias de cursos registradas.</td>
             </tr>
             {% endfor %}
         </tbody>

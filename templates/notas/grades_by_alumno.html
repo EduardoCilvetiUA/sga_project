@@ -88,7 +88,7 @@
     </div>
     <div class="card-footer">
       <a href="{{ url_for('notas.create', seccion_id=seccion['id'], alumno_id=alumno['id']) }}" class="btn btn-primary">Agregar Nota</a>
-      <a href="{{ url_for('notas.section_grades', seccion_id=seccion['id']) }}" class="btn btn-secondary">Volver a la Sección</a>
+      <a href="{{ url_for('notas.grades_by_seccion', seccion_id=seccion['id']) }}" class="btn btn-secondary">Volver a la Sección</a>
     </div>
   </div>
 {% endblock %}

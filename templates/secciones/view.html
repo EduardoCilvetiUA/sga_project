@@ -23,25 +23,39 @@
           Por pesos relativos
         {% endif %}
       </p>
+      {% if seccion.get('instancia_cerrada') %}
+      <div class="alert alert-warning" role="alert">
+        <i class="bi bi-exclamation-triangle"></i>
+        <strong>Instancia Cerrada:</strong> Esta sección pertenece a una instancia cerrada y no puede ser modificada.
+      </div>
+      {% endif %}
     </div>
     <div class="card-footer">
+      {% if not seccion.get('instancia_cerrada') %}
       <a href="{{ url_for('secciones.edit', id=seccion['id']) }}" class="btn btn-warning">Editar</a>
       <form action="{{ url_for('secciones.delete', id=seccion['id']) }}" method="POST" class="d-inline form-eliminar">
         <button type="button" class="btn btn-danger btn-action delete-section" data-id="{{ seccion['id'] }}">
           Eliminar
         </button>
       </form>
+      {% else %}
+      <span class="text-muted"><i class="bi bi-lock"></i> Sección bloqueada por instancia cerrada</span>
+      {% endif %}
       <a href="{{ url_for('evaluaciones.create', seccion_id=seccion['id']) }}" class="btn btn-info">Agregar Tópico de Evaluación</a>
-      <a href="{{ url_for('notas.section_grades', seccion_id=seccion['id']) }}" class="btn btn-success">Ver Notas</a>
+      <a href="{{ url_for('notas.grades_by_seccion', seccion_id=seccion['id']) }}" class="btn btn-success">Ver Notas</a>
     </div>
   </div>
 
   <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <span>Profesores</span>
+        {% if not seccion.get('instancia_cerrada') %}
         <a href="{{ url_for('secciones.assign_profesor', id=seccion.id) }}" class="btn btn-sm btn-primary">
             Asignar Profesor
         </a>
+        {% else %}
+        <span class="text-muted"><i class="bi bi-info-circle"></i> No se pueden modificar profesores</span>
+        {% endif %}
     </div>
     <div class="card-body">
         {% if profesores %}
@@ -49,11 +63,13 @@
             {% for profesor in profesores %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 {{ profesor.nombre }} ({{ profesor.correo }})
+                {% if not seccion.get('instancia_cerrada') %}
                 <form action="{{ url_for('secciones.remove_profesor', id=seccion.id, profesor_id=profesor.id) }}" method="post" class="d-inline form-eliminar">
                     <button type="button" class="btn btn-sm btn-danger btn-action delete-professor" data-id="{{ profesor.id }}">
                         Quitar
                     </button>
                 </form>
+                {% endif %}
             </li>
             {% endfor %}
         </ul>
@@ -66,9 +82,13 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <span>Alumnos</span>
+        {% if not seccion.get('instancia_cerrada') %}
         <a href="{{ url_for('secciones.enroll_alumno', id=seccion.id) }}" class="btn btn-sm btn-primary">
             Inscribir Alumno
         </a>
+        {% else %}
+        <span class="text-muted"><i class="bi bi-info-circle"></i> No se pueden modificar alumnos</span>
+        {% endif %}
     </div>
     <div class="card-body">
         {% if alumnos %}
@@ -78,7 +98,9 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Correo</th>
+                        {% if not seccion.get('instancia_cerrada') %}
                         <th>Acciones</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -86,6 +108,7 @@
                     <tr>
                         <td>{{ alumno.nombre }}</td>
                         <td>{{ alumno.correo }}</td>
+                        {% if not seccion.get('instancia_cerrada') %}
                         <td>
                             <form action="{{ url_for('secciones.unenroll_alumno', id=seccion.id, alumno_id=alumno.id) }}" method="post" class="d-inline form-eliminar">
                                 <button type="button" class="btn btn-sm btn-danger btn-action delete-student" data-id="{{ alumno.id }}">
@@ -93,6 +116,7 @@
                                 </button>
                             </form>
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -107,9 +131,13 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <span>Evaluaciones</span>
+        {% if not seccion.get('instancia_cerrada') %}
         <a href="{{ url_for('evaluaciones.create') }}?seccion_id={{ seccion.id }}" class="btn btn-sm btn-primary">
             Añadir Tópico de Evaluación
         </a>
+        {% else %}
+        <span class="text-muted"><i class="bi bi-info-circle"></i> No se pueden agregar evaluaciones</span>
+        {% endif %}
     </div>
     <div class="card-body">
         <p>Las evaluaciones para esta sección se configuran en la sección de "Evaluaciones".</p>
@@ -119,6 +147,8 @@
 <div class="mt-4">
     <a href="{{ url_for('secciones.index') }}" class="btn btn-secondary">Volver a la lista</a>
 </div>
+
+{% if not seccion.get('instancia_cerrada') %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
     delete_pop_up(".delete-professor[data-id]", "¿Está seguro de quitar este profesor?");
@@ -126,4 +156,5 @@
     delete_pop_up(".delete-section[data-id]", "¿Está seguro de eliminar esta sección?");
 });
 </script>
+{% endif %}
 {% endblock %}

@@ -67,3 +67,9 @@ check_prerequisitos_for_curso = """
     FROM prerequisitos
     WHERE curso_id = %s
 """
+is_seccion_instancia_cerrada = """
+    SELECT ic.cerrado
+    FROM secciones s
+    JOIN instancias_curso ic ON s.instancia_curso_id = ic.id
+    WHERE s.id = %s
+"""

@@ -10,11 +10,13 @@ from querys.curso_queries import (
     add_curso_prerequisitos,
     remove_curso_prerequisitos,
     get_alumnos_eligibles_by_curso,
-    close_curso,
-    reopen_curso,
-    is_curso_closed,
+    get_instancias_by_curso,
+    close_instancia_curso,
+    reopen_instancia_curso,
+    is_instancia_cerrada,
+    alumnos_query,
+    secciones_query,
 )
-
 
 class Curso:
     @staticmethod
@@ -27,13 +29,11 @@ class Curso:
         return result[0] if result else None
 
     @staticmethod
-    def create(codigo, nombre, creditos=2, cerrado=False):
-        return execute_query(create_curso, (codigo, nombre, creditos, cerrado))
+    def create(codigo, nombre, creditos=2):
+        return execute_query(create_curso, (codigo, nombre, creditos))
 
     @staticmethod
     def update(curso_id, codigo, nombre, creditos=None):
-        if Curso.is_closed(curso_id):
-            raise ValueError("No se puede modificar un curso cerrado")
         if creditos is None:
             curso_actual = Curso.get_by_id(curso_id)
             creditos = curso_actual["creditos"]
@@ -45,8 +45,6 @@ class Curso:
 
     @staticmethod
     def delete(curso_id):
-        if Curso.is_closed(curso_id):
-            raise ValueError("No se puede eliminar un curso cerrado")
         execute_query(delete_curso, (curso_id,))
 
     @staticmethod
@@ -55,14 +53,10 @@ class Curso:
 
     @staticmethod
     def add_prerequisito(curso_id, prerequisito_id):
-        if Curso.is_closed(curso_id):
-            raise ValueError("No se puede modificar un curso cerrado")
         return execute_query(add_curso_prerequisitos, (curso_id, prerequisito_id))
 
     @staticmethod
     def remove_prerequisito(curso_id, prerequisito_id):
-        if Curso.is_closed(curso_id):
-            raise ValueError("No se puede modificar un curso cerrado")
         execute_query(remove_curso_prerequisitos, (curso_id, prerequisito_id))
 
     @staticmethod
@@ -98,14 +92,40 @@ class Curso:
         return execute_query(get_alumnos_eligibles_by_curso, (curso_id,), fetch=True)
 
     @staticmethod
-    def close(curso_id):
-        execute_query(close_curso, (curso_id,))
+    def get_instancias(curso_id):
+        return execute_query(get_instancias_by_curso, (curso_id,), fetch=True)
 
     @staticmethod
-    def reopen(curso_id):
-        execute_query(reopen_curso, (curso_id,))
+    def close_instancia(instancia_id):
+        Curso._calcular_notas_finales_instancia(instancia_id)
+        
+        execute_query(close_instancia_curso, (instancia_id,))
 
     @staticmethod
-    def is_closed(curso_id):
-        result = execute_query(is_curso_closed, (curso_id,), fetch=True)
+    def reopen_instancia(instancia_id):
+        execute_query(reopen_instancia_curso, (instancia_id,))
+
+    @staticmethod
+    def is_instancia_cerrada(instancia_id):
+        result = execute_query(is_instancia_cerrada, (instancia_id,), fetch=True)
         return result[0]["cerrado"] if result else False
+
+    @staticmethod
+    def _calcular_notas_finales_instancia(instancia_id):
+        secciones = execute_query(secciones_query, (instancia_id,), fetch=True)
+        
+        for seccion in secciones:
+            seccion_id = seccion['id']
+            Curso._calcular_notas_finales_seccion(seccion_id)
+
+    @staticmethod
+    def _calcular_notas_finales_seccion(seccion_id):
+        alumnos = execute_query(alumnos_query, (seccion_id,), fetch=True)
+        
+        for alumno in alumnos:
+            alumno_id = alumno['alumno_id']
+            try:
+                CursoAprobado.calculate_and_register_final_grade(alumno_id, seccion_id)
+            except Exception as e:
+                print(f"Error calculando nota final para alumno {alumno_id} en sección {seccion_id}: {e}")
+                continue

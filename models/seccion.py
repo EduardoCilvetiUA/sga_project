@@ -1,5 +1,6 @@
 from db import execute_query
 from models.curso_aprobado import CursoAprobado
+from models.instancia import Instancia
 from querys.seccion_queries import (
     get_all_secciones,
     get_seccion_by_id,
@@ -16,6 +17,7 @@ from querys.seccion_queries import (
     get_not_enrolled_profesores,
     get_not_enrolled_alumnos,
     check_prerequisitos_for_curso,
+    is_seccion_instancia_cerrada,
 )
 
 
@@ -132,3 +134,13 @@ class Seccion:
     def get_curso_id(seccion_id):
         result = execute_query(get_curso_id_for_seccion, (seccion_id,), fetch=True)
         return result[0]["curso_id"] if result else None
+
+    @staticmethod
+    def is_instancia_cerrada(seccion_id):
+        result = execute_query(is_seccion_instancia_cerrada, (seccion_id,), fetch=True)
+        return result[0]["cerrado"] if result else False
+
+    @staticmethod
+    def validate_not_cerrada(seccion_id, operation="operación"):
+        if Seccion.is_instancia_cerrada(seccion_id):
+            raise ValueError(f"No se puede realizar esta {operation} en una sección de una instancia cerrada")
