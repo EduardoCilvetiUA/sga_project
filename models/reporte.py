@@ -9,7 +9,9 @@ from querys.reporte_queries import (
     get_alumnos_for_certificado,
     get_estadisticas_certificado,
 )
-
+MIN_START = 0
+MIN_NOTA_APROBACION = 4.0
+START_INDEX = 0
 
 class Reporte:
     @staticmethod
@@ -27,19 +29,19 @@ class Reporte:
             return None
         
         info_reporte = {
-            'curso_codigo': notas[0]['curso_codigo'],
-            'curso_nombre': notas[0]['curso_nombre'],
-            'anio': notas[0]['anio'],
-            'periodo': notas[0]['periodo'],
-            'seccion_numero': notas[0]['seccion_numero'],
-            'topico_nombre': notas[0]['topico_nombre'],
-            'instancia_nombre': notas[0]['instancia_nombre'],
+            'curso_codigo': notas[START_INDEX]['curso_codigo'],
+            'curso_nombre': notas[START_INDEX]['curso_nombre'],
+            'anio': notas[START_INDEX]['anio'],
+            'periodo': notas[START_INDEX]['periodo'],
+            'seccion_numero': notas[START_INDEX]['seccion_numero'],
+            'topico_nombre': notas[START_INDEX]['topico_nombre'],
+            'instancia_nombre': notas[START_INDEX]['instancia_nombre'],
             'total_alumnos': len(notas),
             'promedio': round(sum(nota['nota'] for nota in notas) / len(notas), 2),
             'nota_maxima': max(nota['nota'] for nota in notas),
             'nota_minima': min(nota['nota'] for nota in notas),
-            'aprobados': len([n for n in notas if n['nota'] >= 4.0]),
-            'reprobados': len([n for n in notas if n['nota'] < 4.0])
+            'aprobados': len([nota for nota in notas if nota['nota'] >= MIN_NOTA_APROBACION]),
+            'reprobados': len([nota for nota in notas if nota['nota'] < MIN_NOTA_APROBACION])
         }
         
         return {
@@ -58,7 +60,7 @@ class Reporte:
             fetch=True
         )
         
-        if not instancia_cerrada or not instancia_cerrada[0]['cerrado']:
+        if not instancia_cerrada or not instancia_cerrada[START_INDEX]['cerrado']:
             raise ValueError("La instancia del curso debe estar cerrada para generar este reporte")
         
         notas = execute_query(
@@ -71,17 +73,17 @@ class Reporte:
             return None
         
         info_reporte = {
-            'curso_codigo': notas[0]['curso_codigo'],
-            'curso_nombre': notas[0]['curso_nombre'],
-            'anio': notas[0]['anio'],
-            'periodo': notas[0]['periodo'],
-            'seccion_numero': notas[0]['seccion_numero'],
+            'curso_codigo': notas[START_INDEX]['curso_codigo'],
+            'curso_nombre': notas[START_INDEX]['curso_nombre'],
+            'anio': notas[START_INDEX]['anio'],
+            'periodo': notas[START_INDEX]['periodo'],
+            'seccion_numero': notas[START_INDEX]['seccion_numero'],
             'total_alumnos': len(notas),
             'promedio': round(sum(nota['nota_final'] for nota in notas) / len(notas), 2),
             'nota_maxima': max(nota['nota_final'] for nota in notas),
             'nota_minima': min(nota['nota_final'] for nota in notas),
-            'aprobados': len([n for n in notas if n['aprobado']]),
-            'reprobados': len([n for n in notas if not n['aprobado']])
+            'aprobados': len([nota for nota in notas if nota['aprobado']]),
+            'reprobados': len([nota for nota in notas if not nota['aprobado']])
         }
         
         return {
@@ -110,17 +112,17 @@ class Reporte:
         )
         
         info_alumno = {
-            'nombre': cursos[0]['alumno_nombre'] if cursos else '',
-            'correo': cursos[0]['alumno_correo'] if cursos else ''
+            'nombre': cursos[START_INDEX]['alumno_nombre'] if cursos else '',
+            'correo': cursos[START_INDEX]['alumno_correo'] if cursos else ''
         }
         
-        stats = estadisticas[0] if estadisticas else {
-            'total_cursos': 0,
-            'cursos_aprobados': 0,
-            'cursos_reprobados': 0,
-            'promedio_general': 0,
-            'total_creditos': 0,
-            'creditos_aprobados': 0
+        stats = estadisticas[START_INDEX] if estadisticas else {
+            'total_cursos': MIN_START,
+            'cursos_aprobados': MIN_START,
+            'cursos_reprobados': MIN_START,
+            'promedio_general': MIN_START,
+            'total_creditos': MIN_START,
+            'creditos_aprobados': MIN_START,
         }
         
         return {
