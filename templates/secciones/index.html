@@ -20,6 +20,7 @@
                 <th>Año</th>
                 <th>Periodo</th>
                 <th>Sección</th>
+                <th>Estado Instancia</th>
                 <th class="table-actions">Acciones</th>
             </tr>
         </thead>
@@ -31,9 +32,17 @@
                 <td>{{ seccion.periodo }}</td>
                 <td>{{ seccion.numero }}</td>
                 <td>
+                    {% if seccion.instancia_cerrada %}
+                        <span class="badge bg-danger">Instancia Cerrada</span>
+                    {% else %}
+                        <span class="badge bg-success">Instancia Abierta</span>
+                    {% endif %}
+                </td>
+                <td>
                     <a href="{{ url_for('secciones.view', id=seccion.id) }}" class="btn btn-sm btn-info btn-action">
                         <i class="bi bi-eye"></i> Ver
                     </a>
+                    {% if not seccion.instancia_cerrada %}
                     <a href="{{ url_for('secciones.edit', id=seccion.id) }}" class="btn btn-sm btn-warning btn-action">
                         <i class="bi bi-pencil"></i> Editar
                     </a>
@@ -42,11 +51,14 @@
                             <i class="bi bi-trash"></i> Eliminar
                         </button>
                     </form>
+                    {% else %}
+                    <span class="text-muted"><i class="bi bi-lock"></i> Bloqueada</span>
+                    {% endif %}
                 </td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="5" class="text-center">No hay secciones registradas.</td>
+                <td colspan="6" class="text-center">No hay secciones registradas.</td>
             </tr>
             {% endfor %}
         </tbody>

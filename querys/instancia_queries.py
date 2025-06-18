@@ -21,3 +21,15 @@ get_secciones_by_instancia_curso_id = (
     "SELECT * FROM secciones WHERE instancia_curso_id = %s ORDER BY numero"
 )
 is_instancia_cerrada = "SELECT cerrado FROM instancias_curso WHERE id = %s"
+
+toggle_instancia_cerrada = """
+    UPDATE instancias_curso SET cerrado = %s WHERE id = %s
+"""
+
+get_instancia_by_seccion_id = """
+    SELECT ic.*, c.codigo, c.nombre, c.creditos
+    FROM instancias_curso ic
+    JOIN cursos c ON ic.curso_id = c.id
+    JOIN secciones s ON s.instancia_curso_id = ic.id
+    WHERE s.id = %s
+"""

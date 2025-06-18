@@ -17,6 +17,7 @@ from querys.seccion_queries import (
     get_not_enrolled_profesores,
     get_not_enrolled_alumnos,
     check_prerequisitos_for_curso,
+    is_seccion_instancia_cerrada,
 )
 
 
@@ -133,3 +134,15 @@ class Seccion:
     def get_curso_id(seccion_id):
         result = execute_query(get_curso_id_for_seccion, (seccion_id,), fetch=True)
         return result[0]["curso_id"] if result else None
+
+    @staticmethod
+    def is_instancia_cerrada(seccion_id):
+        """Verificar si la instancia de una sección está cerrada"""
+        result = execute_query(is_seccion_instancia_cerrada, (seccion_id,), fetch=True)
+        return result[0]["cerrado"] if result else False
+
+    @staticmethod
+    def validate_not_cerrada(seccion_id, operation="operación"):
+        """Validar que la instancia de la sección no esté cerrada"""
+        if Seccion.is_instancia_cerrada(seccion_id):
+            raise ValueError(f"No se puede realizar esta {operation} en una sección de una instancia cerrada")
