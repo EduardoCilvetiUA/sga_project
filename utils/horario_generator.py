@@ -1,6 +1,6 @@
 import pandas as pd
 from db import execute_query
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
 import random
 import traceback
 from querys.horario_generator_queries import (
