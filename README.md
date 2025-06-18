@@ -484,3 +484,25 @@ Registro de los cursos que los alumnos han completado, incluyendo la nota final,
   - Seleccione la instancia de evaluación
   - Asigne la nota
 - **Visualizar**: Las notas específicas de una sección se pueden ver en los detalles de dicha sección.
+
+Claro, aquí tienes un texto en formato README, redactado en tercera persona, que explica las funcionalidades implementadas en la tercera parte del proyecto, tomando en cuenta las aclaraciones proporcionadas:
+
+## Aclaraciones sobre el sistema de Reportes y Cierre de cursos
+
+## Funcionalidades Implementadas
+Las principales adiciones incluyen la capacidad de cerrar cursos y la generación de reportes detallados.
+
+### Cierre de Cursos
+
+Se ha añadido una nuevo **Botón que permite cerrar un curso**. Al ejecutar esta acción, el sistema procede automáticamente al **cálculo de las notas finales de todos los alumnos** inscritos en dicho curso. Una vez que un curso ha sido cerrado, **no es posible realizar modificaciones** a la información o notas asociadas a este, garantizando la integridad de los datos finales.
+
+### Generación de Reportes
+
+Se ha desarrollado la generación de reportes, ofreciendo diferentes vistas de la información académica:
+
+* **Reporte de Notas por Instancia de Tópico:** Este reporte permite visualizar las notas correspondientes a una **instancia específica de evaluación** 
+
+* **Reporte de Notas Finales por Sección de Curso:** Este informe presenta las **notas finales de los alumnos** en una sección particular de un curso. Este reporte **solo está disponible para cursos que ya han sido cerrados**, asegurando que las notas mostradas sean definitivas. 
+
+* **Certificado de Notas:** Se ha implementado la generación de un **certificado de notas individual para cada alumno**. Este certificado consolida **todas las notas finales de los cursos cerrados** que el alumno ha tomado. Para cada curso, se especifica la **nota final**, el **nombre del curso**, la **instancia de la sección**, la **sección** y la **fecha** (año/semestre) en que fue cursado. Cabe recalcar que este reporte se enfoca únicamente en las notas finales de los cursos, sin incluir detalles de evaluaciones parciales o categorías de evaluación.
+
