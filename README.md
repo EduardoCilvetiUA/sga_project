@@ -34,19 +34,12 @@ Este proyecto implementa un sistema de gestión académica centrado en el regist
    cd sga
    ```
 
-2. Cree un entorno virtual e instale las dependencias:
-   ```
-   python -m venv venv
-   source venv/bin/activate  # En Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-
-3. Configure la base de datos:
+2. Configure la base de datos:
    - Asegúrese de tener MySQL instalado y en ejecución
    - Cree una base de datos llamada `sga_db` o modifique el nombre en `config.py`
    - Actualice las credenciales de la base de datos en `config.py` si es necesario
 
-4. Configure las variables de entorno:
+3. Configure las variables de entorno:
    - Cree un archivo `.env` en la raíz del proyecto con las siguientes variables:
    ```
    # Variables para Flask
@@ -64,16 +57,6 @@ Este proyecto implementa un sistema de gestión académica centrado en el regist
    SECRET_KEY=
    ```
    - Complete cada variable con el valor correspondiente según su entorno local
-
-5. Ejecute la aplicación:
-   ```
-   python app.py
-   ```
-
-6. Acceda a la aplicación en su navegador:
-   ```
-   http://localhost:5000
-   ```
 
 ## Ejecución con Docker
 
