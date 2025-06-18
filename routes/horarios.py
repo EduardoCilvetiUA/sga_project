@@ -13,6 +13,8 @@ from querys.horario_queries import get_horarios_completos
 from db import execute_query
 from datetime import datetime
 
+HOUR_TIME_IN_SECONDS = 3600
+DIVISION_TO_GET_MINUTES = 60
 bp = Blueprint("horarios", __name__, url_prefix="/horarios")
 
 
@@ -116,8 +118,8 @@ def view():
                 pass
             else:
                 total_seconds = int(horario["hora_inicio"].total_seconds())
-                hours, remainder = divmod(total_seconds, 3600)
-                minutes, _ = divmod(remainder, 60)
+                hours, remainder = divmod(total_seconds, HOUR_TIME_IN_SECONDS)
+                minutes, _ = divmod(remainder, DIVISION_TO_GET_MINUTES)
                 horario["hora_inicio"] = f"{hours:02d}:{minutes:02d}"
 
             if hasattr(horario["hora_fin"], "strftime"):
@@ -126,8 +128,8 @@ def view():
                 pass
             else:
                 total_seconds = int(horario["hora_fin"].total_seconds())
-                hours, remainder = divmod(total_seconds, 3600)
-                minutes, _ = divmod(remainder, 60)
+                hours, remainder = divmod(total_seconds, HOUR_TIME_IN_SECONDS)
+                minutes, _ = divmod(remainder, DIVISION_TO_GET_MINUTES)
                 horario["hora_fin"] = f"{hours:02d}:{minutes:02d}"
 
             horarios.append(horario)

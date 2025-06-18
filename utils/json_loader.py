@@ -43,9 +43,17 @@ from querys.json_loader_queries import (
     get_max_numero_seccion,
 )
 
-NOTA_MAX = 7.0
 NOTA_MIN = 1.0
-
+NOTA_MAX = 7.0
+ALL_PERCENTAGE = 100
+ONE_PERCENT = 0.01
+SUM_BY_ONE = 1
+ZERO_COUNT = 0
+FIRST_INDEX = 0
+INDEX_BEFORE = -1
+SUSTRACT_BY_ONE = 1
+ROUND_BY_TWO = 2
+NORMALIZATION_UMBRAL = 0.1
 
 class JsonLoader:
     @staticmethod
@@ -59,30 +67,30 @@ class JsonLoader:
     @staticmethod
     def validate_percentage_distribution(valores, normalizar=False):
         total = sum(valores)
-        if abs(total - 100) < 0.01:
+        if abs(total - ALL_PERCENTAGE) < ONE_PERCENT:
             return valores
 
         if not normalizar:
             raise ValueError(f"Los porcentajes deben sumar 100%. Suma actual: {total}%")
 
-        factor = 100 / total
-        return [round(valor * factor, 2) for valor in valores]
+        factor = ALL_PERCENTAGE / total
+        return [round(valor * factor, ROUND_BY_TWO) for valor in valores]
 
     @staticmethod
-    def _normalize_percentages(valores, umbral=0.1):
+    def _normalize_percentages(valores, umbral=NORMALIZATION_UMBRAL):
         total = sum(valores)
-        if abs(total - 100) <= umbral:
+        if abs(total - ALL_PERCENTAGE) <= umbral:
             return valores
 
-        factor = 100 / total
-        return [round(valor * factor, 2) for valor in valores]
+        factor = ALL_PERCENTAGE / total
+        return [round(valor * factor, ROUND_BY_TWO) for valor in valores]
 
     @staticmethod
     def _create_result_template(count):
         return {
             "total": count,
-            "exitosos": 0,
-            "fallidos": 0,
+            "exitosos": ZERO_COUNT,
+            "fallidos": ZERO_COUNT,
             "errores": [],
         }
 
@@ -120,7 +128,7 @@ class JsonLoader:
         for entity in entities:
             try:
                 entity_id = JsonLoader._check_required_fields(
-                    entity, required_fields, entity_key[:-1]
+                    entity, required_fields, entity_key[:INDEX_BEFORE ]
                 )
 
                 existing = execute_query(check_query, (entity_id,), fetch=True)
@@ -132,11 +140,11 @@ class JsonLoader:
                     insert_data = format_insert_data(entity)
                     execute_query(insert_query, (entity_id,) + insert_data)
 
-                result["exitosos"] += 1
+                result["exitosos"] += SUM_BY_ONE
             except Exception as e:
-                result["fallidos"] += 1
+                result["fallidos"] += SUM_BY_ONE
                 result["errores"].append(
-                    {f"{entity_key[:-1]}_id": entity_id, "error": str(e)}
+                    {f"{entity_key[:INDEX_BEFORE ]}_id": entity_id, "error": str(e)}
                 )
 
         return result
@@ -340,9 +348,9 @@ class JsonLoader:
                         ),
                     )
 
-                result["exitosos"] += 1
+                result["exitosos"] += SUM_BY_ONE
             except Exception as e:
-                result["fallidos"] += 1
+                result["fallidos"] += SUM_BY_ONE
                 result["errores"].append({"curso_id": entity_id, "error": str(e)})
 
         JsonLoader._process_requisitos(data["cursos"], curso_codigos, result)
@@ -391,9 +399,9 @@ class JsonLoader:
                         (entity_id, instancia["curso_id"], anio, str(semestre)),
                     )
 
-                result["exitosos"] += 1
+                result["exitosos"] += SUM_BY_ONE
             except Exception as e:
-                result["fallidos"] += 1
+                result["fallidos"] += SUM_BY_ONE
                 result["errores"].append({"instancia_id": entity_id, "error": str(e)})
 
         return result
@@ -440,7 +448,7 @@ class JsonLoader:
                 max_numero = execute_query(
                     get_max_numero_seccion, (seccion["instancia_curso"],), fetch=True
                 )
-                siguiente_numero = (max_numero[0]["max_num"] or 0) + 1
+                siguiente_numero = (max_numero[FIRST_INDEX]["max_num"] or ZERO_COUNT) + SUM_BY_ONE
 
                 if existing:
                     execute_query(
@@ -477,9 +485,9 @@ class JsonLoader:
 
                 JsonLoader._process_topicos_evaluacion(seccion, usa_porcentaje, result)
 
-                result["exitosos"] += 1
+                result["exitosos"] += SUM_BY_ONE
             except Exception as e:
-                result["fallidos"] += 1
+                result["fallidos"] += SUM_BY_ONE
                 result["errores"].append({"seccion_id": entity_id, "error": str(e)})
 
         return result
@@ -522,9 +530,9 @@ class JsonLoader:
                 if not existing:
                     execute_query(insert_alumno_seccion, (alumno_id, seccion_id))
 
-                result["exitosos"] += 1
+                result["exitosos"] += SUM_BY_ONE
             except Exception as e:
-                result["fallidos"] += 1
+                result["fallidos"] += SUM_BY_ONE
                 result["errores"].append(
                     {"alumno_id": alumno_id, "seccion_id": seccion_id, "error": str(e)}
                 )
@@ -549,8 +557,8 @@ class JsonLoader:
                 instancia_num = nota_data.get("instancia", "desconocido")
 
                 if not all(
-                    k in nota_data
-                    for k in ["alumno_id", "topico_id", "instancia", "nota"]
+                    type in nota_data
+                    for type in ["alumno_id", "topico_id", "instancia", "nota"]
                 ):
                     raise ValueError("La nota no tiene todos los campos requeridos")
 
@@ -573,7 +581,7 @@ class JsonLoader:
                         f"No se pudo obtener la sección del tópico {topico_id}"
                     )
 
-                seccion_id = seccion_result[0]["seccion_id"]
+                seccion_id = seccion_result[FIRST_INDEX]["seccion_id"]
 
                 alumno_seccion = execute_query(
                     check_alumno_seccion_by_seccion, (alumno_id, seccion_id), fetch=True
@@ -584,11 +592,11 @@ class JsonLoader:
                         f"El alumno con ID {alumno_id} no está inscrito en la sección del tópico {topico_id}"
                     )
 
-                alumno_seccion_id = alumno_seccion[0]["id"]
+                alumno_seccion_id = alumno_seccion[FIRST_INDEX]["id"]
 
                 instancia_evaluacion = execute_query(
                     get_instancia_evaluacion_by_offset,
-                    (topico_id, instancia_num - 1),
+                    (topico_id, instancia_num - SUSTRACT_BY_ONE),
                     fetch=True,
                 )
 
@@ -597,7 +605,7 @@ class JsonLoader:
                         f"No existe la instancia {instancia_num} para el tópico {topico_id}"
                     )
 
-                instancia_id = instancia_evaluacion[0]["id"]
+                instancia_id = instancia_evaluacion[FIRST_INDEX]["id"]
 
 
                 nota_valor = float(nota_data["nota"])
@@ -612,15 +620,15 @@ class JsonLoader:
                 )
 
                 if existing:
-                    execute_query(update_nota, (nota_valor, existing[0]["id"]))
+                    execute_query(update_nota, (nota_valor, existing[FIRST_INDEX]["id"]))
                 else:
                     execute_query(
                         insert_nota, (alumno_seccion_id, instancia_id, nota_valor)
                     )
 
-                result["exitosos"] += 1
+                result["exitosos"] += SUM_BY_ONE
             except Exception as e:
-                result["fallidos"] += 1
+                result["fallidos"] += SUM_BY_ONE
                 result["errores"].append(
                     {
                         "alumno_id": alumno_id,

@@ -109,7 +109,6 @@ def view(id):
 
 @bp.route("/<int:id>/toggle_cerrado", methods=("POST",))
 def toggle_cerrado(id):
-    """Alternar el estado cerrado de una instancia"""
     try:
         instancia = Instancia.get_by_id(id)
         if not instancia:

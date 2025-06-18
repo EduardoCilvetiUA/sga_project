@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.reporte import Reporte
 
+COUNTER_NOTAS = 0
+COUNTER_CURSOS = 0
 bp = Blueprint("reportes", __name__, url_prefix="/reportes")
 
 
@@ -115,24 +117,24 @@ def certificado_notas():
 def validate_instancia(instancia_id):
     try:
         reporte = Reporte.get_notas_instancia_topico(instancia_id)
-        return {"valid": True, "count": len(reporte['notas']) if reporte else 0}
+        return {"valid": True, "count": len(reporte['notas']) if reporte else COUNTER_NOTAS}
     except Exception:
-        return {"valid": False, "count": 0}
+        return {"valid": False, "count": COUNTER_NOTAS}
 
 
 @bp.route("/validate_seccion/<int:seccion_id>")
 def validate_seccion(seccion_id):
     try:
         reporte = Reporte.get_notas_finales_seccion(seccion_id)
-        return {"valid": True, "count": len(reporte['notas']) if reporte else 0}
+        return {"valid": True, "count": len(reporte['notas']) if reporte else COUNTER_NOTAS}
     except Exception:
-        return {"valid": False, "count": 0}
+        return {"valid": False, "count": COUNTER_NOTAS}
 
 
 @bp.route("/validate_alumno/<int:alumno_id>")
 def validate_alumno(alumno_id):
     try:
         reporte = Reporte.get_certificado_notas_alumno(alumno_id)
-        return {"valid": True, "count": len(reporte['cursos']) if reporte else 0}
+        return {"valid": True, "count": len(reporte['cursos']) if reporte else COUNTER_CURSOS}
     except Exception:
-        return {"valid": False, "count": 0}
+        return {"valid": False, "count": COUNTER_CURSOS}
