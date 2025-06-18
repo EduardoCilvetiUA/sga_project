@@ -13,7 +13,7 @@ from querys.reporte_queries import (
 MIN_START = 0
 MIN_NOTA_APROBACION = 4.0
 START_INDEX = 0
-
+ROUND_BY_TWO = 2
 
 class Reporte:
     @staticmethod
@@ -36,7 +36,7 @@ class Reporte:
             "topico_nombre": notas[START_INDEX]["topico_nombre"],
             "instancia_nombre": notas[START_INDEX]["instancia_nombre"],
             "total_alumnos": len(notas),
-            "promedio": round(sum(nota["nota"] for nota in notas) / len(notas), 2),
+            "promedio": round(sum(nota["nota"] for nota in notas) / len(notas), ROUND_BY_TWO),
             "nota_maxima": max(nota["nota"] for nota in notas),
             "nota_minima": min(nota["nota"] for nota in notas),
             "aprobados": len([nota for nota in notas if nota["nota"] >= MIN_NOTA_APROBACION]),
@@ -62,7 +62,7 @@ class Reporte:
             "periodo": notas[START_INDEX]["periodo"],
             "seccion_numero": notas[START_INDEX]["seccion_numero"],
             "total_alumnos": len(notas),
-            "promedio": round(sum(nota["nota_final"] for nota in notas) / len(notas), 2),
+            "promedio": round(sum(nota["nota_final"] for nota in notas) / len(notas), ROUND_BY_TWO),
             "nota_maxima": max(nota["nota_final"] for nota in notas),
             "nota_minima": min(nota["nota_final"] for nota in notas),
             "aprobados": len([nota for nota in notas if nota["aprobado"]]),
