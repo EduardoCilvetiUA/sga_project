@@ -12,7 +12,7 @@ def index():
 
 
 @bp.route("/notas_instancia_topico", methods=["GET", "POST"])
-def notas_instancia_topico():
+def get_notas_instancia_topico():
     instancias = Reporte.get_instancias_evaluacion_disponibles()
     reporte_data = None
     
@@ -46,7 +46,7 @@ def notas_instancia_topico():
 
 
 @bp.route("/notas_finales_seccion", methods=["GET", "POST"])
-def notas_finales_seccion():
+def get_notas_finales_seccion():
     secciones = Reporte.get_secciones_cursos_cerrados()
     reporte_data = None
     
@@ -80,7 +80,7 @@ def notas_finales_seccion():
 
 
 @bp.route("/certificado_notas", methods=["GET", "POST"])
-def certificado_notas():
+def get_certificado_notas():
     alumnos = Reporte.get_alumnos_disponibles()
     reporte_data = None
     

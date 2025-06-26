@@ -1,4 +1,4 @@
-get_all_intancias_curso = """
+get_all_instancias_curso = """
     SELECT ic.*, c.codigo, c.nombre 
     FROM instancias_curso ic
     JOIN cursos c ON ic.curso_id = c.id

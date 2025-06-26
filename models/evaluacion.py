@@ -9,7 +9,7 @@ from querys.evaluacion_queries import (
     get_instancia_evaluacion_by_id,
     create_instancia_evaluacion,
     update_instancia_evaluacion,
-    delete_intancia_evaluacion,
+    delete_instancia_evaluacion,
     get_topico_evaluacion_by_seccion,
     get_seccion_percentage,
     get_total_score_by_seccion,
@@ -73,7 +73,7 @@ class Evaluacion:
 
     @staticmethod
     def delete_instancia(instance_id):
-        execute_query(delete_intancia_evaluacion, (instance_id,))
+        execute_query(delete_instancia_evaluacion, (instance_id,))
 
     @staticmethod
     def get_topicos_by_seccion(seccion_id):

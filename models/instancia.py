@@ -1,6 +1,6 @@
 from db import execute_query
 from querys.instancia_queries import (
-    get_all_intancias_curso,
+    get_all_instancias_curso,
     get_instancias_curso_by_id,
     create_instancias_curso,
     update_instancias_curso,
@@ -15,7 +15,7 @@ from querys.instancia_queries import (
 class Instancia:
     @staticmethod
     def get_all():
-        return execute_query(get_all_intancias_curso, fetch=True)
+        return execute_query(get_all_instancias_curso, fetch=True)
 
     @staticmethod
     def get_by_id(instancia_id):

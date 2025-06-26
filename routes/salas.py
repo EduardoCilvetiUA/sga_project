@@ -15,68 +15,64 @@ def index():
 @bp.route("/create", methods=("GET", "POST"))
 def create():
     if request.method == "POST":
-        nombre = request.form["nombre"]
-        capacidad = request.form["capacidad"]
-
-        error = None
-
-        if not nombre:
-            error = "El nombre es requerido."
-        elif not capacidad:
-            error = "La capacidad es requerida."
-        else:
-            try:
-                capacidad = int(capacidad)
-                if capacidad <= 0:
-                    error = "La capacidad debe ser un número entero positivo."
-            except ValueError:
-                error = "La capacidad debe ser un número entero."
-
-        if error is None:
-            try:
-                Sala.create(nombre, capacidad)
-                flash("Sala creada exitosamente!")
-                return redirect(url_for("salas.index"))
-            except Exception as e:
-                error = f"Error al crear la sala: {e}"
-
-        flash(error)
-
+        return _handle_create_post()
     return render_template("salas/create.html")
+
+
+def _handle_create_post():
+    nombre = request.form["nombre"]
+    capacidad = request.form["capacidad"]
+    error = _validate_sala_data(nombre, capacidad)
+    
+    if error is None:
+        try:
+            Sala.create(nombre, int(capacidad))
+            flash("Sala creada exitosamente!")
+            return redirect(url_for("salas.index"))
+        except Exception as e:
+            error = f"Error al crear la sala: {e}"
+    
+    flash(error)
+    return render_template("salas/create.html")
+
+
+def _validate_sala_data(nombre, capacidad):
+    if not nombre:
+        return "El nombre es requerido."
+    if not capacidad:
+        return "La capacidad es requerida."
+    try:
+        capacidad_int = int(capacidad)
+        if capacidad_int <= 0:
+            return "La capacidad debe ser un número entero positivo."
+    except ValueError:
+        return "La capacidad debe ser un número entero."
+    return None
 
 
 @bp.route("/<int:id>/edit", methods=("GET", "POST"))
 def edit(id):
     sala = Sala.get_by_id(id)
-
+    
     if request.method == "POST":
-        nombre = request.form["nombre"]
-        capacidad = request.form["capacidad"]
+        return _handle_edit_post(id, sala)
+    return render_template("salas/edit.html", sala=sala)
 
-        error = None
 
-        if not nombre:
-            error = "El nombre es requerido."
-        elif not capacidad:
-            error = "La capacidad es requerida."
-        else:
-            try:
-                capacidad = int(capacidad)
-                if capacidad <= 0:
-                    error = "La capacidad debe ser un número entero positivo."
-            except ValueError:
-                error = "La capacidad debe ser un número entero."
-
-        if error is None:
-            try:
-                Sala.update(id, nombre, capacidad)
-                flash("Sala actualizada exitosamente!")
-                return redirect(url_for("salas.index"))
-            except Exception as e:
-                error = f"Error al actualizar la sala: {e}"
-
-        flash(error)
-
+def _handle_edit_post(id, sala):
+    nombre = request.form["nombre"]
+    capacidad = request.form["capacidad"]
+    error = _validate_sala_data(nombre, capacidad)
+    
+    if error is None:
+        try:
+            Sala.update(id, nombre, int(capacidad))
+            flash("Sala actualizada exitosamente!")
+            return redirect(url_for("salas.index"))
+        except Exception as e:
+            error = f"Error al actualizar la sala: {e}"
+    
+    flash(error)
     return render_template("salas/edit.html", sala=sala)
 
 

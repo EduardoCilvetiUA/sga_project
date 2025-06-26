@@ -47,7 +47,7 @@ UPDATE instancias_evaluacion
 SET nombre = %s, valor = %s, opcional = %s 
 WHERE id = %s
 """
-delete_intancia_evaluacion = "DELETE FROM instancias_evaluacion WHERE id = %s"
+delete_instancia_evaluacion = "DELETE FROM instancias_evaluacion WHERE id = %s"
 get_topico_evaluacion_by_seccion = """
 SELECT te.*, s.usa_porcentaje as seccion_usa_porcentaje 
 FROM topicos_evaluacion te

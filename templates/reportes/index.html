@@ -12,7 +12,7 @@
                     Genera un reporte con las notas de una instancia específica de evaluación.
                     <br><small class="text-muted">Ejemplo: Control 1 del tópico "Pruebas"</small>
                 </p>
-                <a href="{{ url_for('reportes.notas_instancia_topico') }}" class="btn btn-primary">
+                <a href="{{ url_for('reportes.get_notas_instancia_topico') }}" class="btn btn-primary">
                     <i class="bi bi-file-earmark-text"></i> Generar Reporte
                 </a>
             </div>
@@ -27,7 +27,7 @@
                     Genera un reporte con las notas finales de una sección específica.
                     <br><small class="text-muted">Solo disponible para cursos cerrados</small>
                 </p>
-                <a href="{{ url_for('reportes.notas_finales_seccion') }}" class="btn btn-primary">
+                <a href="{{ url_for('reportes.get_notas_finales_seccion') }}" class="btn btn-primary">
                     <i class="bi bi-file-earmark-spreadsheet"></i> Generar Reporte
                 </a>
             </div>
@@ -42,7 +42,7 @@
                     Genera el certificado completo de notas de un alumno específico.
                     <br><small class="text-muted">Incluye todos los cursos cerrados</small>
                 </p>
-                <a href="{{ url_for('reportes.certificado_notas') }}" class="btn btn-primary">
+                <a href="{{ url_for('reportes.get_certificado_notas') }}" class="btn btn-primary">
                     <i class="bi bi-award"></i> Generar Certificado
                 </a>
             </div>

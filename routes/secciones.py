@@ -17,42 +17,53 @@ def create():
     instancia_id = request.args.get("instancia_id", None)
     
     if instancia_id:
-        try:
-            Instancia.validate_not_cerrada(int(instancia_id), "creación de sección")
-        except ValueError as e:
-            flash(str(e))
+        if not _validate_instancia_not_cerrada(instancia_id, "creación de sección"):
             return redirect(url_for("instancias.view", id=instancia_id))
 
     if request.method == "POST":
-        instancia_curso_id = request.form["instancia_curso_id"]
-        numero = request.form["numero"]
-        usa_porcentaje = "usa_porcentaje" in request.form
+        return _handle_create_seccion_post(instancias, instancia_id)
+    
+    return render_template("secciones/create.html", instancias=instancias, instancia_id=instancia_id)
 
-        error = None
 
-        if not instancia_curso_id:
-            error = "La instancia de curso es requerida."
-        elif not numero:
-            error = "El número de sección es requerido."
-        else:
-            try:
-                Instancia.validate_not_cerrada(int(instancia_curso_id), "creación de sección")
-            except ValueError as e:
-                error = str(e)
+def _validate_instancia_not_cerrada(instancia_id, action):
+    try:
+        Instancia.validate_not_cerrada(int(instancia_id), action)
+        return True
+    except ValueError as e:
+        flash(str(e))
+        return False
 
-        if error is None:
-            try:
-                Seccion.create(instancia_curso_id, numero, usa_porcentaje)
-                flash("Sección creada exitosamente!")
-                return redirect(url_for("secciones.index"))
-            except Exception as e:
-                error = f"Error al crear la sección: {e}"
 
-        flash(error)
+def _handle_create_seccion_post(instancias, instancia_id):
+    instancia_curso_id = request.form["instancia_curso_id"]
+    numero = request.form["numero"]
+    usa_porcentaje = "usa_porcentaje" in request.form
+    
+    error = _validate_seccion_data(instancia_curso_id, numero)
+    
+    if error is None:
+        try:
+            Seccion.create(instancia_curso_id, numero, usa_porcentaje)
+            flash("Sección creada exitosamente!")
+            return redirect(url_for("secciones.index"))
+        except Exception as e:
+            error = f"Error al crear la sección: {e}"
+    
+    flash(error)
+    return render_template("secciones/create.html", instancias=instancias, instancia_id=instancia_id)
 
-    return render_template(
-        "secciones/create.html", instancias=instancias, instancia_id=instancia_id
-    )
+
+def _validate_seccion_data(instancia_curso_id, numero):
+    if not instancia_curso_id:
+        return "La instancia de curso es requerida."
+    if not numero:
+        return "El número de sección es requerido."
+    try:
+        Instancia.validate_not_cerrada(int(instancia_curso_id), "creación de sección")
+    except ValueError as e:
+        return str(e)
+    return None
 
 
 @bp.route("/<int:id>/edit", methods=("GET", "POST"))

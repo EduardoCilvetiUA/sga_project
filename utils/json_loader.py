@@ -296,10 +296,18 @@ class JsonLoader:
             return
         topicos = seccion["evaluacion"]["combinacion_topicos"]
         if usa_porcentaje:
-            valores = [topico["valor"] for topico in topicos]
-            topicos_normalizados = JsonLoader._normalize_percentages(valores)
-            for index, valor in enumerate(topicos_normalizados):
-                topicos[index]["valor"] = valor
+            JsonLoader._normalize_topicos_porcentaje(topicos)
+        JsonLoader._process_all_topicos(seccion, topicos)
+
+    @staticmethod
+    def _normalize_topicos_porcentaje(topicos):
+        valores = [topico["valor"] for topico in topicos]
+        topicos_normalizados = JsonLoader._normalize_percentages(valores)
+        for index, valor in enumerate(topicos_normalizados):
+            topicos[index]["valor"] = valor
+
+    @staticmethod
+    def _process_all_topicos(seccion, topicos):
         for topico in topicos:
             JsonLoader._upsert_topico(seccion, topico)
             JsonLoader._process_instancias_evaluacion(topico["id"], seccion["evaluacion"]["topicos"].get(str(topico["id"])))
